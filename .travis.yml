@@ -1,0 +1,18 @@
+dist: xenial
+language: java
+jdk:
+  - openjdk8
+  - openjdk11
+  - openjdk-ea
+
+matrix:
+  allow_failures:
+    - jdk: openjdk-ea
+
+env:
+  global:
+    - sas_test_files=resources
+
+cache:
+  directories:
+    - $HOME/.m2
