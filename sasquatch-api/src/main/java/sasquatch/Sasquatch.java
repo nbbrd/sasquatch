@@ -17,7 +17,6 @@
 package sasquatch;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
@@ -41,17 +40,17 @@ import sasquatch.spi.SasReaderLoader;
 //@ThreadSafe
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Sasquatch {
-
+    
     @NonNull
     public static Sasquatch ofServiceLoader() {
         return new Sasquatch(SasReaderLoader.load().stream().findFirst());
     }
-
+    
     @NonNull
     public static Sasquatch of(@NonNull SasReader reader) {
         return new Sasquatch(Optional.of(reader));
     }
-
+    
     @lombok.NonNull
     private final Optional<SasReader> reader;
 
@@ -68,7 +67,7 @@ public final class Sasquatch {
      */
     @NonNull
     public SasResultSet read(@NonNull Path file) throws IOException {
-        return reader.orElseThrow(IOException::new).read(file);
+        return getReader().read(file);
     }
 
     /**
@@ -84,9 +83,9 @@ public final class Sasquatch {
      */
     @NonNull
     public SasMetaData readMetaData(@NonNull Path file) throws IOException {
-        return reader.orElseThrow(IOException::new).readMetaData(file);
+        return getReader().readMetaData(file);
     }
-
+    
     @NonNull
     public <T> Stream<T> rows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
         SasResultSet rs = read(file);
@@ -104,15 +103,19 @@ public final class Sasquatch {
             throw e;
         }
     }
-
+    
+    private SasReader getReader() throws IOException {
+        return reader.orElseThrow(() -> new IOException("No reader available"));
+    }
+    
     private static <T> Stream<T> streamOf(SasResultSet rs, SasRowMapper<T> rowMapper) throws IOException {
         return StreamSupport.stream(spliteratorOf(rs, rowMapper), false);
     }
-
+    
     private static <T> Spliterator<T> spliteratorOf(SasResultSet rs, SasRowMapper<T> rowMapper) throws IOException {
         return Spliterators.spliterator(new SasIterator<>(rs, rowMapper), rs.getMetaData().getRowCount(), Spliterator.ORDERED | Spliterator.NONNULL);
     }
-
+    
     private static Runnable asUncheckedRunnable(Closeable c) {
         return () -> {
             try {
@@ -122,23 +125,19 @@ public final class Sasquatch {
             }
         };
     }
-
-    public <T> Stream rows(File file, SasRowMapper<T> mapper) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @lombok.RequiredArgsConstructor
     private static final class SasIterator<T> implements Iterator<T> {
-
+        
         @lombok.NonNull
         private final SasResultSet rs;
-
+        
         @lombok.NonNull
         private final SasRowMapper<T> func;
-
+        
         private T row = null;
         private boolean rowLoaded = false;
-
+        
         @Override
         public boolean hasNext() {
             if (rowLoaded) {
@@ -155,7 +154,7 @@ public final class Sasquatch {
                 throw new UncheckedIOException(e);
             }
         }
-
+        
         @Override
         public T next() {
             if (hasNext()) {
