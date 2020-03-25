@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>be.nbb.rd</groupId>
+        <artifactId>sasquatch-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>sasquatch-desktop</artifactId>
+    <packaging>jar</packaging>
+    
+    <properties>
+        <project.x.mainClass>sasquatch.desktop.SasTableViewer</project.x.mainClass>
+        <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
+        <project.x.headerType>gui</project.x.headerType>
+    </properties>
+    
+    <dependencies>
+        <!-- compile only -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sasquatch-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sasquatch-ri</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sat</groupId>
+            <artifactId>nbdemetra-utils</artifactId>
+            <version>2.2.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>jna</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.java.dev.jna</groupId>
+                    <artifactId>jna-platform</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jfree</groupId>
+                    <artifactId>jfreechart</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <!-- Generates manifest for executable jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <mainClass>${project.x.mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            
+            <!-- Generates a all-in-one executable jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                    </transformers>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>bin</shadedClassifierName>
+                    <outputDirectory>${project.x.binaries}</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- Generates SHA256 on binaries -->
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <algorithms>
+                        <algorithm>SHA-256</algorithm>
+                    </algorithms>
+                    <fileSets>
+                        <fileSet>
+                            <directory>${project.x.binaries}</directory>
+                            <excludes>
+                                <exclude>*.sha256</exclude>
+                            </excludes>
+                        </fileSet>
+                    </fileSets>
+                    <csvSummary>false</csvSummary>
+                </configuration>
+            </plugin>        
+        </plugins>
+    </build>
+</project>

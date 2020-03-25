@@ -1,0 +1,15 @@
+[submodule "resources/github_dumbmatter"]
+	path = resources/github_dumbmatter
+	url = https://github.com/dumbmatter/sas7bdat-js.git
+[submodule "resources/github_ppham27"]
+	path = resources/github_ppham27
+	url = https://github.com/ppham27/sas_to_csv.git
+[submodule "resources/github_kshedden"]
+	path = resources/github_kshedden
+	url = https://github.com/kshedden/datareader.git
+[submodule "resources/github_tk3369"]
+	path = resources/github_tk3369
+	url = https://github.com/tk3369/SASLib.jl.git
+[submodule "resources/github_epam"]
+	path = resources/github_epam
+	url = https://github.com/epam/parso.git
