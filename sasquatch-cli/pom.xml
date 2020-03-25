@@ -13,7 +13,7 @@
 
     <properties>
         <project.x.mainClass>sasquatch.cli.SasquatchCommand</project.x.mainClass>
-        <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
+        <project.x.binaries>${project.basedir}/../target/binaries</project.x.binaries>
         <project.x.headerType>console</project.x.headerType>
     </properties>
     

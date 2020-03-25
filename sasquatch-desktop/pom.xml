@@ -13,7 +13,7 @@
     
     <properties>
         <project.x.mainClass>sasquatch.desktop.SasTableViewer</project.x.mainClass>
-        <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
+        <project.x.binaries>${project.basedir}/../target/binaries</project.x.binaries>
         <project.x.headerType>gui</project.x.headerType>
     </properties>
     
