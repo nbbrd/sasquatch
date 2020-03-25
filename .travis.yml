@@ -11,7 +11,7 @@ matrix:
 
 env:
   global:
-    - sas_test_files=resources
+    - sas_test_files=${TRAVIS_BUILD_DIR}/resources
 
 cache:
   directories:
