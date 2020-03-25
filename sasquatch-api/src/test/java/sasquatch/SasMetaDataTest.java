@@ -16,7 +16,6 @@
  */
 package sasquatch;
 
-import sasquatch.SasMetaData;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -25,11 +24,6 @@ import org.junit.Test;
  * @author Philippe Charles
  */
 public class SasMetaDataTest {
-
-    @Test
-    public void testClass() {
-        Util.assertValue(SasMetaData.class);
-    }
 
     @Test
     public void testHashCode() {

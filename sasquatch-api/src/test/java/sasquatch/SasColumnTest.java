@@ -16,7 +16,6 @@
  */
 package sasquatch;
 
-import sasquatch.SasColumn;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,11 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Philippe Charles
  */
 public class SasColumnTest {
-
-    @Test
-    public void testClass() {
-        Util.assertValue(SasColumn.class);
-    }
 
     @Test
     @SuppressWarnings("null")
