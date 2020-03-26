@@ -61,7 +61,8 @@ public final class ParsoReader implements SasReader {
                 SasFeature.DATE_FORMAT,
                 SasFeature.DATE_TIME_FORMAT,
                 SasFeature.TIME_FORMAT,
-                SasFeature.ENCODING,
+                SasFeature.FIELD_ENCODING,
+                SasFeature.COLUMN_ENCODING,
                 SasFeature.CUSTOM_NUMERIC
         ));
     }

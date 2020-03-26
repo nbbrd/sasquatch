@@ -41,6 +41,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import static internal.ri.data.DescriptorType.COL_ATTRS;
 import static internal.ri.data.DescriptorType.COL_NAMES;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 /**
@@ -68,23 +69,23 @@ public final class Document {
     private List<ColLabs> colLabsList;
     private List<RowIndex> rowIndexList;
 
-    public String getColumnName(int index) {
-        return getString(colNameList.get(index).getName());
+    public String getColumnName(int index, Charset charset) {
+        return getString(colNameList.get(index).getName(), charset);
     }
 
-    public String getColumnLabel(int index) {
-        return getString(colLabsList.get(index).getLabel());
+    public String getColumnLabel(int index, Charset charset) {
+        return getString(colLabsList.get(index).getLabel(), charset);
     }
 
-    public String getColumnFormat(int index) {
-        return getString(colLabsList.get(index).getFormat());
+    public String getColumnFormat(int index, Charset charset) {
+        return getString(colLabsList.get(index).getFormat(), charset);
     }
 
-    private String getString(StringRef ref) {
+    private String getString(StringRef ref, Charset charset) {
         return colTextList
                 .get(ref.getHdr())
                 .getContent()
-                .getString(ref.getOff() + (header.isU64() ? 8 : 4), ref.getLen(), US_ASCII);
+                .getString(ref.getOff() + (header.isU64() ? 8 : 4), ref.getLen(), charset);
     }
 
     @NonNull

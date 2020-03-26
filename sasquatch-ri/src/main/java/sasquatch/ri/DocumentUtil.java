@@ -49,7 +49,7 @@ class DocumentUtil {
         return result;
     }
 
-    SasMetaData getMetaData(Document doc) {
+    SasMetaData getMetaData(Document doc) throws IOException {
         SasMetaData.Builder result = SasMetaData.builder()
                 .name(doc.getHeader().getName())
                 .creationTime(doc.getHeader().getCreationTime())
@@ -58,15 +58,17 @@ class DocumentUtil {
                 .host(doc.getHeader().getSasHost())
                 .rowCount(doc.getRowSize().getCount());
 
+        Charset charset = getCharset(doc);
+
         SasColumn.Builder cb = SasColumn.builder();
         for (int j = 0; j < doc.getColSize().getCount(); j++) {
             ColAttr colAttr = doc.getColAttrList().get(j);
-            String format = doc.getColumnFormat(j);
+            String format = doc.getColumnFormat(j, charset);
             result.column(cb
                     .order(j)
-                    .name(doc.getColumnName(j))
+                    .name(doc.getColumnName(j, charset))
                     .format(format)
-                    .label(doc.getColumnLabel(j))
+                    .label(doc.getColumnLabel(j, charset))
                     .type(getColumnType(colAttr.getType(), format))
                     .length(colAttr.getLength())
                     .build());

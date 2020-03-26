@@ -34,10 +34,10 @@ import sasquatch.tck.SasFeatureAssertion;
  * @author Philippe Charles
  */
 @ServiceProvider(SasFeatureAssertion.class)
-public final class EncodingAssertion extends AbstractFeatureAssertion {
+public final class FieldEncodingAssertion extends AbstractFeatureAssertion {
 
-    public EncodingAssertion() {
-        super(SasFeature.ENCODING, SasResources.DUMBMATTER.getRoot().resolve("sas7bdat-partial").resolve("greek.sas7bdat"));
+    public FieldEncodingAssertion() {
+        super(SasFeature.FIELD_ENCODING, SasResources.DUMBMATTER.getRoot().resolve("sas7bdat-partial").resolve("greek.sas7bdat"));
     }
 
     @Override

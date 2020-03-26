@@ -21,6 +21,8 @@ import internal.ri.base.SubHeaderLocation;
 import static internal.ri.data.ColType.CHARACTER;
 import static internal.ri.data.ColType.NUMERIC;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import org.junit.Test;
@@ -46,24 +48,26 @@ public class DocumentTest {
         assertThat(doc.getRowSize())
                 .extracting(RowSize::getLength, RowSize::getCount, RowSize::getFirstPageMaxCount)
                 .containsExactly(32, 50, 86);
-        
+
         assertThat(doc.getColSize()).isEqualTo(new ColSize(new SubHeaderLocation(0, 1), 3));
 
         assertThat(doc.getColAttrList())
                 .extracting("length", "type")
                 .containsExactly(tuple(16, known(CHARACTER)), tuple(8, known(NUMERIC)), tuple(8, known(NUMERIC)));
 
-        assertThat(doc.getColumnName(0)).isEqualTo("State");
-        assertThat(doc.getColumnName(1)).isEqualTo("EnterDate");
-        assertThat(doc.getColumnName(2)).isEqualTo("Size");
+        Charset charset = StandardCharsets.US_ASCII;
 
-        assertThat(doc.getColumnLabel(0)).isEqualTo("");
-        assertThat(doc.getColumnLabel(1)).isEqualTo("");
-        assertThat(doc.getColumnLabel(2)).isEqualTo("");
+        assertThat(doc.getColumnName(0, charset)).isEqualTo("State");
+        assertThat(doc.getColumnName(1, charset)).isEqualTo("EnterDate");
+        assertThat(doc.getColumnName(2, charset)).isEqualTo("Size");
 
-        assertThat(doc.getColumnFormat(0)).isEqualTo("");
-        assertThat(doc.getColumnFormat(1)).isEqualTo("DATE");
-        assertThat(doc.getColumnFormat(2)).isEqualTo("");
+        assertThat(doc.getColumnLabel(0, charset)).isEqualTo("");
+        assertThat(doc.getColumnLabel(1, charset)).isEqualTo("");
+        assertThat(doc.getColumnLabel(2, charset)).isEqualTo("");
+
+        assertThat(doc.getColumnFormat(0, charset)).isEqualTo("");
+        assertThat(doc.getColumnFormat(1, charset)).isEqualTo("DATE");
+        assertThat(doc.getColumnFormat(2, charset)).isEqualTo("");
     }
 
     @Test
@@ -137,8 +141,9 @@ public class DocumentTest {
     private static void assertColumn(ColType type, int length, String name, String label, String format, Document doc, int columnIndex) {
         assertThat(doc.getColAttrList().get(columnIndex).getType().get()).isEqualTo(type);
         assertThat(doc.getColAttrList().get(columnIndex).getLength()).isEqualTo(length);
-        assertThat(doc.getColumnName(columnIndex)).isEqualTo(name);
-        assertThat(doc.getColumnLabel(columnIndex)).isEqualTo(label);
-        assertThat(doc.getColumnFormat(columnIndex)).isEqualTo(format);
+        Charset charset = StandardCharsets.US_ASCII;
+        assertThat(doc.getColumnName(columnIndex, charset)).isEqualTo(name);
+        assertThat(doc.getColumnLabel(columnIndex, charset)).isEqualTo(label);
+        assertThat(doc.getColumnFormat(columnIndex, charset)).isEqualTo(format);
     }
 }
