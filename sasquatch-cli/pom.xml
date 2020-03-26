@@ -61,6 +61,11 @@
             <artifactId>java-io-base</artifactId>
             <version>0.0.6</version>
         </dependency>
+        <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-console-properties</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         
         <!-- Runtime only -->
         <dependency>

@@ -24,7 +24,6 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import nbbrd.picocsv.Csv;
 import picocli.CommandLine;
 import picocli.ext.CsvOptions;
@@ -65,7 +64,7 @@ public final class ExportCommand extends SasReaderCommand {
             throw new IllegalArgumentException("Cannot export rows on multiple files");
         }
 
-        try (Csv.Writer writer = csv.newWriter(Optional::empty)) {
+        try (Csv.Writer writer = csv.newWriter(this::getStdOutEncoding)) {
             switch (dataType) {
                 case HEADER:
                     exportHeader(writer);
