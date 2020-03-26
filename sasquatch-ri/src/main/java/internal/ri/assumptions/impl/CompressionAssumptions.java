@@ -79,8 +79,8 @@ public enum CompressionAssumptions implements SasFileAssumption {
                         return FileVisitResult.CONTINUE;
                     }
                 });
-                return !Util.isSorted(indexes, Comparator.comparingInt(RowIndex::getLastRowRef).reversed())
-                        || !Util.isSorted(indexes, Comparator.comparingInt(RowIndex::getPageRef).reversed())
+                return !Util.isSorted(indexes, Comparator.comparingInt(RowIndex::getRowNumber).reversed())
+                        || !Util.isSorted(indexes, Comparator.comparingInt(RowIndex::getPageNumber).reversed())
                         ? "isRowIndexesSorted"
                         : null;
             }

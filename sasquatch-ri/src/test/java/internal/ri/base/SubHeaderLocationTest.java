@@ -16,30 +16,23 @@
  */
 package internal.ri.base;
 
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 /**
  *
  * @author Philippe Charles
  */
-@lombok.Value
-public class SubHeaderLocation implements Comparable<SubHeaderLocation> {
+public class SubHeaderLocationTest {
 
-    @NonNegative
-    private int page;
-
-    @NonNegative
-    private int index;
-
-    @NonNull
-    public SubHeaderLocation next() {
-        return new SubHeaderLocation(page, index + 1);
-    }
-
-    @Override
-    public int compareTo(SubHeaderLocation that) {
-        int result = Integer.compare(this.page, that.page);
-        return result != 0 ? result : Integer.compare(this.index, that.index);
+    @Test
+    public void testCompareTo() {
+        assertThat(new SubHeaderLocation(1, 5))
+                .isEqualTo(new SubHeaderLocation(1, 5))
+                .isGreaterThan(new SubHeaderLocation(1, 4))
+                .isGreaterThan(new SubHeaderLocation(0, 5))
+                .isGreaterThan(new SubHeaderLocation(0, 6))
+                .isLessThan(new SubHeaderLocation(1, 6))
+                .isLessThan(new SubHeaderLocation(2, 4));
     }
 }

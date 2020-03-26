@@ -36,13 +36,18 @@ public final class RowIndex implements SubHeader {
     private SubHeaderLocation location;
 
     @NonNegative
-    private int lastRowRef;
+    private int rowNumber;
 
     @NonNegative
-    private int pageRef;
+    private int pageNumber;
 
     @NonNegative
-    private short lastSubHeaderRef;
+    private short subHeaderNumber;
+
+    @NonNull
+    public SubHeaderLocation getLastRowLocation() {
+        return new SubHeaderLocation(pageNumber - 1, subHeaderNumber - 1);
+    }
 
     @NonNull
     public static List<RowIndex> parseAll(@NonNull PageHeader page, @NonNull BytesReader pageBytes, boolean u64) {

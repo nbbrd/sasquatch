@@ -16,7 +16,6 @@
  */
 package internal.bytes;
 
-import java.io.PrintStream;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -96,27 +95,4 @@ public interface BytesReader {
 
     @NonNull
     BytesReader duplicate(@NonNull ByteOrder order);
-
-    default void printTo(PrintStream stream, int index, int length, int[] groupSizes) {
-        int[] stackSizes = groupSizes.clone();
-        for (int i = 1; i < stackSizes.length; i++) {
-            stackSizes[i] += stackSizes[i - 1];
-        }
-        int groupIndex = 0;
-        for (int i = 0; i < length; i++) {
-            stream.print(String.format("%02X ", getByte(index + i)));
-
-            int groupSize = stackSizes[groupIndex % groupSizes.length];
-
-            if (i % groupSize == groupSize - 1) {
-                if (groupIndex % groupSizes.length == groupSizes.length - 1) {
-                    stream.println("");
-                } else {
-                    stream.print("| ");
-                }
-                groupIndex++;
-            }
-        }
-        stream.println();
-    }
 }

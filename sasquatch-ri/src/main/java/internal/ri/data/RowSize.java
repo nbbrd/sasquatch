@@ -20,6 +20,7 @@ import internal.bytes.BytesReader;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
+import internal.ri.base.XRef;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -66,15 +67,17 @@ public final class RowSize implements SubHeader {
     @NonNegative
     private short nct;
 
+    @XRef(var = "npshd")
     @NonNegative
-    private int npshd;
+    private int lastMetaPageNumber;
 
+    @XRef(var = "nshpl")
     @NonNegative
-    private short nshpl;
+    private short lastMetaSubHeaderNumber;
 
     @NonNull
     public SubHeaderLocation getLastMetaLocation() {
-        return new SubHeaderLocation(npshd - 1, nshpl - 1);
+        return new SubHeaderLocation(lastMetaPageNumber - 1, lastMetaSubHeaderNumber - 1);
     }
     
     @NonNull
