@@ -39,7 +39,7 @@
         <!-- test only -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>sasquatch-samples</artifactId>
+            <artifactId>sasquatch-tck</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

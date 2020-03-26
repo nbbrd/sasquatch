@@ -27,7 +27,7 @@
         <module>sasquatch-sassy</module>
         <module>sasquatch-parso</module>
         <module>sasquatch-ri</module>
-        <module>sasquatch-samples</module>
+        <module>sasquatch-tck</module>
         <module>sasquatch-biostatmatt</module>
         <module>sasquatch-desktop</module>
         <module>sasquatch-cli</module>
