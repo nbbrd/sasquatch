@@ -13,8 +13,10 @@
 
     <properties>
         <project.x.mainClass>sasquatch.cli.SasquatchCommand</project.x.mainClass>
+        <project.x.fileName>sasquatch</project.x.fileName>
         <project.x.binaries>${project.basedir}/../target/binaries</project.x.binaries>
         <project.x.headerType>console</project.x.headerType>
+        <project.x.minVersion>8</project.x.minVersion>
     </properties>
     
     <dependencies>
@@ -119,8 +121,64 @@
                     </transformers>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>bin</shadedClassifierName>
+                    <shadedArtifactId>${project.x.fileName}</shadedArtifactId>
                     <outputDirectory>${project.x.binaries}</outputDirectory>
                 </configuration>
+            </plugin>
+            
+            <!-- Parse version into different properties -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                        <configuration>
+                            <propertyPrefix>project.x</propertyPrefix>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Generates a Windows exe -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.25</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>${project.x.headerType}</headerType>
+                            <outfile>${project.x.binaries}/${project.x.fileName}-${project.version}.exe</outfile>
+                            <jar>${project.x.binaries}/${project.x.fileName}-${project.version}-bin.jar</jar>
+                            <downloadUrl>https://adoptopenjdk.net/</downloadUrl>
+                            <jre>
+                                <minVersion>${project.x.minVersion}</minVersion>
+                                <path>%JAVA_HOME%</path>
+                                <bundledJreAsFallback>true</bundledJreAsFallback>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}</fileVersion>
+                                <txtFileVersion>${project.version}</txtFileVersion>
+                                <fileDescription>${project.description}</fileDescription>
+                                <copyright>${project.organization.name}</copyright>
+                                <productVersion>${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productName>${project.x.fileName}</productName>
+                                <internalName>${project.x.fileName}</internalName>
+                                <originalFilename>${project.x.fileName}.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Generates SHA256 on binaries -->
