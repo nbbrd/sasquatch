@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -50,6 +51,7 @@ public interface SasRow {
      * @throws IOException if an I/O exception occurred
      * @throws IndexOutOfBoundsException if the columnIndex is invalid
      */
+    @Nullable
     default Object getValue(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException {
         SasColumn column = getMetaData().getColumns().get(columnIndex);
         switch (column.getType()) {
@@ -87,8 +89,10 @@ public interface SasRow {
      * @throws IndexOutOfBoundsException if the columnIndex is invalid
      * @throws IllegalArgumentException if the column is not of type CHARACTER
      */
+    @Nullable
     String getString(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 
+    @Nullable
     LocalDate getDate(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 
     /**
@@ -101,7 +105,9 @@ public interface SasRow {
      * @throws IllegalArgumentException if the column is not of time-related
      * subtype
      */
+    @Nullable
     LocalDateTime getDateTime(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 
+    @Nullable
     LocalTime getTime(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 }

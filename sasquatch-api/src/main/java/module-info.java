@@ -20,6 +20,8 @@ module sasquatch.api {
     requires static nbbrd.service;
     requires static org.checkerframework.checker.qual;
     requires static lombok;
+    
+    requires java.logging;
 
     exports sasquatch;
     exports sasquatch.spi;

@@ -16,6 +16,7 @@
  */
 package sasquatch.spi;
 
+import internal.sasquatch.spi.FailsafeSasReader;
 import sasquatch.*;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,7 +33,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 //@ThreadSafe
-@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
+@ServiceDefinition(
+        quantifier = Quantifier.MULTIPLE,
+        wrapper = FailsafeSasReader.class
+)
 public interface SasReader {
 
     /**
