@@ -39,6 +39,8 @@ public final class SasReaderAssert {
 
     private static void assertCompliance(SoftAssertions s, SasReader reader, Set<SasFeature> features) throws Exception {
         s.assertThat(reader.getName()).isNotBlank();
+        s.assertThat(reader.getCost()).isGreaterThanOrEqualTo(0);
+        s.assertThat(reader.getFeatures()).isNotNull();
         s.assertThatThrownBy(() -> reader.read(null)).isInstanceOf(NullPointerException.class);
         s.assertThatThrownBy(() -> reader.readMetaData(null)).isInstanceOf(NullPointerException.class);
 

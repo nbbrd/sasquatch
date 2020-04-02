@@ -25,6 +25,7 @@ import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
 import nbbrd.service.ServiceFilter;
 import nbbrd.service.ServiceSorter;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -51,6 +52,7 @@ public interface SasReader {
     boolean isAvailable();
 
     @ServiceSorter
+    @NonNegative
     int getCost();
 
     @NonNull

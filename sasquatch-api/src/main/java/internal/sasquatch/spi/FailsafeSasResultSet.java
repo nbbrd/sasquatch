@@ -31,6 +31,7 @@ import sasquatch.SasResultSet;
 @lombok.extern.java.Log
 final class FailsafeSasResultSet implements SasResultSet {
 
+    @lombok.Getter
     @lombok.NonNull
     private final SasResultSet delegate;
 

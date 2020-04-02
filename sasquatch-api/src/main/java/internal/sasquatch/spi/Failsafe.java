@@ -30,7 +30,7 @@ import java.util.logging.Level;
 @lombok.AllArgsConstructor
 final class Failsafe {
 
-    public static final Failsafe DEFAULT = new Failsafe(Failsafe::logError, Failsafe::logNull);
+    public static final Failsafe DEFAULT = new Failsafe(Failsafe::logError, Failsafe::logValue);
 
     @lombok.NonNull
     private final BiConsumer<? super String, ? super RuntimeException> onUnexpectedError;
@@ -63,7 +63,11 @@ final class Failsafe {
     }
 
     public static String getNullMsg(Class<?> source, String method) {
-        return "Unexpected null while calling '" + method + "' on '" + source.getName() + "'";
+        return "Unexpected null value while calling '" + method + "' on '" + source.getName() + "'";
+    }
+
+    public static String getNonNegativeMsg(Class<?> source, String method) {
+        return "Unexpected negative value while calling '" + method + "' on '" + source.getName() + "'";
     }
 
     private static void logError(String msg, RuntimeException unexpected) {
@@ -72,7 +76,7 @@ final class Failsafe {
         }
     }
 
-    private static void logNull(String msg) {
+    private static void logValue(String msg) {
         log.log(Level.WARNING, msg);
     }
 }

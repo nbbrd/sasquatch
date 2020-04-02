@@ -36,6 +36,7 @@ public final class FailsafeSasReader implements SasReader {
         return new FailsafeSasReader(delegate, Failsafe.DEFAULT);
     }
 
+    @lombok.Getter
     @lombok.NonNull
     private final SasReader delegate;
 
@@ -70,11 +71,19 @@ public final class FailsafeSasReader implements SasReader {
 
     @Override
     public int getCost() {
+        int result;
+
         try {
-            return delegate.getCost();
+            result = delegate.getCost();
         } catch (RuntimeException unexpected) {
             return fallbackError("getCost", unexpected, Integer.MAX_VALUE);
         }
+
+        if (result < 0) {
+            return fallbackNonNegative("getCost", Integer.MAX_VALUE);
+        }
+
+        return result;
     }
 
     @Override
@@ -145,6 +154,11 @@ public final class FailsafeSasReader implements SasReader {
 
     private <X> X fallbackNull(String method, X fallback) {
         String msg = Failsafe.getNullMsg(getSource(), method);
+        return failsafe.fallbackValue(msg, fallback);
+    }
+
+    private <X extends Number> X fallbackNonNegative(String method, X fallback) {
+        String msg = Failsafe.getNonNegativeMsg(getSource(), method);
         return failsafe.fallbackValue(msg, fallback);
     }
 

@@ -16,19 +16,19 @@
  */
 package internal.sasquatch.spi;
 
+import _test.EOFReader;
+import _test.FailingSasReader;
+import _test.InvalidSasReader;
+import _test.Sample;
+import java.io.EOFException;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import static org.assertj.core.api.Assertions.*;
-import org.assertj.core.util.Files;
 import org.junit.Test;
-import sasquatch.SasMetaData;
 import sasquatch.SasResultSet;
-import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
 /**
@@ -39,60 +39,145 @@ public class FailsafeSasReaderTest {
 
     @Test
     public void testName() {
-        Map<String, RuntimeException> errors = new HashMap<>();
-        List<String> values = new ArrayList<>();
+        reset();
+        assertThat(valid.getName()).isEqualTo("valid");
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
 
-        FailsafeSasReader reader = new FailsafeSasReader(new FailingSasReader(), new Failsafe(errors::put, values::add));
+        reset();
+        assertThat(failing.getName()).isEqualTo(FailingSasReader.class.getName());
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getName' on '_test.FailingSasReader'");
+        assertThat(values).isEmpty();
 
-        assertThat(reader.getName()).isEqualTo(FailingSasReader.class.getName());
-        assertThat(errors).containsKey("Unexpected error while calling 'getName' on 'internal.sasquatch.spi.FailsafeSasReaderTest$FailingSasReader'");
+        reset();
+        assertThat(invalid.getName()).isEqualTo(InvalidSasReader.class.getName());
+        assertThat(errors).isEmpty();
+        assertThat(values).hasSize(1).contains("Unexpected null value while calling 'getName' on '_test.InvalidSasReader'");
+    }
+
+    @Test
+    public void testIsAvailable() {
+        reset();
+        assertThat(valid.isAvailable()).isTrue();
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
+
+        reset();
+        assertThat(failing.isAvailable()).isEqualTo(false);
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'isAvailable' on '_test.FailingSasReader'");
         assertThat(values).isEmpty();
     }
 
     @Test
-    public void testRead() {
-        Map<String, RuntimeException> errors = new HashMap<>();
-        List<String> values = new ArrayList<>();
+    public void testGetCost() {
+        reset();
+        assertThat(valid.getCost()).isEqualTo(SasReader.NATIVE);
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
 
-        FailsafeSasReader reader = new FailsafeSasReader(new FailingSasReader(), new Failsafe(errors::put, values::add));
+        reset();
+        assertThat(failing.getCost()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getCost' on '_test.FailingSasReader'");
+        assertThat(values).isEmpty();
 
+        reset();
+        assertThat(invalid.getCost()).isEqualTo(Integer.MAX_VALUE);
+        assertThat(errors).isEmpty();
+        assertThat(values).hasSize(1).contains("Unexpected negative value while calling 'getCost' on '_test.InvalidSasReader'");
+    }
+
+    @Test
+    public void testGetFeatures() {
+        reset();
+        assertThat(valid.getFeatures()).isNotNull();
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
+
+        reset();
+        assertThat(failing.getFeatures()).isEmpty();
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getFeatures' on '_test.FailingSasReader'");
+        assertThat(values).isEmpty();
+
+        reset();
+        assertThat(invalid.getFeatures()).isEmpty();
+        assertThat(errors).isEmpty();
+        assertThat(values).hasSize(1).contains("Unexpected null value while calling 'getFeatures' on '_test.InvalidSasReader'");
+    }
+
+    @Test
+    public void testRead() throws IOException {
+        reset();
+        try (SasResultSet rs = valid.read(Sample.FILE)) {
+            assertThat(rs).isNotNull();
+        }
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
+
+        reset();
         assertThatIOException()
-                .isThrownBy(() -> reader.read(Files.newTemporaryFile().toPath()))
+                .isThrownBy(() -> failing.read(Sample.FILE))
                 .withCauseExactlyInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).containsKey("Unexpected error while calling 'read' on 'internal.sasquatch.spi.FailsafeSasReaderTest$FailingSasReader'");
+        assertThat(errors).containsKey("Unexpected error while calling 'read' on '_test.FailingSasReader'");
+        assertThat(values).isEmpty();
+
+        reset();
+        assertThatIOException()
+                .isThrownBy(() -> invalid.read(Sample.FILE))
+                .withNoCause();
+        assertThat(errors).isEmpty();
+        assertThat(values).hasSize(1).contains("Unexpected null value while calling 'read' on '_test.InvalidSasReader'");
+
+        reset();
+        assertThatIOException()
+                .isThrownBy(() -> eof.read(Sample.FILE))
+                .isExactlyInstanceOf(EOFException.class)
+                .withNoCause();
+        assertThat(errors).isEmpty();
         assertThat(values).isEmpty();
     }
 
-    static class FailingSasReader implements SasReader {
+    @Test
+    public void testReadMetaData() throws IOException {
+        reset();
+        assertThat(valid.readMetaData(Sample.FILE)).isNotNull();
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
 
-        @Override
-        public String getName() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        reset();
+        assertThatIOException()
+                .isThrownBy(() -> failing.readMetaData(Sample.FILE))
+                .withCauseExactlyInstanceOf(UnsupportedOperationException.class);
+        assertThat(errors).containsKey("Unexpected error while calling 'readMetaData' on '_test.FailingSasReader'");
+        assertThat(values).isEmpty();
 
-        @Override
-        public boolean isAvailable() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        reset();
+        assertThatIOException()
+                .isThrownBy(() -> invalid.readMetaData(Sample.FILE))
+                .withNoCause();
+        assertThat(errors).isEmpty();
+        assertThat(values).hasSize(1).contains("Unexpected null value while calling 'readMetaData' on '_test.InvalidSasReader'");
 
-        @Override
-        public int getCost() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+        reset();
+        assertThatIOException()
+                .isThrownBy(() -> eof.readMetaData(Sample.FILE))
+                .isExactlyInstanceOf(EOFException.class)
+                .withNoCause();
+        assertThat(errors).isEmpty();
+        assertThat(values).isEmpty();
+    }
 
-        @Override
-        public Set<SasFeature> getFeatures() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+    private final Map<String, RuntimeException> errors = new HashMap<>();
+    private final List<String> values = new ArrayList<>();
 
-        @Override
-        public SasResultSet read(Path file) throws IOException {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+    private final Failsafe failsafe = new Failsafe(errors::put, values::add);
 
-        @Override
-        public SasMetaData readMetaData(Path file) throws IOException {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
+    private final FailsafeSasReader valid = new FailsafeSasReader(Sample.VALID_READER, failsafe);
+    private final FailsafeSasReader failing = new FailsafeSasReader(new FailingSasReader(), failsafe);
+    private final FailsafeSasReader invalid = new FailsafeSasReader(new InvalidSasReader(), failsafe);
+    private final FailsafeSasReader eof = new FailsafeSasReader(new EOFReader(Sample.VALID_READER, EOFReader.Behavior.NONE), failsafe);
+
+    private void reset() {
+        errors.clear();
+        values.clear();
     }
 }
