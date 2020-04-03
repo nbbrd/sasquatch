@@ -39,11 +39,11 @@ import sasquatch.Sasquatch;
  * @author Philippe Charles
  */
 @CommandLine.Command(
-        name = "dump",
-        description = "Dump SAS7BDAT file(s) to an SQL script"
+        name = "sql",
+        description = "Dump dataset to SQL script."
 )
 @SuppressWarnings("FieldMayBeFinal")
-public final class DumpCommand extends SasReaderCommand {
+public final class SqlCommand extends SasReaderCommand {
 
     @CommandLine.Option(
             names = {"-o", "--output-file"},

@@ -38,12 +38,12 @@ import sasquatch.Sasquatch;
  * @author Philippe Charles
  */
 @CommandLine.Command(
-        name = "export",
-        description = "Export SAS7BDAT file(s) to a delimited text file such as CSV"
+        name = "csv",
+        description = "Dump dataset to CSV file."
 )
 @SuppressWarnings("FieldMayBeFinal")
 @lombok.extern.java.Log
-public final class ExportCommand extends SasReaderCommand {
+public final class CsvCommand extends SasReaderCommand {
 
     @CommandLine.Option(
             names = {"-t", "--data-type"},

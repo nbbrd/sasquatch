@@ -29,10 +29,11 @@ import picocli.ext.ManifestVersionProvider;
  */
 @CommandLine.Command(
         name = "sasquatch",
+        description = "Reader of SAS datasets.",
         versionProvider = ManifestVersionProvider.class,
         subcommands = {
-            DumpCommand.class,
-            ExportCommand.class,
+            CsvCommand.class,
+            SqlCommand.class,
             DebugCommand.class
         }
 )
