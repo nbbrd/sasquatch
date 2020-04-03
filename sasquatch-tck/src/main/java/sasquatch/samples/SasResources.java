@@ -18,10 +18,12 @@ package sasquatch.samples;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+import sasquatch.Sasquatch;
 
 /**
  *
@@ -43,15 +45,15 @@ public enum SasResources {
     }
 
     private static Path getSasTestFiles() {
-        String sasTestFiles = System.getenv("sas_test_files");
-        if (sasTestFiles == null) {
-            throw new RuntimeException("Env variable 'sas_test_files' not found");
+        try {
+            return Paths.get(Sasquatch.class.getResource("/").toURI())
+                    .getParent()
+                    .getParent()
+                    .getParent()
+                    .resolve("resources");
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
         }
-        Path result = Paths.get(sasTestFiles);
-        if (!Files.isDirectory(result)) {
-            throw new RuntimeException("'sas_test_files' is not a directory");
-        }
-        return result;
     }
 
     public static Stream<Path> all() {

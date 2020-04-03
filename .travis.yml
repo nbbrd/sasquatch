@@ -9,10 +9,6 @@ matrix:
   allow_failures:
     - jdk: openjdk-ea
 
-env:
-  global:
-    - sas_test_files=${TRAVIS_BUILD_DIR}/resources
-
 cache:
   directories:
     - $HOME/.m2
