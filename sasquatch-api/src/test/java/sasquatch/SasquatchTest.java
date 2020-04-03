@@ -22,7 +22,6 @@ import _test.Sample;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,7 +55,7 @@ public class SasquatchTest {
         List<Sample.Record> records = new ArrayList<>();
         try (SasResultSet rs = sample.read(Sample.FILE)) {
             while (rs.nextRow()) {
-                records.add(parseRecord(rs));
+                records.add(Sample.parseRecord(rs));
             }
         }
         assertThat(records)
@@ -88,22 +87,22 @@ public class SasquatchTest {
     @Test
     public void testRows() throws IOException {
         assertThatNullPointerException()
-                .isThrownBy(() -> empty.rows(null, this::parseRecord));
+                .isThrownBy(() -> empty.rows(null, Sample::parseRecord));
 
         assertThatNullPointerException()
                 .isThrownBy(() -> empty.rows(Sample.FILE, null));
 
         assertThatIOException()
-                .isThrownBy(() -> toList(empty));
+                .isThrownBy(() -> rowsToList(empty));
 
-        assertThat(toList(sample))
+        assertThat(rowsToList(sample))
                 .hasSize(1)
                 .contains(Sample.ROW1, Index.atIndex(0));
 
         assertThatIOException()
                 .isThrownBy(() -> {
                     EOFReader.Behavior behavior = EOFReader.Behavior.NONE;
-                    toList(eof(behavior));
+                    rowsToList(eof(behavior));
                 })
                 .isExactlyInstanceOf(EOFException.class)
                 .withMessageContaining("read");
@@ -112,7 +111,7 @@ public class SasquatchTest {
                 .isThrownBy(() -> {
                     EOFReader.Behavior behavior = EOFReader.Behavior.NONE
                             .withAllowRead(true);
-                    toList(eof(behavior));
+                    rowsToList(eof(behavior));
                 })
                 .isExactlyInstanceOf(EOFException.class)
                 .withMessageContaining("getMetaData");
@@ -122,9 +121,53 @@ public class SasquatchTest {
                     EOFReader.Behavior behavior = EOFReader.Behavior.NONE
                             .withAllowRead(true)
                             .withResultSet(EOFResultSet.Behavior.NONE.withAllowGetMetaData(true));
-                    toList(eof(behavior));
+                    rowsToList(eof(behavior));
                 })
                 .withCauseExactlyInstanceOf(EOFException.class)
+                .withStackTraceContaining("close");
+    }
+
+    @Test
+    public void testGetAllRows() throws IOException {
+        assertThatNullPointerException()
+                .isThrownBy(() -> empty.getAllRows(null, Sample::parseRecord));
+
+        assertThatNullPointerException()
+                .isThrownBy(() -> empty.getAllRows(Sample.FILE, null));
+
+        assertThatIOException()
+                .isThrownBy(() -> getAllRows(empty));
+
+        assertThat(getAllRows(sample))
+                .hasSize(1)
+                .contains(Sample.ROW1, Index.atIndex(0));
+
+        assertThatIOException()
+                .isThrownBy(() -> {
+                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE;
+                    getAllRows(eof(behavior));
+                })
+                .isExactlyInstanceOf(EOFException.class)
+                .withMessageContaining("read");
+
+        assertThatIOException()
+                .isThrownBy(() -> {
+                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE
+                            .withAllowRead(true);
+                    getAllRows(eof(behavior));
+                })
+                .isExactlyInstanceOf(EOFException.class)
+                .withMessageContaining("getMetaData");
+
+        assertThatIOException()
+                .isThrownBy(() -> {
+                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE
+                            .withAllowRead(true)
+                            .withResultSet(EOFResultSet.Behavior.NONE.withAllowGetMetaData(true));
+                    getAllRows(eof(behavior));
+                })
+                .isExactlyInstanceOf(EOFException.class)
+                .withMessageContaining("nextRow")
                 .withStackTraceContaining("close");
     }
 
@@ -136,16 +179,12 @@ public class SasquatchTest {
         return Sasquatch.of(new EOFReader(Sample.VALID_READER, behavior));
     }
 
-    private Sample.Record parseRecord(SasRow row) throws IOException {
-        return new Sample.Record(row.getNumber(0), row.getString(1), row.getDate(2), row.getDateTime(3), row.getTime(4));
+    private List<Sample.Record> getAllRows(Sasquatch sasquatch) throws IOException {
+        return sasquatch.getAllRows(Sample.FILE, Sample::parseRecord);
     }
 
-    private List<Sample.Record> toList(Sasquatch sasquatch) throws IOException {
-        return toList(sasquatch, Sample.FILE, this::parseRecord);
-    }
-
-    private <X> List<X> toList(Sasquatch sasquatch, Path file, SasRowMapper<X> mapper) throws IOException {
-        try (Stream<X> stream = sasquatch.rows(file, mapper)) {
+    private List<Sample.Record> rowsToList(Sasquatch sasquatch) throws IOException {
+        try (Stream<Sample.Record> stream = sasquatch.rows(Sample.FILE, Sample::parseRecord)) {
             return stream.collect(Collectors.toList());
         }
     }

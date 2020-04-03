@@ -16,6 +16,7 @@
  */
 package _test;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,6 +27,7 @@ import java.util.EnumSet;
 import org.assertj.core.util.Files;
 import sasquatch.SasColumn;
 import sasquatch.SasColumnType;
+import sasquatch.SasRow;
 import sasquatch.Sasquatch;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -73,6 +75,10 @@ public class Sample {
         public Object[] toArray() {
             return new Object[]{c1, c2, c3, c4, c5};
         }
+    }
+
+    public static Record parseRecord(SasRow row) throws IOException {
+        return new Record(row.getNumber(0), row.getString(1), row.getDate(2), row.getDateTime(3), row.getTime(4));
     }
 
     public static Path getSasTestFiles() {

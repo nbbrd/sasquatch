@@ -19,8 +19,11 @@ package sasquatch;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -89,12 +92,50 @@ public final class Sasquatch {
         return getReader().readMetaData(file);
     }
 
+    /**
+     * Read all rows of a SAS dataset as a {@code Stream}. Unlike {@link
+     * #getAllRows(Path, Charset) getAllRows}, this method does not read all
+     * lines into a {@code List}, but instead populates lazily as the stream is
+     * consumed.
+     *
+     * @apiNote This method must be used within a try-with-resources statement
+     * or similar control structure to ensure that the stream's open file is
+     * closed promptly after the stream's operations have completed.
+     *
+     * @param <T>
+     * @param file the SAS dataset to read
+     * @param rowMapper
+     * @return a non-null stream
+     * @throws IOException if an I/O exception occurred
+     */
     @NonNull
     public <T> Stream<T> rows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
         Objects.requireNonNull(file);
         Objects.requireNonNull(rowMapper);
         SasResultSet rs = read(file);
         return streamOf(rs, rowMapper).onClose(asUncheckedRunnable(rs));
+    }
+
+    /**
+     * Read all rows of a SAS dataset.
+     *
+     * @param <T>
+     * @param file the SAS dataset to read
+     * @param rowMapper
+     * @return a non-null list
+     * @throws IOException if an I/O exception occurred
+     */
+    @NonNull
+    public <T> List<T> getAllRows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
+        Objects.requireNonNull(file);
+        Objects.requireNonNull(rowMapper);
+        try (SasResultSet rs = read(file)) {
+            List<T> result = new ArrayList<>(getRowCount(rs));
+            while (rs.nextRow()) {
+                result.add(rowMapper.apply(rs));
+            }
+            return result;
+        }
     }
 
     private SasReader getReader() throws IOException {
@@ -106,7 +147,11 @@ public final class Sasquatch {
     }
 
     private static <T> Spliterator<T> spliteratorOf(SasResultSet rs, SasRowMapper<T> rowMapper) throws IOException {
-        return Spliterators.spliterator(new SasIterator<>(rs, rowMapper), rs.getMetaData().getRowCount(), Spliterator.ORDERED | Spliterator.NONNULL);
+        return Spliterators.spliterator(new SasIterator<>(rs, rowMapper), getRowCount(rs), Spliterator.ORDERED | Spliterator.NONNULL);
+    }
+
+    private static int getRowCount(SasResultSet rs) throws IOException {
+        return rs.getMetaData().getRowCount();
     }
 
     private static Runnable asUncheckedRunnable(Closeable c) {

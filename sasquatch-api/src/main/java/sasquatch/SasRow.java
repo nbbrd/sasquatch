@@ -40,7 +40,7 @@ public interface SasRow {
     SasMetaData getMetaData() throws IOException;
 
     /**
-     * Retrieves the value of the specified colum in the current row.
+     * Retrieves the value of the specified column in the current row.
      * <p>
      * The value type depends on the column type and subtype; a pure numeric
      * will return a Double, a character will return a String and a time-related
@@ -92,6 +92,16 @@ public interface SasRow {
     @Nullable
     String getString(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 
+    /**
+     * Retrieves the date value of the specified column in the current row.
+     *
+     * @param columnIndex the zero-based column index
+     * @return a date if available, null otherwise
+     * @throws IOException if an I/O exception occurred
+     * @throws IndexOutOfBoundsException if the columnIndex is invalid
+     * @throws IllegalArgumentException if the column is not of date-related
+     * subtype
+     */
     @Nullable
     LocalDate getDate(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 
@@ -102,12 +112,22 @@ public interface SasRow {
      * @return a datetime if available, null otherwise
      * @throws IOException if an I/O exception occurred
      * @throws IndexOutOfBoundsException if the columnIndex is invalid
-     * @throws IllegalArgumentException if the column is not of time-related
+     * @throws IllegalArgumentException if the column is not of datetime-related
      * subtype
      */
     @Nullable
     LocalDateTime getDateTime(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 
+    /**
+     * Retrieves the time value of the specified column in the current row.
+     *
+     * @param columnIndex the zero-based column index
+     * @return a time if available, null otherwise
+     * @throws IOException if an I/O exception occurred
+     * @throws IndexOutOfBoundsException if the columnIndex is invalid
+     * @throws IllegalArgumentException if the column is not of time-related
+     * subtype
+     */
     @Nullable
     LocalTime getTime(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
 }
