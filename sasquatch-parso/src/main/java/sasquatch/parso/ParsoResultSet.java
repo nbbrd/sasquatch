@@ -17,6 +17,7 @@
 package sasquatch.parso;
 
 import com.epam.parso.Column;
+import com.epam.parso.ColumnFormat;
 import com.epam.parso.SasFileProperties;
 import com.epam.parso.SasFileReader;
 import com.epam.parso.impl.ColumnUtil;
@@ -34,6 +35,7 @@ import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import sasquatch.SasColumnFormat;
 import sasquatch.SasColumnType;
 import sasquatch.SasResultSet;
 
@@ -154,10 +156,19 @@ final class ParsoResultSet implements SasResultSet {
                 .name(o.getName())
                 .type(ColumnUtil.getType(o.getType(), o.getFormat().getName()))
                 .length(o.getLength())
-                .format(o.getFormat().getName())
+                .format(getFormat(o.getFormat()))
                 .label(o.getLabel())
                 .build())
                 .collect(Collectors.toList());
+    }
+
+    private static SasColumnFormat getFormat(ColumnFormat o) {
+        return SasColumnFormat
+                .builder()
+                .name(o.getName())
+                .width(o.getWidth())
+                .precision(o.getPrecision())
+                .build();
     }
 
     private static boolean[] getNumberTypes(List<SasColumn> columns) {

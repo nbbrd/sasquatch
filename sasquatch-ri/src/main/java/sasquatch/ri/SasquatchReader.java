@@ -65,12 +65,13 @@ public final class SasquatchReader implements SasReader {
                 SasFeature.LITTLE_ENDIAN_64,
                 SasFeature.CHAR_COMP,
                 SasFeature.BIN_COMP,
-                SasFeature.DATE_FORMAT,
-                SasFeature.DATE_TIME_FORMAT,
-                SasFeature.TIME_FORMAT,
+                SasFeature.DATE_TYPE,
+                SasFeature.DATE_TIME_TYPE,
+                SasFeature.TIME_TYPE,
                 SasFeature.FIELD_ENCODING,
                 SasFeature.COLUMN_ENCODING,
-                SasFeature.CUSTOM_NUMERIC
+                SasFeature.CUSTOM_NUMERIC,
+                SasFeature.COLUMN_FORMAT
         ));
     }
 

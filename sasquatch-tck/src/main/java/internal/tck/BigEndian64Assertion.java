@@ -20,7 +20,6 @@ import java.io.IOException;
 import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.data.Index;
-import sasquatch.SasColumn;
 import static sasquatch.SasColumnType.CHARACTER;
 import static sasquatch.SasColumnType.NUMERIC;
 import sasquatch.SasMetaData;
@@ -56,8 +55,9 @@ public final class BigEndian64Assertion extends AbstractFeatureAssertion {
         s.assertThat(meta.getRowCount()).isEqualTo(10);
 
         s.assertThat(meta.getColumns())
-                .contains(SasColumn.builder().order(1).type(CHARACTER).length(9).name("Column2").label("Column 2 label").format("$").build(), Index.atIndex(1))
-                .contains(SasColumn.builder().order(4).type(NUMERIC).length(8).name("Column5").label("").format("BEST").build(), Index.atIndex(4))
+                .extracting(AbstractFeatureAssertion::withoutFormat)
+                .contains(columnOf(1, CHARACTER, 9, "Column2", "Column 2 label"), Index.atIndex(1))
+                .contains(columnOf(4, NUMERIC, 8, "Column5", ""), Index.atIndex(4))
                 .hasSize(100);
 
         super.assertSuccess(s, reader);

@@ -34,9 +34,9 @@ public class SasColumnTest {
         assertThatThrownBy(() -> b.type(null).build()).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> b.format(null).build()).isInstanceOf(NullPointerException.class);
         assertThatThrownBy(() -> b.label(null).build()).isInstanceOf(NullPointerException.class);
-        assertThat(b.order(0).name("col1").type(SasColumnType.NUMERIC).length(8).format("").label("My Column").build())
+        assertThat(b.order(0).name("col1").type(SasColumnType.NUMERIC).length(8).format(SasColumnFormat.EMPTY).label("My Column").build())
                 .extracting("order", "name", "type", "length", "format", "label")
-                .containsExactly(0, "col1", SasColumnType.NUMERIC, 8, "", "My Column");
+                .containsExactly(0, "col1", SasColumnType.NUMERIC, 8, SasColumnFormat.EMPTY, "My Column");
     }
 
     @Test
@@ -44,7 +44,7 @@ public class SasColumnTest {
         SasColumn.Builder b = SasColumn.builder();
         assertThat(b.build().hashCode())
                 .isEqualTo(b.build().hashCode())
-                .isNotEqualTo(b.format("hello").build().hashCode());
+                .isNotEqualTo(b.format(helloFormat).build().hashCode());
     }
 
     @Test
@@ -53,6 +53,8 @@ public class SasColumnTest {
         assertThat(b.build())
                 .isNotSameAs(b.build())
                 .isEqualTo(b.build())
-                .isNotEqualTo(b.format("hello").build());
+                .isNotEqualTo(b.format(helloFormat).build());
     }
+
+    private final SasColumnFormat helloFormat = SasColumnFormat.builder().name("hello").build();
 }

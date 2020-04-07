@@ -65,9 +65,9 @@ public class DocumentTest {
         assertThat(doc.getColumnLabel(1, charset)).isEqualTo("");
         assertThat(doc.getColumnLabel(2, charset)).isEqualTo("");
 
-        assertThat(doc.getColumnFormat(0, charset)).isEqualTo("");
-        assertThat(doc.getColumnFormat(1, charset)).isEqualTo("DATE");
-        assertThat(doc.getColumnFormat(2, charset)).isEqualTo("");
+        assertThat(doc.getColumnFormatName(0, charset)).isEqualTo("");
+        assertThat(doc.getColumnFormatName(1, charset)).isEqualTo("DATE");
+        assertThat(doc.getColumnFormatName(2, charset)).isEqualTo("");
     }
 
     @Test
@@ -144,6 +144,6 @@ public class DocumentTest {
         Charset charset = StandardCharsets.US_ASCII;
         assertThat(doc.getColumnName(columnIndex, charset)).isEqualTo(name);
         assertThat(doc.getColumnLabel(columnIndex, charset)).isEqualTo(label);
-        assertThat(doc.getColumnFormat(columnIndex, charset)).isEqualTo(format);
+        assertThat(doc.getColumnFormatName(columnIndex, charset)).isEqualTo(format);
     }
 }

@@ -109,7 +109,7 @@ final class SasBasicFileView extends JPanel {
     private void onModelChange() {
         headerPanel.setModel(new HeaderModel(model.getMetaData()));
         columnsPanel.setModel(new ColumnsModel(model.getMetaData().getColumns()));
-        JTables.setWidthAsPercentages(columnsPanel, .05, .2, .1, .1, .1, .45);
+        JTables.setWidthAsPercentages(columnsPanel, .05, .2, .1, .1, .15, .40);
         dataPanel.setModel(new DataModel(model.getMetaData().getColumns(), model.getData()));
     }
 
@@ -182,7 +182,7 @@ final class SasBasicFileView extends JPanel {
                 case 3:
                     return column.getLength();
                 case 4:
-                    return column.getFormat();
+                    return column.getFormat().toString();
                 case 5:
                     return column.getLabel();
             }

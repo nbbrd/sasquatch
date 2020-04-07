@@ -154,7 +154,7 @@ public final class CsvCommand extends SasReaderCommand {
             output.writeField(o.getName());
             output.writeField(o.getType().name());
             output.writeField(numberFormatter.format(o.getLength()));
-            output.writeField(o.getFormat());
+            output.writeField(o.getFormat().toString());
             output.writeField(o.getLabel());
             output.writeEndOfLine();
         }

@@ -17,12 +17,11 @@
 package internal.tck;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.stream.Stream;
 import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.data.Index;
-import static sasquatch.SasColumnType.CHARACTER;
-import static sasquatch.SasColumnType.NUMERIC;
-import sasquatch.SasMetaData;
 import sasquatch.samples.SasResources;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -34,32 +33,27 @@ import sasquatch.tck.SasFeatureAssertion;
  * @author Philippe Charles
  */
 @ServiceProvider(SasFeatureAssertion.class)
-public final class BigEndian32Assertion extends AbstractFeatureAssertion {
+public final class DateTimeTypeAssertion extends AbstractFeatureAssertion {
 
-    public BigEndian32Assertion() {
-        super(SasFeature.BIG_ENDIAN_32, SasResources.BIG_32);
+    public DateTimeTypeAssertion() {
+        super(SasFeature.DATE_TIME_TYPE, SasResources.EPAM.getRoot().resolve("date_formats.sas7bdat"));
     }
 
     @Override
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-        SasMetaData meta = reader.readMetaData(getFile());
+//                s.assertThat(rs.getMetaData().getColumns())
+//                        .allMatch(o -> !o.getSubType().equals(SasColumn.SubType.NONE))
+//                        .hasSize(67);
 
-        if (reader.getFeatures().contains(SasFeature.ATTRIBUTES)) {
-            s.assertThat(meta.getCreationTime()).isEqualTo("2019-09-26T21:23:26.957");
-            s.assertThat(meta.getLastModificationTime()).isEqualTo("2019-09-26T21:23:26.957");
-            s.assertThat(meta.getRelease()).isEqualTo("9.0401M1");
-            s.assertThat(meta.getHost()).isEqualTo("Linux");
-            s.assertThat(meta.getName()).isEqualTo("TEST10");
+        try (Stream<LocalDateTime> stream = rows(reader, o -> o.getDateTime(60))) {
+            s.assertThat(stream)
+                    .contains(LocalDateTime.parse("2017-03-14T15:36:56.546"), Index.atIndex(0))
+                    .hasSize(1);
         }
+    }
 
-        s.assertThat(meta.getRowCount()).isEqualTo(10);
-
-        s.assertThat(meta.getColumns())
-                .extracting(AbstractFeatureAssertion::withoutFormat)
-                .contains(columnOf(1, CHARACTER, 9, "Column2", "Column 2 label"), Index.atIndex(1))
-                .contains(columnOf(4, NUMERIC, 8, "Column5", ""), Index.atIndex(4))
-                .hasSize(100);
-
-        super.assertSuccess(s, reader);
+    @Override
+    protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
+        assertFealure(s, reader, o -> o.getDateTime(60));
     }
 }

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sasquatch.SasColumn;
+import sasquatch.SasColumnFormat;
 import sasquatch.SasColumnType;
 import sasquatch.SasMetaData;
 
@@ -63,13 +64,18 @@ class DocumentUtil {
         SasColumn.Builder cb = SasColumn.builder();
         for (int j = 0; j < doc.getColSize().getCount(); j++) {
             ColAttr colAttr = doc.getColAttrList().get(j);
-            String format = doc.getColumnFormat(j, charset);
+            String formatName = doc.getColumnFormatName(j, charset);
             result.column(cb
                     .order(j)
                     .name(doc.getColumnName(j, charset))
-                    .format(format)
+                    .format(SasColumnFormat
+                            .builder()
+                            .name(formatName)
+                            .width(doc.getColLabsList().get(j).getFormatWidth())
+                            .precision(doc.getColLabsList().get(j).getFormatPrecision())
+                            .build())
                     .label(doc.getColumnLabel(j, charset))
-                    .type(getColumnType(colAttr.getType(), format))
+                    .type(getColumnType(colAttr.getType(), formatName))
                     .length(colAttr.getLength())
                     .build());
         }

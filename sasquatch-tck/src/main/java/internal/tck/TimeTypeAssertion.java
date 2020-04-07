@@ -33,10 +33,10 @@ import sasquatch.tck.SasFeatureAssertion;
  * @author Philippe Charles
  */
 @ServiceProvider(SasFeatureAssertion.class)
-public final class TimeFormatAssertion extends AbstractFeatureAssertion {
+public final class TimeTypeAssertion extends AbstractFeatureAssertion {
 
-    public TimeFormatAssertion() {
-        super(SasFeature.TIME_FORMAT, SasResources.PPHAM27.getRoot().resolve("marchflights.sas7bdat"));
+    public TimeTypeAssertion() {
+        super(SasFeature.TIME_TYPE, SasResources.PPHAM27.getRoot().resolve("marchflights.sas7bdat"));
     }
 
     @Override

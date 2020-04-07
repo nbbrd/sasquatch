@@ -17,9 +17,12 @@
 package internal.ri.data;
 
 import internal.bytes.BytesReader;
+import internal.bytes.RecordLength;
+import internal.bytes.Seq;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
+import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -36,10 +39,22 @@ public final class ColLabs implements SubHeader {
     private SubHeaderLocation location;
 
     /**
-     * Column format ref
+     * Column format width
+     */
+    @NonNegative
+    private int formatWidth;
+
+    /**
+     * Column format precision
+     */
+    @NonNegative
+    private int formatPrecision;
+
+    /**
+     * Column format name ref
      */
     @NonNull
-    private StringRef format;
+    private StringRef formatName;
 
     /**
      * Column label ref
@@ -53,17 +68,25 @@ public final class ColLabs implements SubHeader {
     }
 
     private static ColLabs parse(BytesReader bytes, boolean u64, SubHeaderLocation location) {
-        StringRef format = StringRef.parse(bytes, getFormatOffset(u64));
-        StringRef label = StringRef.parse(bytes, getLabelOffset(u64));
+        RecordLength rec = SEQ.getLength(u64);
 
-        return new ColLabs(location, format, label);
+        return new ColLabs(
+                location,
+                bytes.getUInt16(rec.getOffset(2)),
+                bytes.getUInt16(rec.getOffset(3)),
+                StringRef.parse(bytes, rec.getOffset(5)),
+                StringRef.parse(bytes, rec.getOffset(6))
+        );
     }
 
-    private static int getFormatOffset(boolean u64) {
-        return u64 ? 46 : 34;
-    }
-
-    private static int getLabelOffset(boolean u64) {
-        return u64 ? 52 : 40;
-    }
+    public static final Seq SEQ = Seq
+            .builder()
+            .and("signature", Seq.Item.U4U8)
+            .and("?", 8)
+            .and("width", Seq.Item.U2)
+            .and("precision", Seq.Item.U2)
+            .and("?", 2 * 4 + 10, 2 * 8 + 10)
+            .and("format", StringRef.SEQ)
+            .and("label", StringRef.SEQ)
+            .build();
 }

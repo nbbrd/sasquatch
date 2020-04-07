@@ -24,6 +24,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.assertj.core.api.SoftAssertions;
+import sasquatch.SasColumn;
+import sasquatch.SasColumnFormat;
+import sasquatch.SasColumnType;
 import sasquatch.SasRow;
 import sasquatch.SasRowMapper;
 import sasquatch.Sasquatch;
@@ -84,5 +87,13 @@ public abstract class AbstractFeatureAssertion implements SasFeatureAssertion {
             result[i] = row.getValue(i);
         }
         return result;
+    }
+
+    public static SasColumn columnOf(int order, SasColumnType type, int length, String name, String label) {
+        return SasColumn.builder().order(order).type(type).length(length).name(name).label(label).build();
+    }
+
+    public static SasColumn withoutFormat(SasColumn column) {
+        return column.toBuilder().format(SasColumnFormat.EMPTY).build();
     }
 }

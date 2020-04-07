@@ -33,10 +33,10 @@ import sasquatch.tck.SasFeatureAssertion;
  * @author Philippe Charles
  */
 @ServiceProvider(SasFeatureAssertion.class)
-public final class DateFormatAssertion extends AbstractFeatureAssertion {
+public final class DateTypeAssertion extends AbstractFeatureAssertion {
 
-    public DateFormatAssertion() {
-        super(SasFeature.DATE_FORMAT, SasResources.PPHAM27.getRoot().resolve("marchflights.sas7bdat"));
+    public DateTypeAssertion() {
+        super(SasFeature.DATE_TYPE, SasResources.PPHAM27.getRoot().resolve("marchflights.sas7bdat"));
     }
 
     @Override

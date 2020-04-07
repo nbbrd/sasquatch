@@ -22,7 +22,6 @@ import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.data.Index;
 import static org.assertj.core.data.Index.atIndex;
-import sasquatch.SasColumn;
 import static sasquatch.SasColumnType.*;
 import sasquatch.SasMetaData;
 import sasquatch.samples.SasResources;
@@ -57,8 +56,9 @@ public final class LittleEndian32Assertion extends AbstractFeatureAssertion {
         s.assertThat(meta.getRowCount()).isEqualTo(50);
 
         s.assertThat(meta.getColumns())
-                .contains(SasColumn.builder().order(0).type(CHARACTER).name("State").length(16).format("").build(), atIndex(0))
-                .contains(SasColumn.builder().order(2).type(NUMERIC).name("Size").length(8).format("").build(), atIndex(2))
+                .extracting(AbstractFeatureAssertion::withoutFormat)
+                .contains(columnOf(0, CHARACTER, 16, "State", ""), atIndex(0))
+                .contains(columnOf(2, NUMERIC, 8, "Size", ""), atIndex(2))
                 .hasSize(3);
 
         try (Stream<Little32> stream = rows(reader, o -> new Little32(o.getString(0), o.getNumber(2)))) {

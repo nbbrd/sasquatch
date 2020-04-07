@@ -77,8 +77,8 @@ public final class Document {
         return getString(colLabsList.get(index).getLabel(), charset);
     }
 
-    public String getColumnFormat(int index, Charset charset) {
-        return getString(colLabsList.get(index).getFormat(), charset);
+    public String getColumnFormatName(int index, Charset charset) {
+        return getString(colLabsList.get(index).getFormatName(), charset);
     }
 
     private String getString(StringRef ref, Charset charset) {

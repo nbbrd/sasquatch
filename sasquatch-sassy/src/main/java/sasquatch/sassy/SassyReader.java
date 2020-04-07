@@ -27,6 +27,7 @@ import java.util.Set;
 import nbbrd.service.ServiceProvider;
 import org.eobjects.sassy.SasColumnType;
 import org.eobjects.sassy.SasReaderCallback;
+import sasquatch.SasColumnFormat;
 import sasquatch.SasResultSet;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -96,7 +97,7 @@ public final class SassyReader implements SasReader {
                     .name(name)
                     .type(SasColumnType.NUMERIC == type ? sasquatch.SasColumnType.NUMERIC : sasquatch.SasColumnType.CHARACTER)
                     .length(length)
-                    .format("")
+                    .format(SasColumnFormat.EMPTY)
                     .label(label != null ? label : "")
                     .build());
         }

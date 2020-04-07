@@ -62,12 +62,12 @@ public class SasColumn {
 
     /**
      * This column's format used for formatting. Note that it also determines
-     * the column's subtype in conjunction with the column's type.
+     * the column's type.
      *
      * @return a non-null format
      */
     @lombok.NonNull
-    private String format;
+    private SasColumnFormat format;
 
     /**
      * This column's label.
@@ -84,7 +84,7 @@ public class SasColumn {
                 .name("")
                 .type(SasColumnType.CHARACTER)
                 .length(0)
-                .format("")
+                .format(SasColumnFormat.EMPTY)
                 .label("");
     }
 }

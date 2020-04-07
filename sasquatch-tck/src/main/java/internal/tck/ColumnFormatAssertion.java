@@ -17,11 +17,12 @@
 package internal.tck;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.stream.Stream;
+import java.io.UncheckedIOException;
 import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.data.Index;
+import sasquatch.SasColumn;
+import sasquatch.SasColumnFormat;
 import sasquatch.samples.SasResources;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -33,27 +34,30 @@ import sasquatch.tck.SasFeatureAssertion;
  * @author Philippe Charles
  */
 @ServiceProvider(SasFeatureAssertion.class)
-public final class DateTimeFormatAssertion extends AbstractFeatureAssertion {
+public final class ColumnFormatAssertion extends AbstractFeatureAssertion {
 
-    public DateTimeFormatAssertion() {
-        super(SasFeature.DATE_TIME_FORMAT, SasResources.EPAM.getRoot().resolve("date_formats.sas7bdat"));
+    public ColumnFormatAssertion() {
+        super(SasFeature.COLUMN_FORMAT, SasResources.EPAM.getRoot().resolve("test-columnar.sas7bdat"));
     }
 
     @Override
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-//                s.assertThat(rs.getMetaData().getColumns())
-//                        .allMatch(o -> !o.getSubType().equals(SasColumn.SubType.NONE))
-//                        .hasSize(67);
-
-        try (Stream<LocalDateTime> stream = rows(reader, o -> o.getDateTime(60))) {
-            s.assertThat(stream)
-                    .contains(LocalDateTime.parse("2017-03-14T15:36:56.546"), Index.atIndex(0))
-                    .hasSize(1);
-        }
+        s.assertThat(reader.readMetaData(getFile()).getColumns())
+                .extracting(SasColumn::getFormat)
+                .contains(SasColumnFormat.EMPTY, Index.atIndex(2))
+                .contains(SasColumnFormat.builder().name("PERCENT").width(8).precision(0).build(), Index.atIndex(3))
+                .contains(SasColumnFormat.builder().name("PERCENT").width(7).precision(1).build(), Index.atIndex(4));
     }
 
     @Override
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
-        assertFealure(s, reader, o -> o.getDateTime(60));
+        try {
+            s.assertThat(reader.readMetaData(getFile()).getColumns())
+                    .extracting(SasColumn::getFormat)
+                    .doesNotContain(SasColumnFormat.builder().name("PERCENT").width(8).precision(0).build(), Index.atIndex(3))
+                    .doesNotContain(SasColumnFormat.builder().name("PERCENT").width(7).precision(1).build(), Index.atIndex(4));
+        } catch (IOException | UncheckedIOException ex) {
+            // can throw exception instead
+        }
     }
 }
