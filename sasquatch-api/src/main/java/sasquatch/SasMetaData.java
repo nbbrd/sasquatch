@@ -39,6 +39,14 @@ public class SasMetaData {
     private String name;
 
     /**
+     * The label of the SAS dataset.<br>Note that this label might be empty.
+     *
+     * @return a non-null label
+     */
+    @lombok.NonNull
+    private String label;
+
+    /**
      * The creation time of the SAS dataset.
      *
      * @return the creation time
@@ -91,6 +99,7 @@ public class SasMetaData {
     public static Builder builder() {
         return new Builder()
                 .name("")
+                .label("")
                 .creationTime(LocalDateTime.now())
                 .lastModificationTime(LocalDateTime.now())
                 .release("")

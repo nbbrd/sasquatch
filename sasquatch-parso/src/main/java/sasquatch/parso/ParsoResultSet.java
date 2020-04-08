@@ -140,6 +140,7 @@ final class ParsoResultSet implements SasResultSet {
         SasFileProperties p = reader.getSasFileProperties();
         return SasMetaData.builder()
                 .name(p.getName())
+                .label(p.getFileLabel())
                 .creationTime(toLocalDateTime(p.getDateCreated()))
                 .lastModificationTime(toLocalDateTime(p.getDateModified()))
                 .release(p.getSasRelease())

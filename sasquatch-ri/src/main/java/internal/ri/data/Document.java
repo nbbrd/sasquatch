@@ -81,11 +81,15 @@ public final class Document {
         return getString(colLabsList.get(index).getFormatName(), charset);
     }
 
-    private String getString(StringRef ref, Charset charset) {
-        return colTextList
+    public String getString(StringRef ref, Charset charset) {
+        return getString(colTextList, header.isU64(), ref, charset);
+    }
+
+    private static String getString(List<ColText> list, boolean u64, StringRef ref, Charset charset) {
+        return list
                 .get(ref.getHdr())
                 .getContent()
-                .getString(ref.getOff() + (header.isU64() ? 8 : 4), ref.getLen(), charset);
+                .getString((u64 ? 8 : 4) + ref.getOff(), ref.getLen(), charset);
     }
 
     @NonNull

@@ -139,7 +139,15 @@ final class SasBasicFileView extends JPanel {
 
         public HeaderModel(SasMetaData header) {
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            setDataVector(new Object[][]{{"Dataset name", header.getName()}, {"Created", format.format(header.getCreationTime())}, {"Modified", format.format(header.getLastModificationTime())}, {"Release", header.getRelease()}, {"Host", header.getHost()}, {"Row count", header.getRowCount()}}, new String[]{"Name", "Value"});
+            setDataVector(new Object[][]{
+                {"Dataset name", header.getName()},
+                {"Dataset label", header.getLabel()},
+                {"Created", format.format(header.getCreationTime())},
+                {"Modified", format.format(header.getLastModificationTime())},
+                {"Release", header.getRelease()},
+                {"Host", header.getHost()},
+                {"Row count", header.getRowCount()}
+            }, new String[]{"Name", "Value"});
         }
 
         @Override

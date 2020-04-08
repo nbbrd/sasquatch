@@ -52,6 +52,7 @@ public final class ParsoReader implements SasReader {
     public Set<SasFeature> getFeatures() {
         return EnumSet.copyOf(Arrays.asList(
                 SasFeature.ATTRIBUTES,
+                SasFeature.LABEL_META,
                 SasFeature.BIG_ENDIAN_32,
                 SasFeature.LITTLE_ENDIAN_32,
                 SasFeature.BIG_ENDIAN_64,

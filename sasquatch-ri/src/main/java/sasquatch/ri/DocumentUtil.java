@@ -51,15 +51,16 @@ class DocumentUtil {
     }
 
     SasMetaData getMetaData(Document doc) throws IOException {
+        Charset charset = getCharset(doc);
+
         SasMetaData.Builder result = SasMetaData.builder()
                 .name(doc.getHeader().getName())
+                .label(doc.getString(doc.getRowSize().getLabelRef(), charset))
                 .creationTime(doc.getHeader().getCreationTime())
                 .lastModificationTime(doc.getHeader().getLastModificationTime())
                 .release(doc.getHeader().getSasRelease())
                 .host(doc.getHeader().getSasHost())
                 .rowCount(doc.getRowSize().getCount());
-
-        Charset charset = getCharset(doc);
 
         SasColumn.Builder cb = SasColumn.builder();
         for (int j = 0; j < doc.getColSize().getCount(); j++) {

@@ -101,6 +101,7 @@ public final class CsvCommand extends SasReaderCommand {
 
     private void writeHeaderHead(Csv.Writer output) throws IOException {
         output.writeField("Name");
+        output.writeField("Label");
         output.writeField("Created");
         output.writeField("Modified");
         output.writeField("Release");
@@ -111,6 +112,7 @@ public final class CsvCommand extends SasReaderCommand {
 
     private void writeHeaderBody(SasMetaData meta, Csv.Writer output, DateTimeFormatter dateTimeFormatter, NumberFormat numberFormatter) throws IOException {
         output.writeField(meta.getName());
+        output.writeField(meta.getLabel());
         output.writeField(dateTimeFormatter.format(meta.getCreationTime()));
         output.writeField(dateTimeFormatter.format(meta.getLastModificationTime()));
         output.writeField(meta.getRelease());

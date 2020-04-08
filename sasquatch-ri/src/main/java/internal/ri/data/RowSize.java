@@ -72,6 +72,9 @@ public final class RowSize implements SubHeader {
     @lombok.NonNull
     private SubHeaderLocation lastMetaLocation;
 
+    @lombok.NonNull
+    private StringRef labelRef;
+
     @NonNull
     public static RowSize parse(@NonNull BytesReader pageBytes, boolean u64, @NonNull SubHeaderPointer pointer) {
         BytesReader bytes = pointer.slice(pageBytes);
@@ -83,7 +86,9 @@ public final class RowSize implements SubHeader {
         short nct = bytes.getInt16(SEQ.getOffset(u64, 46));
         SubHeaderLocation lastMetaLocation = SubHeaderLocation.parse(SEQ.getOffset(u64, 23), bytes, u64);
 
-        return new RowSize(pointer.getLocation(), length, count, firstPageMaxCount, lcs, nct, lastMetaLocation);
+        StringRef labelRef = StringRef.parse(bytes, !u64 ? (350) : (678));
+
+        return new RowSize(pointer.getLocation(), length, count, firstPageMaxCount, lcs, nct, lastMetaLocation, labelRef);
     }
 
     public static final Seq SEQ = Seq
