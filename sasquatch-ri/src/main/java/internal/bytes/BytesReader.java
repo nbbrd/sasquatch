@@ -54,10 +54,6 @@ public interface BytesReader {
 
     long getInt64(int index);
 
-    default int getInt64As32(int index) {
-        return (int) getInt64(index);
-    }
-
     default short getUInt8(int index) {
         return (short) (getByte(index) & 0xff);
     }

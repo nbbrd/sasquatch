@@ -18,6 +18,7 @@ package internal.ri.base;
 
 import internal.bytes.BytesReader;
 import internal.bytes.PValue;
+import internal.bytes.Seq;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -63,10 +64,10 @@ public final class PageHeader {
 
     @NonNull
     public static PageHeader parse(@NonNull BytesReader pageBytes, boolean u64, int index) {
-        short type = pageBytes.getInt16(u64 ? 32 : 16);
-        short dataBlockCount = pageBytes.getInt16(u64 ? 34 : 18);
-        short subHeaderCount = pageBytes.getInt16(u64 ? 36 : 20);
-        int subHeaderOffset = pageBytes.getUInt16(u64 ? 38 : 22);
+        short type = pageBytes.getInt16(SEQ.getOffset(u64, 2));
+        short dataBlockCount = pageBytes.getInt16(SEQ.getOffset(u64, 3));
+        short subHeaderCount = pageBytes.getInt16(SEQ.getOffset(u64, 4));
+        int subHeaderOffset = pageBytes.getUInt16(SEQ.getOffset(u64, 5));
 
         return new PageHeader(index, PageType.tryParse(type), dataBlockCount, subHeaderCount, subHeaderOffset);
     }
@@ -81,9 +82,16 @@ public final class PageHeader {
     }
 
     public static int getHeadLength(boolean u64) {
-        return u64 ? HEAD_LENGTH_64 : HEAD_LENGTH_32;
+        return SEQ.getTotalLength(u64);
     }
 
-    public static final int HEAD_LENGTH_32 = 4 + (12) + (2 + 2 + 2 + 2);
-    public static final int HEAD_LENGTH_64 = 4 + (28) + (2 + 2 + 2 + 2);
+    public static final Seq SEQ = Seq
+            .builder()
+            .and("signature", 4)
+            .and("?", 12, 28)
+            .and("type", 2)
+            .and("dataBlockCount", 2)
+            .and("subHeaderCount", 2)
+            .and("subHeaderOffset", 2)
+            .build();
 }

@@ -17,6 +17,7 @@
 package internal.ri.data;
 
 import internal.bytes.BytesReader;
+import internal.bytes.Seq;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
@@ -48,8 +49,16 @@ public final class ColSize implements SubHeader {
     public static ColSize parse(@NonNull BytesReader pageBytes, boolean u64, @NonNull SubHeaderPointer pointer) {
         BytesReader bytes = pointer.slice(pageBytes);
 
-        int count = u64 ? bytes.getInt64As32(8) : bytes.getInt32(4);
-
-        return new ColSize(pointer.getLocation(), count);
+        return new ColSize(
+                pointer.getLocation(),
+                Seq.getU4U8(bytes, SEQ.getOffset(u64, 1), u64)
+        );
     }
+
+    public static final Seq SEQ = Seq
+            .builder()
+            .and("signature", Seq.U4U8)
+            .and("columnCount", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .build();
 }

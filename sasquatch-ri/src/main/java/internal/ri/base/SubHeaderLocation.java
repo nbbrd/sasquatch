@@ -16,6 +16,8 @@
  */
 package internal.ri.base;
 
+import internal.bytes.BytesReader;
+import internal.bytes.Seq;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -42,4 +44,17 @@ public class SubHeaderLocation implements Comparable<SubHeaderLocation> {
         int result = Integer.compare(this.page, that.page);
         return result != 0 ? result : Integer.compare(this.index, that.index);
     }
+
+    @NonNull
+    public static SubHeaderLocation parse(@NonNegative int base, @NonNull BytesReader bytes, boolean u64) {
+        return new SubHeaderLocation(
+                Seq.getU4U8(bytes, base + SEQ.getOffset(u64, 0), u64) - 1,
+                bytes.getInt16(base + SEQ.getOffset(u64, 1)) - 1);
+    }
+
+    public static final Seq SEQ = Seq
+            .builder()
+            .and("pageNumber", Seq.U4U8)
+            .and("subHeaderNumber", 2)
+            .build();
 }

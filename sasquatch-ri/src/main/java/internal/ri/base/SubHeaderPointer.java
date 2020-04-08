@@ -19,7 +19,7 @@ package internal.ri.base;
 import internal.bytes.BytesReader;
 import internal.bytes.PValue;
 import internal.bytes.Record;
-import internal.bytes.RecordLength;
+import internal.bytes.Seq;
 import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -82,15 +82,9 @@ public final class SubHeaderPointer {
     }
 
     private static SubHeaderPointer parse(BytesReader pageBytes, boolean u64, SubHeaderLocation location, int base) {
-        int offset = u64
-                ? pageBytes.getInt64As32(base + LENGTH_64.getOffset(0))
-                : pageBytes.getInt32(base + LENGTH_32.getOffset(0));
-
-        int length = u64
-                ? pageBytes.getInt64As32(base + LENGTH_64.getOffset(1))
-                : pageBytes.getInt32(base + LENGTH_32.getOffset(1));
-
-        byte format = pageBytes.getByte(base + (u64 ? LENGTH_64.getOffset(2) : LENGTH_32.getOffset(2)));
+        int offset = Seq.getU4U8(pageBytes, base + SEQ.getOffset(u64, 0), u64);
+        int length = Seq.getU4U8(pageBytes, base + SEQ.getOffset(u64, 1), u64);
+        byte format = pageBytes.getByte(base + SEQ.getOffset(u64, 2));
 
         return new SubHeaderPointer(
                 location, offset, length,
@@ -99,13 +93,19 @@ public final class SubHeaderPointer {
     }
 
     private static int getOffset(boolean u64) {
-        return u64 ? 40 : 24;
+        return PageHeader.getHeadLength(u64);
     }
 
     private static int getLength(boolean u64) {
-        return u64 ? LENGTH_64.getTotalLength() : LENGTH_32.getTotalLength();
+        return SEQ.getTotalLength(u64);
     }
 
-    private static final RecordLength LENGTH_32 = RecordLength.of(4, 4, 1, 1, 2);
-    private static final RecordLength LENGTH_64 = RecordLength.of(8, 8, 1, 1, 6);
+    private static final Seq SEQ = Seq
+            .builder()
+            .and("offset", Seq.U4U8)
+            .and("length", Seq.U4U8)
+            .and("format", 1)
+            .and("st", 1)
+            .and("zeroes", 2, 6)
+            .build();
 }

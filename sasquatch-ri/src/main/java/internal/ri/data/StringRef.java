@@ -17,7 +17,6 @@
 package internal.ri.data;
 
 import internal.bytes.BytesReader;
-import internal.bytes.RecordLength;
 import internal.bytes.Seq;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -41,17 +40,15 @@ public final class StringRef {
     @NonNull
     public static StringRef parse(@NonNull BytesReader bytes, int base) {
         return new StringRef(
-                bytes.getUInt16(base + LENGTH.getOffset(0)),
-                bytes.getUInt16(base + LENGTH.getOffset(1)),
-                bytes.getUInt16(base + LENGTH.getOffset(2)));
+                bytes.getUInt16(base + SEQ.getOffset(false, 0)),
+                bytes.getUInt16(base + SEQ.getOffset(false, 1)),
+                bytes.getUInt16(base + SEQ.getOffset(false, 2)));
     }
-
-    public static final RecordLength LENGTH = RecordLength.of(2, 2, 2);
 
     public static final Seq SEQ = Seq
             .builder()
-            .and("hdr", Seq.Item.U2)
-            .and("off", Seq.Item.U2)
-            .and("len", Seq.Item.U2)
+            .and("hdr", 2)
+            .and("off", 2)
+            .and("len", 2)
             .build();
 }

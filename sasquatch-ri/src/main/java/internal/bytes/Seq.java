@@ -27,6 +27,12 @@ import org.checkerframework.checker.index.qual.NonNegative;
  */
 public final class Seq {
 
+    public static int getU4U8(BytesReader bytes, int offset, boolean u64) {
+        return u64 ? ((int) bytes.getInt64(offset)) : bytes.getInt32(offset);
+    }
+
+    public static final Seq U4U8 = builder().and("int32/64", 4, 8).build();
+
     @lombok.Getter
     @lombok.NonNull
     private final List<Item> items;
@@ -37,14 +43,22 @@ public final class Seq {
     @lombok.NonNull
     private final RecordLength length64;
 
-    public RecordLength getLength(boolean u64) {
-        return u64 ? length64 : length32;
-    }
-
     private Seq(List<Item> items) {
         this.items = items;
         this.length32 = RecordLength.of(items.stream().mapToInt(Item::getLength32).toArray());
         this.length64 = RecordLength.of(items.stream().mapToInt(Item::getLength64).toArray());
+    }
+
+    private RecordLength get(boolean u64) {
+        return u64 ? length64 : length32;
+    }
+
+    public int getOffset(boolean u64, int index) {
+        return get(u64).getOffset(index);
+    }
+
+    public int getTotalLength(boolean u64) {
+        return get(u64).getTotalLength();
     }
 
     public static Builder builder() {
@@ -61,39 +75,31 @@ public final class Seq {
         }
 
         public Builder and(String name, int length) {
-            return item(Item.bytes(name, length));
+            return item(new Item(name, length, length));
         }
 
         public Builder and(String name, int length32, int length64) {
-            return item(Item.bytes(name, length32, length64));
-        }
-
-        public Builder and(String name, Item item) {
-            return item(Item.bytes(name, item.getLength32(), item.getLength64()));
+            return item(new Item(name, length32, length64));
         }
 
         public Builder and(String name, Seq seq) {
-            return item(Item.bytes(name, seq.getLength(false).getTotalLength(), seq.getLength(true).getTotalLength()));
+            return item(new Item(name, seq.get(false).getTotalLength(), seq.get(true).getTotalLength()));
         }
 
         public Seq build() {
-            return new Seq(Collections.unmodifiableList(new ArrayList<>(items)));
+            switch (items.size()) {
+                case 0:
+                    return new Seq(Collections.emptyList());
+                case 1:
+                    return new Seq(Collections.singletonList(items.get(0)));
+                default:
+                    return new Seq(Collections.unmodifiableList(new ArrayList<>(items)));
+            }
         }
     }
 
     @lombok.Value
     public static class Item {
-
-        public static final Item U2 = bytes("int16", 2);
-        public static final Item U4U8 = bytes("int32/64", 4, 8);
-
-        public static Item bytes(String name, int length) {
-            return bytes(name, length, length);
-        }
-
-        public static Item bytes(String name, int length32, int length64) {
-            return new Item(name, length32, length64);
-        }
 
         @lombok.NonNull
         private String name;

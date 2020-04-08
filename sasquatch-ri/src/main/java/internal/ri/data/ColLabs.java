@@ -17,7 +17,6 @@
 package internal.ri.data;
 
 import internal.bytes.BytesReader;
-import internal.bytes.RecordLength;
 import internal.bytes.Seq;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
@@ -68,23 +67,21 @@ public final class ColLabs implements SubHeader {
     }
 
     private static ColLabs parse(BytesReader bytes, boolean u64, SubHeaderLocation location) {
-        RecordLength rec = SEQ.getLength(u64);
-
         return new ColLabs(
                 location,
-                bytes.getUInt16(rec.getOffset(2)),
-                bytes.getUInt16(rec.getOffset(3)),
-                StringRef.parse(bytes, rec.getOffset(5)),
-                StringRef.parse(bytes, rec.getOffset(6))
+                bytes.getUInt16(SEQ.getOffset(u64, 2)),
+                bytes.getUInt16(SEQ.getOffset(u64, 3)),
+                StringRef.parse(bytes, SEQ.getOffset(u64, 5)),
+                StringRef.parse(bytes, SEQ.getOffset(u64, 6))
         );
     }
 
     public static final Seq SEQ = Seq
             .builder()
-            .and("signature", Seq.Item.U4U8)
+            .and("signature", Seq.U4U8)
             .and("?", 8)
-            .and("width", Seq.Item.U2)
-            .and("precision", Seq.Item.U2)
+            .and("width", 2)
+            .and("precision", 2)
             .and("?", 2 * 4 + 10, 2 * 8 + 10)
             .and("format", StringRef.SEQ)
             .and("label", StringRef.SEQ)

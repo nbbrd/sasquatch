@@ -16,6 +16,7 @@
  */
 package internal.ri.data;
 
+import internal.bytes.Seq;
 import internal.ri.base.SubHeaderLocation;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -44,4 +45,10 @@ public final class ColName {
      */
     @NonNull
     private StringRef name;
+
+    public static final Seq SEQ = Seq
+            .builder()
+            .and("name", StringRef.SEQ)
+            .and("zeroes", 2)
+            .build();
 }

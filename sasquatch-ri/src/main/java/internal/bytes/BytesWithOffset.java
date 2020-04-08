@@ -81,11 +81,6 @@ public final class BytesWithOffset implements BytesReader {
     }
 
     @Override
-    public int getInt64As32(int index) {
-        return delegate.getInt64As32(offset + index);
-    }
-
-    @Override
     public short getInt16(int index) {
         return delegate.getInt16(offset + index);
     }

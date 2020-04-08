@@ -17,6 +17,7 @@
 package internal.ri.data;
 
 import internal.bytes.BytesReader;
+import internal.bytes.Seq;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
@@ -60,7 +61,7 @@ public final class ColAttrs implements SubHeader {
         for (int i = 0; i < result.length; i++) {
             int base = offset + i * length;
 
-            int columnOffsetInDataRow = u64 ? bytes.getInt64As32(base) : bytes.getInt32(base);
+            int columnOffsetInDataRow = Seq.getU4U8(bytes, base, u64);
             int columnWidth = bytes.getInt32(base + columnWitdhOffset);
             byte columnType = bytes.getByte(base + columnTypeOffset);
 

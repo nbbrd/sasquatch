@@ -17,6 +17,7 @@
 package internal.ri.data;
 
 import internal.bytes.BytesReader;
+import internal.bytes.Seq;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
@@ -53,7 +54,7 @@ public final class RowSize implements SubHeader {
      * Max row count on mix page
      */
     @NonNegative
-    int firstPageMaxCount;
+    private int firstPageMaxCount;
 
     /**
      * Length of Creator Software string
@@ -67,31 +68,93 @@ public final class RowSize implements SubHeader {
     @NonNegative
     private short nct;
 
-    @XRef(var = "npshd")
-    @NonNegative
-    private int lastMetaPageNumber;
+    @XRef(var = "npshd+nshpl")
+    @lombok.NonNull
+    private SubHeaderLocation lastMetaLocation;
 
-    @XRef(var = "nshpl")
-    @NonNegative
-    private short lastMetaSubHeaderNumber;
-
-    @NonNull
-    public SubHeaderLocation getLastMetaLocation() {
-        return new SubHeaderLocation(lastMetaPageNumber - 1, lastMetaSubHeaderNumber - 1);
-    }
-    
     @NonNull
     public static RowSize parse(@NonNull BytesReader pageBytes, boolean u64, @NonNull SubHeaderPointer pointer) {
         BytesReader bytes = pointer.slice(pageBytes);
 
-        int lenght = u64 ? bytes.getInt64As32(40) : bytes.getInt32(20);
-        int count = u64 ? bytes.getInt64As32(48) : bytes.getInt32(24);
-        int firstPageMaxCount = u64 ? bytes.getInt64As32(120) : bytes.getInt32(60);
-        short lcs = bytes.getInt16(u64 ? 682 : 354);
-        short nct = bytes.getInt16(u64 ? 748 : 420);
-        int npshd = u64 ? bytes.getInt64As32(528) : bytes.getInt32(272);
-        short nshpl = bytes.getInt16(u64 ? 536 : 276);
+        int length = Seq.getU4U8(bytes, SEQ.getOffset(u64, 5), u64);
+        int count = Seq.getU4U8(bytes, SEQ.getOffset(u64, 6), u64);
+        int firstPageMaxCount = Seq.getU4U8(bytes, SEQ.getOffset(u64, 15), u64);
+        short lcs = bytes.getInt16(SEQ.getOffset(u64, 37));
+        short nct = bytes.getInt16(SEQ.getOffset(u64, 46));
+        SubHeaderLocation lastMetaLocation = SubHeaderLocation.parse(SEQ.getOffset(u64, 23), bytes, u64);
 
-        return new RowSize(pointer.getLocation(), lenght, count, firstPageMaxCount, lcs, nct, npshd, nshpl);
+        return new RowSize(pointer.getLocation(), length, count, firstPageMaxCount, lcs, nct, lastMetaLocation);
     }
+
+    public static final Seq SEQ = Seq
+            .builder()
+            // Group1: initial header 
+            // @0+72|0+144 (=18*U4U8)
+            .and("signature", Seq.U4U8) //#0
+            .and("?", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("rowLength", Seq.U4U8)
+            .and("rowCount", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("ncfl1", Seq.U4U8)
+            .and("ncfl2", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("pageSize", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("firstPageMaxCount", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            .and("?", Seq.U4U8)
+            // Group2: ?
+            // @72+192|144+368 (=16+44*U4U8)
+            .and("zeroes", 148, 296) //#18
+            .and("pageSignature", 4)
+            .and("zeroes", 40, 68)
+            // Group3: locations 
+            // @264+40|512+80 (=10*U4U8)
+            .and("?", SubHeaderLocation.SEQ) //#21
+            .and("zeroes", 2, 6)
+            .and("lastMetaLocation", SubHeaderLocation.SEQ) //#23
+            .and("zeroes", 2, 6)
+            .and("?", SubHeaderLocation.SEQ) //#25
+            .and("zeroes", 2, 6)
+            .and("?", SubHeaderLocation.SEQ) //#27
+            .and("zeroes", 2, 6)
+            .and("?", SubHeaderLocation.SEQ) //#29
+            .and("zeroes", 2, 6)
+            // Group4: locations? 
+            // @304+40|592+80 (=10*U4U8)
+            .and("zeroes", 40, 80) //#31
+            // Group5: counters?
+            // @344+136|672+136
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("lcs", 2) //#37
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("zeroes", 8)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("lcp", 2) //#46
+            .and("zeroes", 36)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("?", 2)
+            .and("zeroes", 12)
+            .and("?", 2)
+            .and("zeroes", 27)
+            .and("?", 1)
+            .and("zeroes", 12)
+            .build();
 }

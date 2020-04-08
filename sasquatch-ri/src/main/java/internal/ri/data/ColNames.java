@@ -18,7 +18,6 @@ package internal.ri.data;
 
 import internal.bytes.BytesReader;
 import internal.bytes.Record;
-import internal.bytes.RecordLength;
 import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
@@ -47,7 +46,7 @@ public final class ColNames implements SubHeader {
     }
 
     private static ColNames parse(BytesReader bytes, boolean u64, SubHeaderLocation location) {
-        int length = LENGTH.getTotalLength();
+        int length = ColName.SEQ.getTotalLength(u64);
         int count = (bytes.getLength() - (u64 ? 28 : 20)) / length;
         int offset = (u64 ? 16 : 12);
 
@@ -57,6 +56,4 @@ public final class ColNames implements SubHeader {
     private static Record.BiIntFunction<ColName> getFactory(BytesReader bytes, SubHeaderLocation location) {
         return (i, base) -> new ColName(location, i, StringRef.parse(bytes, base));
     }
-
-    private static final RecordLength LENGTH = StringRef.LENGTH.and(2);
 }

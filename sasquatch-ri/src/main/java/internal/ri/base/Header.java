@@ -19,6 +19,7 @@ package internal.ri.base;
 import internal.bytes.Bytes;
 import internal.bytes.BytesReader;
 import internal.bytes.PValue;
+import internal.bytes.Seq;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
@@ -179,7 +180,7 @@ public final class Header {
         int length = file.getInt32(196 + align1);
 
         int pageLength = file.getInt32(200 + align1);
-        int pageCount = u64 ? file.getInt64As32(204 + align1) : file.getInt32(204 + align1);
+        int pageCount = Seq.getU4U8(file, 204 + align1, u64);
 
         int align2 = u64 ? 4 : 0;
 
