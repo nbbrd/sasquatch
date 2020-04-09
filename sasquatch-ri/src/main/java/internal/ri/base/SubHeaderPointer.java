@@ -82,8 +82,8 @@ public final class SubHeaderPointer {
     }
 
     private static SubHeaderPointer parse(BytesReader pageBytes, boolean u64, SubHeaderLocation location, int base) {
-        int offset = Seq.getU4U8(pageBytes, base + SEQ.getOffset(u64, 0), u64);
-        int length = Seq.getU4U8(pageBytes, base + SEQ.getOffset(u64, 1), u64);
+        int offset = Seq.parseU4U8(pageBytes, base + SEQ.getOffset(u64, 0), u64);
+        int length = Seq.parseU4U8(pageBytes, base + SEQ.getOffset(u64, 1), u64);
         byte format = pageBytes.getByte(base + SEQ.getOffset(u64, 2));
 
         return new SubHeaderPointer(

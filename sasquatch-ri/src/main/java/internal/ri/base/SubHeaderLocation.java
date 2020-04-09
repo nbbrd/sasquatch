@@ -46,9 +46,9 @@ public class SubHeaderLocation implements Comparable<SubHeaderLocation> {
     }
 
     @NonNull
-    public static SubHeaderLocation parse(@NonNegative int base, @NonNull BytesReader bytes, boolean u64) {
+    public static SubHeaderLocation parse(@NonNull BytesReader bytes, @NonNegative int base, boolean u64) {
         return new SubHeaderLocation(
-                Seq.getU4U8(bytes, base + SEQ.getOffset(u64, 0), u64) - 1,
+                Seq.parseU4U8(bytes, base + SEQ.getOffset(u64, 0), u64) - 1,
                 bytes.getInt16(base + SEQ.getOffset(u64, 1)) - 1);
     }
 

@@ -31,14 +31,11 @@ public enum Compression {
     private final String id;
 
     @NonNull
-    public static PValue<Compression, String> tryParse(@NonNull String value, short lcs) {
+    public static PValue<Compression, String> tryParse(@NonNull String value) {
         for (Compression o : Compression.values()) {
             if (o.id.equals(value)) {
                 return PValue.known(o);
             }
-        }
-        if (lcs > 0) {
-            return PValue.known(NONE);
         }
         return PValue.unknown(value);
     }

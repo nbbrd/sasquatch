@@ -121,10 +121,11 @@ public final class Document {
         if (v.colTextList.isEmpty()) {
             throw new IOException("At least one column-text subheaders expected");
         }
-        String compression = v.colTextList.get(0).getContent().getString(v.header.isU64() ? 20 : 16, 8, US_ASCII);
+
+        String compression = getString(v.colTextList, v.header.isU64(), rowSize.getCompression(), US_ASCII);
 
         return new Document(
-                sbc.size(), v.header, Compression.tryParse(compression, rowSize.getLcs()),
+                sbc.size(), v.header, Compression.tryParse(compression),
                 rowSize, colSize, subhCnt, v.colTextList,
                 v.colNameList, v.colAttrList, v.colLabsList, v.rowIndexList
         );

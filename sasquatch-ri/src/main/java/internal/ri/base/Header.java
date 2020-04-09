@@ -180,7 +180,7 @@ public final class Header {
         int length = file.getInt32(196 + align1);
 
         int pageLength = file.getInt32(200 + align1);
-        int pageCount = Seq.getU4U8(file, 204 + align1, u64);
+        int pageCount = Seq.parseU4U8(file, 204 + align1, u64);
 
         int align2 = u64 ? 4 : 0;
 

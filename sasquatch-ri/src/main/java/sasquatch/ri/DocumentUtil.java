@@ -52,10 +52,10 @@ class DocumentUtil {
 
     SasMetaData getMetaData(Document doc) throws IOException {
         Charset charset = getCharset(doc);
-
+        
         SasMetaData.Builder result = SasMetaData.builder()
                 .name(doc.getHeader().getName())
-                .label(doc.getString(doc.getRowSize().getLabelRef(), charset))
+                .label(doc.getString(doc.getRowSize().getLabel(), charset))
                 .creationTime(doc.getHeader().getCreationTime())
                 .lastModificationTime(doc.getHeader().getLastModificationTime())
                 .release(doc.getHeader().getSasRelease())

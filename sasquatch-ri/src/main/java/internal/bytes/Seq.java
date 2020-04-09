@@ -27,7 +27,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
  */
 public final class Seq {
 
-    public static int getU4U8(BytesReader bytes, int offset, boolean u64) {
+    public static int parseU4U8(BytesReader bytes, int offset, boolean u64) {
         return u64 ? ((int) bytes.getInt64(offset)) : bytes.getInt32(offset);
     }
 
@@ -84,6 +84,10 @@ public final class Seq {
 
         public Builder and(String name, Seq seq) {
             return item(new Item(name, seq.get(false).getTotalLength(), seq.get(true).getTotalLength()));
+        }
+
+        public Builder and(Seq seq) {
+            return item(new Item("", seq.get(false).getTotalLength(), seq.get(true).getTotalLength()));
         }
 
         public Seq build() {

@@ -44,7 +44,7 @@ final class CompressedDataCursor extends AbstractRowCursor {
                 PageCursor.of(sbc, header),
                 header.isU64(),
                 rowSize.getCount(),
-                rowSize.getLastMetaLocation(),
+                rowSize.getLastMeta(),
                 decompressor,
                 Bytes.allocate(rowSize.getLength(), header.getEndianness()),
                 INITIAL_INDEX,

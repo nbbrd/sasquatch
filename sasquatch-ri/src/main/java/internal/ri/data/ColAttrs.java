@@ -61,7 +61,7 @@ public final class ColAttrs implements SubHeader {
         for (int i = 0; i < result.length; i++) {
             int base = offset + i * length;
 
-            int columnOffsetInDataRow = Seq.getU4U8(bytes, base, u64);
+            int columnOffsetInDataRow = Seq.parseU4U8(bytes, base, u64);
             int columnWidth = bytes.getInt32(base + columnWitdhOffset);
             byte columnType = bytes.getByte(base + columnTypeOffset);
 

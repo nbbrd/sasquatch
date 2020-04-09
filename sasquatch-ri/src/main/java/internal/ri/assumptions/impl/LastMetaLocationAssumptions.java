@@ -46,12 +46,12 @@ public enum LastMetaLocationAssumptions implements SasFileAssumption {
     public String test(SeekableByteChannel file, SasFileStructure structure) throws IOException {
         RowSize rowSize = getRowSize(file, structure);
 
-        SubHeaderLocation lastMetaLocation = rowSize.getLastMetaLocation();
+        SubHeaderLocation lastMeta = rowSize.getLastMeta();
 
-        BytesReader pageBytes = PageCursor.getBytes(file, structure.getHeader(), lastMetaLocation.getPage());
+        BytesReader pageBytes = PageCursor.getBytes(file, structure.getHeader(), lastMeta.getPage());
         boolean u64 = structure.getHeader().isU64();
 
-        SubHeaderPointer lastMetaPointer = SubHeaderPointer.parse(pageBytes, u64, lastMetaLocation);
+        SubHeaderPointer lastMetaPointer = SubHeaderPointer.parse(pageBytes, u64, lastMeta);
         Optional<PValue<DescriptorType, String>> lastMetaType = DescriptorType.tryParse(pageBytes, u64, lastMetaPointer);
 
         if (!lastMetaType.isPresent()) {
@@ -62,7 +62,7 @@ public enum LastMetaLocationAssumptions implements SasFileAssumption {
             return "Expected last subheader type to be known";
         }
 
-        SubHeaderLocation nextLocation = lastMetaLocation.next();
+        SubHeaderLocation nextLocation = lastMeta.next();
         SubHeaderPointer nextPointer = SubHeaderPointer.parse(pageBytes, u64, nextLocation);
         Optional<PValue<DescriptorType, String>> nextType = DescriptorType.tryParse(pageBytes, u64, nextPointer);
 

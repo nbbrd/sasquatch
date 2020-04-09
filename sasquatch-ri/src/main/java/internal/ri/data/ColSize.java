@@ -51,7 +51,7 @@ public final class ColSize implements SubHeader {
 
         return new ColSize(
                 pointer.getLocation(),
-                Seq.getU4U8(bytes, SEQ.getOffset(u64, 1), u64)
+                Seq.parseU4U8(bytes, SEQ.getOffset(u64, 1), u64)
         );
     }
 

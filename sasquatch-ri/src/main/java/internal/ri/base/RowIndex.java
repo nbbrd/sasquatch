@@ -69,8 +69,8 @@ public final class RowIndex implements SubHeader {
 
         return (i, base) -> new RowIndex(
                 new SubHeaderLocation(pageIndex, i),
-                Seq.getU4U8(bigEndian, base + SEQ.getOffset(u64, 0), u64),
-                SubHeaderLocation.parse(base + SEQ.getOffset(u64, 1), pageBytes, u64));
+                Seq.parseU4U8(bigEndian, base + SEQ.getOffset(u64, 0), u64),
+                SubHeaderLocation.parse(pageBytes, base + SEQ.getOffset(u64, 1), u64));
     }
 
     private static int getLength(boolean u64) {

@@ -56,11 +56,18 @@ public final class RowSize implements SubHeader {
     @NonNegative
     private int firstPageMaxCount;
 
-    /**
-     * Length of Creator Software string
-     */
-    @NonNegative
-    private short lcs;
+    @XRef(var = "npshd+nshpl")
+    @lombok.NonNull
+    private SubHeaderLocation lastMeta;
+
+    @lombok.NonNull
+    private StringRef label;
+
+    @lombok.NonNull
+    private StringRef compression;
+
+    @lombok.NonNull
+    private StringRef proc;
 
     /**
      * Number of Column Text subheaders in file
@@ -68,40 +75,44 @@ public final class RowSize implements SubHeader {
     @NonNegative
     private short nct;
 
-    @XRef(var = "npshd+nshpl")
-    @lombok.NonNull
-    private SubHeaderLocation lastMetaLocation;
-
-    @lombok.NonNull
-    private StringRef labelRef;
-
     @NonNull
     public static RowSize parse(@NonNull BytesReader pageBytes, boolean u64, @NonNull SubHeaderPointer pointer) {
         BytesReader bytes = pointer.slice(pageBytes);
 
-        int length = Seq.getU4U8(bytes, SEQ.getOffset(u64, 5), u64);
-        int count = Seq.getU4U8(bytes, SEQ.getOffset(u64, 6), u64);
-        int firstPageMaxCount = Seq.getU4U8(bytes, SEQ.getOffset(u64, 15), u64);
-        short lcs = bytes.getInt16(SEQ.getOffset(u64, 37));
-        short nct = bytes.getInt16(SEQ.getOffset(u64, 46));
-        SubHeaderLocation lastMetaLocation = SubHeaderLocation.parse(SEQ.getOffset(u64, 23), bytes, u64);
+        short nct = bytes.getInt16(u64 ? 748 : 420);
 
-        StringRef labelRef = StringRef.parse(bytes, !u64 ? (350) : (678));
-
-        return new RowSize(pointer.getLocation(), length, count, firstPageMaxCount, lcs, nct, lastMetaLocation, labelRef);
+        return new RowSize(
+                pointer.getLocation(),
+                Seq.parseU4U8(bytes, SEQ.getOffset(u64, 5), u64),
+                Seq.parseU4U8(bytes, SEQ.getOffset(u64, 6), u64),
+                Seq.parseU4U8(bytes, SEQ.getOffset(u64, 15), u64),
+                SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 22), u64),
+                StringRef.parse(bytes, SEQ.getOffset(u64, 28)),
+                StringRef.parse(bytes, SEQ.getOffset(u64, 30)),
+                StringRef.parse(bytes, SEQ.getOffset(u64, 32)),
+                nct);
     }
+
+    private static final Seq PADDED_LOCATION = Seq
+            .builder()
+            .and("location", SubHeaderLocation.SEQ)
+            .and("zeroes", 2, 6)
+            .build();
 
     public static final Seq SEQ = Seq
             .builder()
-            // Group1: initial header 
-            // @0+72|0+144 (=18*U4U8)
+            /**
+             * Group1: initial header
+             *
+             * @0+72|0+144 (=18*U4U8)
+             */
             .and("signature", Seq.U4U8) //#0
             .and("?", Seq.U4U8)
             .and("?", Seq.U4U8)
             .and("?", Seq.U4U8)
             .and("?", Seq.U4U8)
-            .and("rowLength", Seq.U4U8)
-            .and("rowCount", Seq.U4U8)
+            .and("rowLength", Seq.U4U8) //#5
+            .and("rowCount", Seq.U4U8) //#6
             .and("?", Seq.U4U8)
             .and("?", Seq.U4U8)
             .and("ncfl1", Seq.U4U8)
@@ -110,50 +121,58 @@ public final class RowSize implements SubHeader {
             .and("?", Seq.U4U8)
             .and("pageSize", Seq.U4U8)
             .and("?", Seq.U4U8)
-            .and("firstPageMaxCount", Seq.U4U8)
+            .and("firstPageMaxCount", Seq.U4U8) //#15
             .and("?", Seq.U4U8)
             .and("?", Seq.U4U8)
-            // Group2: ?
-            // @72+192|144+368 (=16+44*U4U8)
+            /**
+             * Group2: ?
+             *
+             * @72+192|144+368 (=44*U4U8+16)
+             */
             .and("zeroes", 148, 296) //#18
             .and("pageSignature", 4)
             .and("zeroes", 40, 68)
-            // Group3: locations 
-            // @264+40|512+80 (=10*U4U8)
-            .and("?", SubHeaderLocation.SEQ) //#21
-            .and("zeroes", 2, 6)
-            .and("lastMetaLocation", SubHeaderLocation.SEQ) //#23
-            .and("zeroes", 2, 6)
-            .and("?", SubHeaderLocation.SEQ) //#25
-            .and("zeroes", 2, 6)
-            .and("?", SubHeaderLocation.SEQ) //#27
-            .and("zeroes", 2, 6)
-            .and("?", SubHeaderLocation.SEQ) //#29
-            .and("zeroes", 2, 6)
-            // Group4: locations? 
-            // @304+40|592+80 (=10*U4U8)
-            .and("zeroes", 40, 80) //#31
-            // Group5: counters?
-            // @344+136|672+136
-            .and("?", 2)
-            .and("?", 2)
-            .and("?", 2)
-            .and("?", 2)
-            .and("?", 2)
-            .and("lcs", 2) //#37
-            .and("?", 2)
-            .and("?", 2)
-            .and("?", 2)
-            .and("zeroes", 8)
-            .and("?", 2)
-            .and("?", 2)
-            .and("?", 2)
-            .and("?", 2)
-            .and("lcp", 2) //#46
+            /**
+             * Group3: subheader locations
+             *
+             * @264+40|512+80 (=10*U4U8)
+             */
+            .and("?", PADDED_LOCATION) //#21
+            .and("lastMeta", PADDED_LOCATION) //#22
+            .and("?", PADDED_LOCATION) //#23
+            .and("?", PADDED_LOCATION) //#24
+            .and("?", PADDED_LOCATION) //#25
+            /**
+             * Group4: subheader locations?
+             *
+             * @304+40|592+80 (=10*U4U8)
+             */
+            .and("zeroes", 40, 80) //#26
+            /**
+             * Group5: string references
+             *
+             * @344+36|672+36 (=3*(6+6))
+             */
+            .and("?", 6)
+            .and("label", StringRef.SEQ) //#28
+            .and("?", 6)
+            .and("compression", StringRef.SEQ) //#30
+            .and("?", 6)
+            .and("procedure", StringRef.SEQ) //#32
+            /**
+             * Group6: string references?
+             *
+             * @380+36|708+36 (=3*(6+6))
+             */
             .and("zeroes", 36)
+            /**
+             * Group7: ?
+             *
+             * @416+64|744+64
+             */
             .and("?", 2)
             .and("?", 2)
-            .and("?", 2)
+            .and("nct", 2)
             .and("?", 2)
             .and("?", 2)
             .and("zeroes", 12)
