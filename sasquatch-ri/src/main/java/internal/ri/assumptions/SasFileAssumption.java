@@ -17,6 +17,7 @@
 package internal.ri.assumptions;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,6 +59,11 @@ public interface SasFileAssumption {
                     onError.accept(new SasFileError(file, assumption, error));
                 }
             }
+        } catch (RuntimeException ex) {
+            if (ex instanceof UncheckedIOException) {
+                throw ((UncheckedIOException) ex).getCause();
+            }
+            throw new IOException(file.toString(), ex);
         }
     }
 }

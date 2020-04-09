@@ -56,9 +56,21 @@ public final class RowSize implements SubHeader {
     @NonNegative
     private int firstPageMaxCount;
 
+    @lombok.NonNull
+    private SubHeaderLocation firstMeta;
+
     @XRef(var = "npshd+nshpl")
     @lombok.NonNull
     private SubHeaderLocation lastMeta;
+
+    @lombok.NonNull
+    private SubHeaderLocation firstRow;
+
+    @lombok.NonNull
+    private SubHeaderLocation lastRow;
+
+    @lombok.NonNull
+    private SubHeaderLocation firstColLab;
 
     @lombok.NonNull
     private StringRef label;
@@ -86,7 +98,11 @@ public final class RowSize implements SubHeader {
                 Seq.parseU4U8(bytes, SEQ.getOffset(u64, 5), u64),
                 Seq.parseU4U8(bytes, SEQ.getOffset(u64, 6), u64),
                 Seq.parseU4U8(bytes, SEQ.getOffset(u64, 15), u64),
+                SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 21), u64),
                 SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 22), u64),
+                SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 23), u64),
+                SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 24), u64),
+                SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 25), u64),
                 StringRef.parse(bytes, SEQ.getOffset(u64, 28)),
                 StringRef.parse(bytes, SEQ.getOffset(u64, 30)),
                 StringRef.parse(bytes, SEQ.getOffset(u64, 32)),
@@ -137,17 +153,17 @@ public final class RowSize implements SubHeader {
              *
              * @264+40|512+80 (=10*U4U8)
              */
-            .and("?", PADDED_LOCATION) //#21
+            .and("firstMeta", PADDED_LOCATION) //#21
             .and("lastMeta", PADDED_LOCATION) //#22
-            .and("?", PADDED_LOCATION) //#23
-            .and("?", PADDED_LOCATION) //#24
-            .and("?", PADDED_LOCATION) //#25
+            .and("firstRow", PADDED_LOCATION) //#23
+            .and("lastRow", PADDED_LOCATION) //#24
+            .and("firstColLab", PADDED_LOCATION) //#25
             /**
              * Group4: subheader locations?
              *
              * @304+40|592+80 (=10*U4U8)
              */
-            .and("zeroes", 40, 80) //#26
+            .and("notUsed", 40, 80) //#26
             /**
              * Group5: string references
              *
@@ -164,7 +180,7 @@ public final class RowSize implements SubHeader {
              *
              * @380+36|708+36 (=3*(6+6))
              */
-            .and("zeroes", 36)
+            .and("notUsed", 36)
             /**
              * Group7: ?
              *
