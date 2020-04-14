@@ -94,7 +94,13 @@ enum SasCommonFormats {
     MDYAMPM(SasColumnType.DATETIME),
     TOD(SasColumnType.DATETIME),
     // TIMES
-    TIME(SasColumnType.TIME);
+    TIME(SasColumnType.TIME),
+    HHMM(SasColumnType.TIME),
+    E8601LZ(SasColumnType.TIME),
+    E8601TM(SasColumnType.TIME),
+    HOUR(SasColumnType.TIME),
+    MMSS(SasColumnType.TIME),
+    TIMEAMPM(SasColumnType.TIME);
 
     @lombok.Getter
     private final SasColumnType columnType;
