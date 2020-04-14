@@ -31,17 +31,20 @@ final class RLEDecompressor extends AbstractDecompressor {
     public static final RLEDecompressor INSTANCE = new RLEDecompressor();
 
     // commands
-    static final byte COPY_64 = 0x00;
-    static final byte INSERT_BLANK_17 = 0x06;
-    static final byte INSERT_ZERO_17 = 0x07;
-    static final byte COPY_1 = 0x08;
-    static final byte COPY_17 = 0x09;
-    static final byte COPY_33 = 0x0A;
-    static final byte COPY_49 = 0x0B;
-    static final byte INSERT_BYTE_3 = 0x0C;
-    static final byte INSERT_AT_2 = 0x0D;
-    static final byte INSERT_BLANK_2 = 0x0E;
-    static final byte INSERT_ZERO_2 = 0x0F;
+    static final byte COPY_64_LONG = 0x00;
+    static final byte INSERT_BYTE_LONG = 0x04;
+    static final byte INSERT_AT_LONG = 0x05;
+    static final byte INSERT_BLANK_LONG = 0x06;
+    static final byte INSERT_ZERO_LONG = 0x07;
+    static final byte COPY_1_SHORT = 0x08;
+    static final byte COPY_17_SHORT = 0x09;
+    static final byte COPY_33_SHORT = 0x0A;
+    static final byte COPY_49_SHORT = 0x0B;
+    static final byte INSERT_BYTE_SHORT = 0x0C;
+    static final byte INSERT_AT_SHORT = 0x0D;
+    static final byte INSERT_BLANK_SHORT = 0x0E;
+    static final byte INSERT_ZERO_SHORT = 0x0F;
+
     // values
     static final byte ZERO = 0x00;
     static final byte BLANK = 0x20;
@@ -53,81 +56,95 @@ final class RLEDecompressor extends AbstractDecompressor {
         int dstPos = 0;
 
         while (srcPos < position + length) {
-            int firstByteIndex = srcPos++;
-            switch (src.getHigh(firstByteIndex)) {
-                case COPY_64: {
-                    int copyLength = 64 + uint8(src.getByte(srcPos++));
-                    copy(src, srcPos, dst, dstPos, copyLength);
-                    srcPos += copyLength;
-                    dstPos += copyLength;
+            int firstByteIdx = srcPos++;
+            switch (src.getHigh(firstByteIdx)) {
+                case COPY_64_LONG: {
+                    int size = 64 + uint8(src.getByte(srcPos++));
+                    copy(src, srcPos, dst, dstPos, size);
+                    srcPos += size;
+                    dstPos += size;
                     break;
                 }
-                case INSERT_BLANK_17: {
-                    int insertLength = 17 + uint8(src.getByte(srcPos++));
-                    insert(dst, dstPos, insertLength, BLANK);
-                    dstPos += insertLength;
+                case INSERT_BYTE_LONG: {
+                    int size = 17 + 1 + uint8(src.getByte(srcPos++));
+                    byte value = src.getByte(srcPos++);
+                    insert(dst, dstPos, size, value);
+                    dstPos += size;
                     break;
                 }
-                case INSERT_ZERO_17: {
-                    int insertLength = 17 + uint8(src.getByte(srcPos++));
-                    insert(dst, dstPos, insertLength, ZERO);
-                    dstPos += insertLength;
+                case INSERT_AT_LONG: {
+                    int size = 17 + uint8(src.getByte(srcPos++));
+                    insert(dst, dstPos, size, AT);
+                    dstPos += size;
                     break;
                 }
-                case COPY_1: {
-                    int copyLength = 1 + uint4(src.getLow(firstByteIndex));
-                    copy(src, srcPos, dst, dstPos, copyLength);
-                    srcPos += copyLength;
-                    dstPos += copyLength;
+                case INSERT_BLANK_LONG: {
+                    int size = 17 + uint8(src.getByte(srcPos++));
+                    insert(dst, dstPos, size, BLANK);
+                    dstPos += size;
                     break;
                 }
-                case COPY_17: {
-                    int copyLength = 17 + uint4(src.getLow(firstByteIndex));
-                    copy(src, srcPos, dst, dstPos, copyLength);
-                    srcPos += copyLength;
-                    dstPos += copyLength;
+                case INSERT_ZERO_LONG: {
+                    int size = 17 + uint8(src.getByte(srcPos++));
+                    insert(dst, dstPos, size, ZERO);
+                    dstPos += size;
                     break;
                 }
-                case COPY_33: {
-                    int copyLength = 33 + uint4(src.getLow(firstByteIndex));
-                    copy(src, srcPos, dst, dstPos, copyLength);
-                    srcPos += copyLength;
-                    dstPos += copyLength;
+                case COPY_1_SHORT: {
+                    int size = 1 + (16 * 0) + uint4(src.getLow(firstByteIdx));
+                    copy(src, srcPos, dst, dstPos, size);
+                    srcPos += size;
+                    dstPos += size;
                     break;
                 }
-                case COPY_49: {
-                    int copyLength = 49 + uint4(src.getLow(firstByteIndex));
-                    copy(src, srcPos, dst, dstPos, copyLength);
-                    srcPos += copyLength;
-                    dstPos += copyLength;
+                case COPY_17_SHORT: {
+                    int size = 1 + (16 * 1) + uint4(src.getLow(firstByteIdx));
+                    copy(src, srcPos, dst, dstPos, size);
+                    srcPos += size;
+                    dstPos += size;
                     break;
                 }
-                case INSERT_BYTE_3: {
-                    int insertLength = 3 + uint4(src.getLow(firstByteIndex));
-                    insert(dst, dstPos, insertLength, src.getByte(srcPos++));
-                    dstPos += insertLength;
+                case COPY_33_SHORT: {
+                    int size = 1 + (16 * 2) + uint4(src.getLow(firstByteIdx));
+                    copy(src, srcPos, dst, dstPos, size);
+                    srcPos += size;
+                    dstPos += size;
                     break;
                 }
-                case INSERT_AT_2: {
-                    int insertLength = 2 + uint4(src.getLow(firstByteIndex));
-                    insert(dst, dstPos, insertLength, AT);
-                    dstPos += insertLength;
+                case COPY_49_SHORT: {
+                    int size = 1 + (16 * 3) + uint4(src.getLow(firstByteIdx));
+                    copy(src, srcPos, dst, dstPos, size);
+                    srcPos += size;
+                    dstPos += size;
                     break;
                 }
-                case INSERT_BLANK_2: {
-                    int insertLength = 2 + uint4(src.getLow(firstByteIndex));
-                    insert(dst, dstPos, insertLength, BLANK);
-                    dstPos += insertLength;
+                case INSERT_BYTE_SHORT: {
+                    int size = 2 + 1 + uint4(src.getLow(firstByteIdx));
+                    byte value = src.getByte(srcPos++);
+                    insert(dst, dstPos, size, value);
+                    dstPos += size;
                     break;
                 }
-                case INSERT_ZERO_2: {
-                    int insertLength = 2 + uint4(src.getLow(firstByteIndex));
-                    insert(dst, dstPos, insertLength, ZERO);
-                    dstPos += insertLength;
+                case INSERT_AT_SHORT: {
+                    int size = 2 + uint4(src.getLow(firstByteIdx));
+                    insert(dst, dstPos, size, AT);
+                    dstPos += size;
+                    break;
+                }
+                case INSERT_BLANK_SHORT: {
+                    int size = 2 + uint4(src.getLow(firstByteIdx));
+                    insert(dst, dstPos, size, BLANK);
+                    dstPos += size;
+                    break;
+                }
+                case INSERT_ZERO_SHORT: {
+                    int size = 2 + uint4(src.getLow(firstByteIdx));
+                    insert(dst, dstPos, size, ZERO);
+                    dstPos += size;
                     break;
                 }
                 default:
-                //                        throw new RuntimeException("Unknown control byte: " + (controlByte & 0xF0));
+                    throw new RuntimeException("Unknown control byte: " + src.getHigh(firstByteIdx));
             }
         }
     }
