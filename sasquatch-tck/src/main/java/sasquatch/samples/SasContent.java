@@ -29,6 +29,8 @@ import sasquatch.spi.SasReader;
 @ServiceDefinition(singleton = true, quantifier = Quantifier.MULTIPLE)
 public interface SasContent {
 
+    String getName();
+
     List<FileError> parse(SasReader reader);
 
     default void printErrors(SasReader reader) {
@@ -38,18 +40,22 @@ public interface SasContent {
 
     interface FileError {
 
+        String getName();
+
         Path getFile();
     }
 
     @lombok.Value
     static final class MissingError implements FileError {
 
+        private String name;
         private Path file;
     }
 
     @lombok.Value
     static final class UnexpectedError implements FileError {
 
+        private String name;
         private Path file;
         private Exception ex;
     }
@@ -57,6 +63,7 @@ public interface SasContent {
     @lombok.Value
     static final class HeadError implements FileError {
 
+        private String name;
         private Path file;
         private int col;
         private String expected;
@@ -66,6 +73,7 @@ public interface SasContent {
     @lombok.Value
     static final class BodyError implements FileError {
 
+        private String name;
         private Path file;
         private int row;
         private int col;

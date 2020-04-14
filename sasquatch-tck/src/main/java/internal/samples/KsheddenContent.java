@@ -40,6 +40,11 @@ import sasquatch.samples.SasResources;
 @ServiceProvider(SasContent.class)
 public final class KsheddenContent extends CsvContent {
 
+    @Override
+    public String getName() {
+        return "Kshedden";
+    }
+
     private final Path root = SasResources.KSHEDDEN.getRoot();
 
     @Override

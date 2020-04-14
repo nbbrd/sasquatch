@@ -59,10 +59,10 @@ public abstract class CsvContent implements SasContent {
             try {
                 return compareToCsv(reader, sasFile, csvFile);
             } catch (Exception ex) {
-                return new UnexpectedError(relativizeSasFile(sasFile), ex);
+                return new UnexpectedError(getName(), relativizeSasFile(sasFile), ex);
             }
         }
-        return new MissingError(relativizeSasFile(sasFile));
+        return new MissingError(getName(), relativizeSasFile(sasFile));
     }
 
     private FileError compareToCsv(SasReader reader, Path sasFile, Path csvFile) throws IOException {
@@ -76,12 +76,12 @@ public abstract class CsvContent implements SasContent {
                         CharSequence expected = csv.toString();
                         String actual = meta.getColumns().get(col).getName();
                         if (!actual.contentEquals(expected)) {
-                            return new HeadError(relativizeSasFile(sasFile), col, expected.toString(), actual);
+                            return new HeadError(getName(), relativizeSasFile(sasFile), col, expected.toString(), actual);
                         }
                         col++;
                     }
                 } else {
-                    return new HeadError(relativizeSasFile(sasFile), 0, null, null);
+                    return new HeadError(getName(), relativizeSasFile(sasFile), 0, null, null);
                 }
 
                 int row = 0;
@@ -92,7 +92,7 @@ public abstract class CsvContent implements SasContent {
                         CharSequence expected = csv;
                         String actual = func.get(col).apply(sas);
                         if (!actual.contentEquals(expected)) {
-                            return new BodyError(relativizeSasFile(sasFile), row, col, expected.toString(), actual);
+                            return new BodyError(getName(), relativizeSasFile(sasFile), row, col, expected.toString(), actual);
                         }
                         col++;
                     }
@@ -100,11 +100,11 @@ public abstract class CsvContent implements SasContent {
                 }
 
                 if (csv.readLine()) {
-                    return new BodyError(relativizeSasFile(sasFile), row, 0, "", null);
+                    return new BodyError(getName(), relativizeSasFile(sasFile), row, 0, "", null);
                 }
 
                 if (sas.nextRow()) {
-                    return new BodyError(relativizeSasFile(sasFile), row, 0, null, "");
+                    return new BodyError(getName(), relativizeSasFile(sasFile), row, 0, null, "");
                 }
             }
         }

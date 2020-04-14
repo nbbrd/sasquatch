@@ -40,6 +40,11 @@ import sasquatch.samples.SasResources;
 @ServiceProvider(SasContent.class)
 public final class EpamContent extends CsvContent {
 
+    @Override
+    public String getName() {
+        return "Epam";
+    }
+
     private final Path root = SasResources.EPAM.getRoot();
 
     @Override

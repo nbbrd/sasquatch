@@ -16,8 +16,13 @@
  */
 package sasquatch.ri;
 
-import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
+import sasquatch.samples.KnownError;
+import sasquatch.samples.SasContent;
 import sasquatch.samples.SasContentLoader;
 import sasquatch.spi.SasReader;
 import sasquatch.tck.SasReaderAssert;
@@ -33,8 +38,25 @@ public class SasquatchReaderTest {
         SasReaderAssert.assertCompliance(new SasquatchReader());
     }
 
-    public static void main(String[] args) throws IOException {
+    @Test
+    public void testContent() {
+        List<KnownError> knownErrors = Arrays.asList(
+                new KnownError("Epam", Paths.get("charset_utf8.sas7bdat"), SasContent.HeadError.class),
+                new KnownError("Epam", Paths.get("chinese_column_fails.sas7bdat"), SasContent.HeadError.class),
+                new KnownError("Epam", Paths.get("chinese_column_works.sas7bdat"), SasContent.HeadError.class),
+                new KnownError("Kshedden", Paths.get("test16.sas7bdat"), SasContent.BodyError.class),
+                new KnownError("Kshedden", Paths.get("test17.sas7bdat"), SasContent.BodyError.class),
+                new KnownError("Kshedden", Paths.get("test18.sas7bdat"), SasContent.BodyError.class),
+                new KnownError("Kshedden", Paths.get("test19.sas7bdat"), SasContent.BodyError.class),
+                new KnownError("Kshedden", Paths.get("test20.sas7bdat"), SasContent.BodyError.class),
+                new KnownError("Kshedden", Paths.get("test21.sas7bdat"), SasContent.BodyError.class),
+                new KnownError("Dumbmatter", Paths.get("sas7bdat-unsupported", "osteo_analysis_data.sas7bdat"), SasContent.MissingError.class)
+        );
+
         SasReader reader = new SasquatchReader();
-        SasContentLoader.get().forEach(o -> o.printErrors(reader));
+        SasContentLoader.get().forEach(content
+                -> assertThat(content.parse(reader))
+                        .extracting(KnownError::of)
+                        .isSubsetOf(knownErrors));
     }
 }

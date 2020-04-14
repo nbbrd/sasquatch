@@ -40,6 +40,11 @@ import sasquatch.samples.SasResources;
 @ServiceProvider(SasContent.class)
 public final class DumbmatterContent extends CsvContent {
 
+    @Override
+    public String getName() {
+        return "Dumbmatter";
+    }
+
     private final Path root = SasResources.DUMBMATTER.getRoot();
 
     @Override
