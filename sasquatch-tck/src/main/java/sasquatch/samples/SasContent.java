@@ -61,6 +61,13 @@ public interface SasContent {
     }
 
     @lombok.Value
+    static final class EmptyError implements FileError {
+
+        private String name;
+        private Path file;
+    }
+
+    @lombok.Value
     static final class HeadError implements FileError {
 
         private String name;

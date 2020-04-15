@@ -17,11 +17,13 @@
 package sasquatch.samples;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nbbrd.picocsv.Csv;
@@ -53,6 +55,30 @@ public abstract class CsvContent implements SasContent {
 
     abstract protected SasRowMapper<String> getColumnFunc(SasColumn c);
 
+    protected Charset getCharset(Path csvFile) {
+        return StandardCharsets.UTF_8;
+    }
+
+    protected Csv.Format getFormat(Path csvFile) {
+        return Csv.Format.RFC4180
+                .toBuilder()
+                .separator(getSystemLineSeparator().orElseThrow(RuntimeException::new))
+                .build();
+    }
+
+    private static Optional<Csv.NewLine> getSystemLineSeparator() {
+        switch (System.lineSeparator()) {
+            case "\r":
+                return Optional.of(Csv.NewLine.MACINTOSH);
+            case "\n":
+                return Optional.of(Csv.NewLine.UNIX);
+            case "\r\n":
+                return Optional.of(Csv.NewLine.WINDOWS);
+            default:
+                return Optional.empty();
+        }
+    }
+
     private FileError compareToCsv(SasReader reader, Path sasFile) {
         Path csvFile = resolveCsvFile(sasFile);
         if (Files.exists(csvFile)) {
@@ -66,7 +92,7 @@ public abstract class CsvContent implements SasContent {
     }
 
     private FileError compareToCsv(SasReader reader, Path sasFile, Path csvFile) throws IOException {
-        try (Csv.Reader csv = Csv.Reader.of(csvFile, StandardCharsets.UTF_8, Csv.Format.RFC4180)) {
+        try (Csv.Reader csv = Csv.Reader.of(csvFile, getCharset(csvFile), getFormat(csvFile))) {
             try (SasResultSet sas = reader.read(sasFile)) {
                 SasMetaData meta = sas.getMetaData();
 
@@ -81,7 +107,7 @@ public abstract class CsvContent implements SasContent {
                         col++;
                     }
                 } else {
-                    return new HeadError(getName(), relativizeSasFile(sasFile), 0, null, null);
+                    return new EmptyError(getName(), relativizeSasFile(sasFile));
                 }
 
                 int row = 0;
