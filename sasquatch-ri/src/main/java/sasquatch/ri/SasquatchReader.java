@@ -22,7 +22,6 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.READ;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 import nbbrd.service.ServiceProvider;
@@ -57,7 +56,7 @@ public final class SasquatchReader implements SasReader {
 
     @Override
     public Set<SasFeature> getFeatures() {
-        return EnumSet.copyOf(Arrays.asList(
+        return EnumSet.of(
                 SasFeature.ATTRIBUTES,
                 SasFeature.LABEL_META,
                 SasFeature.BIG_ENDIAN_32,
@@ -73,7 +72,7 @@ public final class SasquatchReader implements SasReader {
                 SasFeature.COLUMN_ENCODING,
                 SasFeature.CUSTOM_NUMERIC,
                 SasFeature.COLUMN_FORMAT
-        ));
+        );
     }
 
     @Override

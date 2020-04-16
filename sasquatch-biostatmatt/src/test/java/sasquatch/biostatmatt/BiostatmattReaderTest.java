@@ -14,14 +14,19 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package sasquatch.biostatmatt;
 
-module sasquatch.biostatmatt {
+import org.junit.Test;
+import sasquatch.tck.SasReaderAssert;
 
-    requires static nbbrd.service;
-    requires static org.checkerframework.checker.qual;
-    requires static lombok;
-    
-    requires sasquatch.api;
+/**
+ *
+ * @author Philippe Charles
+ */
+public class BiostatmattReaderTest {
 
-    provides sasquatch.spi.SasReader with sasquatch.biostatmatt.BiostatmattReader;
+    @Test
+    public void testCompliance() {
+        SasReaderAssert.assertCompliance(new BiostatmattReader());
+    }
 }

@@ -17,6 +17,7 @@
 package internal.tck;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.stream.Stream;
 import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
@@ -45,6 +46,19 @@ public final class CustomNumericAssertion extends AbstractFeatureAssertion {
                     .contains(66500d, Index.atIndex(0))
                     .contains(374000d, Index.atIndex(1079))
                     .hasSize(1080);
+        }
+    }
+
+    @Override
+    protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
+        try {
+            try (Stream<Number> stream = rows(reader, o -> o.getNumber(0))) {
+                s.assertThat(stream)
+                        .doesNotContain(374000d, Index.atIndex(1079))
+                        .hasSize(1080);
+            }
+        } catch (IOException | UncheckedIOException ex) {
+            // can throw exception instead
         }
     }
 }

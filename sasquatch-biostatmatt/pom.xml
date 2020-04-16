@@ -13,6 +13,11 @@
     <dependencies>
         <!-- compile only -->
         <dependency>
+            <groupId>be.nbb.rd</groupId>
+            <artifactId>java-service-processor</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.checkerframework</groupId>
             <artifactId>checker-qual</artifactId>
             <scope>provided</scope>
@@ -21,6 +26,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- compile and runtime -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sasquatch-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- test only -->

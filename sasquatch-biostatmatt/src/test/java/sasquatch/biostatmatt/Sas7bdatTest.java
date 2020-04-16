@@ -20,19 +20,17 @@ import static sasquatch.biostatmatt.RUtils.DataType.CHARACTER;
 import static sasquatch.biostatmatt.RUtils.DataType.NUMERIC;
 import sasquatch.biostatmatt.RUtils.RFrame;
 import sasquatch.biostatmatt.RUtils.RList;
-import sasquatch.biostatmatt.RUtils.RVector;
-import sasquatch.biostatmatt.Sas7bdat.Callback;
 import sasquatch.biostatmatt.Sas7bdat.Column;
 import sasquatch.biostatmatt.Sas7bdat.MissingHeader;
 import sasquatch.biostatmatt.Sas7bdat.RowsInfo;
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.AbstractList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.atIndex;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
+import static sasquatch.biostatmatt.BiostatmattReader.readFrame;
 import static sasquatch.samples.SasResources.BIG_32;
 import static sasquatch.samples.SasResources.BIG_64;
 import static sasquatch.samples.SasResources.LITTLE_32;
@@ -46,7 +44,7 @@ public class Sas7bdatTest {
 
     @Test
     public void test_32_little() throws IOException {
-        RFrame frame = readSas7bdat(LITTLE_32);
+        RFrame frame = readFrame(LITTLE_32);
 
         assertThat(frame.getAttributes())
                 .containsKey("column.info")
@@ -86,12 +84,12 @@ public class Sas7bdatTest {
 
     @Test(expected = IOException.class)
     public void test_32_big() throws IOException {
-        readSas7bdat(BIG_32);
+        readFrame(BIG_32);
     }
 
     @Test
     public void test_64_little() throws IOException {
-        RFrame frame = readSas7bdat(LITTLE_64);
+        RFrame frame = readFrame(LITTLE_64);
 
         assertThat(frame.getAttributes())
                 .containsKey("column.info")
@@ -125,11 +123,7 @@ public class Sas7bdatTest {
 
     @Test(expected = IOException.class)
     public void test_64_big() throws IOException {
-        readSas7bdat(BIG_64);
-    }
-
-    static RFrame readSas7bdat(Path file) throws IOException {
-        return Sas7bdat.readSas7bdat(file.toString(), "", false, new Callback());
+        readFrame(BIG_64);
     }
 
     static void debutAttributes(RFrame frame) {
@@ -139,7 +133,7 @@ public class Sas7bdatTest {
         }
     }
 
-    static <T> List<T> asList(final RList<T> list) {
+    static <T> List<T> asList(final RUtils.RList<T> list) {
         return new AbstractList<T>() {
             @Override
             public T get(int index) {
@@ -153,7 +147,7 @@ public class Sas7bdatTest {
         };
     }
 
-    static <T> List<T> asList(final RVector<T> list) {
+    static <T> List<T> asList(final RUtils.RVector<T> list) {
         return new AbstractList<T>() {
             @Override
             public T get(int index) {
