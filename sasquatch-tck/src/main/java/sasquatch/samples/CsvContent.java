@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nbbrd.picocsv.Csv;
@@ -60,23 +59,11 @@ public abstract class CsvContent implements SasContent {
     }
 
     protected Csv.Format getFormat(Path csvFile) {
-        return Csv.Format.RFC4180
-                .toBuilder()
-                .separator(getSystemLineSeparator().orElseThrow(RuntimeException::new))
-                .build();
+        return Csv.Format.RFC4180;
     }
 
-    private static Optional<Csv.NewLine> getSystemLineSeparator() {
-        switch (System.lineSeparator()) {
-            case "\r":
-                return Optional.of(Csv.NewLine.MACINTOSH);
-            case "\n":
-                return Optional.of(Csv.NewLine.UNIX);
-            case "\r\n":
-                return Optional.of(Csv.NewLine.WINDOWS);
-            default:
-                return Optional.empty();
-        }
+    protected Csv.Parsing getParsing(Path csvFile) {
+        return Csv.Parsing.LENIENT;
     }
 
     private FileError compareToCsv(SasReader reader, Path sasFile) {
@@ -92,7 +79,7 @@ public abstract class CsvContent implements SasContent {
     }
 
     private FileError compareToCsv(SasReader reader, Path sasFile, Path csvFile) throws IOException {
-        try (Csv.Reader csv = Csv.Reader.of(csvFile, getCharset(csvFile), getFormat(csvFile))) {
+        try (Csv.Reader csv = Csv.Reader.of(csvFile, getCharset(csvFile), getFormat(csvFile), getParsing(csvFile))) {
             try (SasResultSet sas = reader.read(sasFile)) {
                 SasMetaData meta = sas.getMetaData();
 
