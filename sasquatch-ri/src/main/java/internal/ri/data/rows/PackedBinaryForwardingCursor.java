@@ -36,11 +36,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-final class PackedBinaryDataCursor extends AbstractRowCursor {
+final class PackedBinaryForwardingCursor extends ForwardingCursor {
 
     @NonNull
     public static RowCursor of(@NonNull SeekableByteChannel sbc, @NonNull Header header, @NonNull RowSize rowSize) {
-        return new PackedBinaryDataCursor(
+        return new PackedBinaryForwardingCursor(
                 PageCursor.of(sbc, header),
                 header.isU64(),
                 rowSize.getCount(),
@@ -94,7 +94,7 @@ final class PackedBinaryDataCursor extends AbstractRowCursor {
 
     @Override
     protected void moveToFirstRowInNextPage() throws IOException {
-        currentPage = nextPageWithData(pageCursor, u64, PackedBinaryDataCursor::hasData);
+        currentPage = nextPageWithData(pageCursor, u64, PackedBinaryForwardingCursor::hasData);
         bytes.reset(pageCursor.getBytes(), 0);
         setBaseAndRemaining();
         remainingRowsInCurrentPage--;

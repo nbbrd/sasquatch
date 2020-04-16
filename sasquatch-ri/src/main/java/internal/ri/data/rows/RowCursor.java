@@ -33,11 +33,11 @@ public interface RowCursor extends BytesCursor {
         if (doc.getCompression().isKnown()) {
             switch (doc.getCompression().get()) {
                 case CHAR:
-                    return CompressedDataCursor.of(sbc, doc.getHeader(), doc.getRowSize(), RLEDecompressor.INSTANCE);
+                    return CompressedForwardingCursor.of(sbc, doc.getHeader(), doc.getRowSize(), RLEDecompressor.INSTANCE);
                 case BIN:
-                    return CompressedDataCursor.of(sbc, doc.getHeader(), doc.getRowSize(), RDCDecompressor.INSTANCE);
+                    return CompressedForwardingCursor.of(sbc, doc.getHeader(), doc.getRowSize(), RDCDecompressor.INSTANCE);
                 case NONE:
-                    return PackedBinaryDataCursor.of(sbc, doc.getHeader(), doc.getRowSize());
+                    return PackedBinaryForwardingCursor.of(sbc, doc.getHeader(), doc.getRowSize());
             }
         }
         throw new IOException("Cannot handle compression " + doc.getCompression().toString());

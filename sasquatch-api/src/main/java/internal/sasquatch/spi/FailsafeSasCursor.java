@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
@@ -29,14 +29,14 @@ import sasquatch.SasResultSet;
  */
 @lombok.AllArgsConstructor
 @lombok.extern.java.Log
-final class FailsafeSasResultSet implements SasResultSet {
+class FailsafeSasCursor implements SasCursor {
 
     @lombok.Getter
     @lombok.NonNull
-    private final SasResultSet delegate;
+    protected final SasCursor delegate;
 
     @lombok.NonNull
-    private final Failsafe failsafe;
+    protected final Failsafe failsafe;
 
     @Override
     public boolean nextRow() throws IOException {
@@ -160,7 +160,7 @@ final class FailsafeSasResultSet implements SasResultSet {
         }
     }
 
-    private IOException forwardError(String method, RuntimeException unexpected) {
+    protected IOException forwardError(String method, RuntimeException unexpected) {
         String msg = Failsafe.getErrorMsg(getSource(), method);
         return failsafe.forwardError(msg, unexpected, IOException::new);
     }

@@ -70,7 +70,7 @@ public interface SasReader {
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    SasResultSet read(@NonNull Path file) throws IOException;
+    SasCursor read(@NonNull Path file) throws IOException;
 
     /**
      * Read the metadata of a SAS dataset.
@@ -85,8 +85,8 @@ public interface SasReader {
      */
     @NonNull
     default SasMetaData readMetaData(@NonNull Path file) throws IOException {
-        try (SasResultSet rs = read(file)) {
-            return rs.getMetaData();
+        try (SasCursor cursor = read(file)) {
+            return cursor.getMetaData();
         }
     }
 

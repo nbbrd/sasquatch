@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -104,8 +104,8 @@ public final class FailsafeSasReader implements SasReader {
     }
 
     @Override
-    public SasResultSet read(Path file) throws IOException {
-        SasResultSet result;
+    public SasCursor read(Path file) throws IOException {
+        SasCursor result;
 
         try {
             result = delegate.read(file);
@@ -117,7 +117,7 @@ public final class FailsafeSasReader implements SasReader {
             throw forwardNull("read");
         }
 
-        return new FailsafeSasResultSet(result, failsafe);
+        return new FailsafeSasCursor(result, failsafe);
     }
 
     @Override

@@ -92,7 +92,7 @@ public final class SqlCommand extends SasReaderCommand {
 
             // 3. Retrieve data and write output
             output.dropTableIfExist(table).createTable(table);
-            while (rs.nextRow()) {
+            while (rs.next()) {
                 output.insertInto(table, rowMapper.apply(rs));
             }
         }

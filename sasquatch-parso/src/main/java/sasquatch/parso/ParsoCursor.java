@@ -37,13 +37,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import sasquatch.SasColumnFormat;
 import sasquatch.SasColumnType;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-final class ParsoResultSet implements SasResultSet {
+final class ParsoCursor implements SasCursor {
 
     private final InputStream stream;
     private final SasFileReader reader;
@@ -51,7 +51,7 @@ final class ParsoResultSet implements SasResultSet {
     private final boolean[] numberTypes;
     private Object[] currentRow;
 
-    public ParsoResultSet(Path file) throws IOException {
+    public ParsoCursor(Path file) throws IOException {
         this.stream = Files.newInputStream(file);
         this.reader = new SasFileReaderImpl(stream);
         this.metaData = getMetaData(reader);
@@ -71,7 +71,7 @@ final class ParsoResultSet implements SasResultSet {
 
     @Override
     public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
-        return numberTypes[columnIndex] ? currentRow[columnIndex] : SasResultSet.super.getValue(columnIndex);
+        return numberTypes[columnIndex] ? currentRow[columnIndex] : SasCursor.super.getValue(columnIndex);
     }
 
     @Override

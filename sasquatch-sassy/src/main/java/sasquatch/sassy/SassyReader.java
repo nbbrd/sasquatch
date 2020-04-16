@@ -28,7 +28,7 @@ import nbbrd.service.ServiceProvider;
 import org.eobjects.sassy.SasColumnType;
 import org.eobjects.sassy.SasReaderCallback;
 import sasquatch.SasColumnFormat;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -63,10 +63,10 @@ public final class SassyReader implements SasReader {
     }
 
     @Override
-    public SasResultSet read(Path file) throws IOException {
+    public SasCursor read(Path file) throws IOException {
         DataCallback callback = new DataCallback();
         read(file, callback);
-        return new SassyResultSet(callback.toMetaData(), callback.data);
+        return new SassyCursor(callback.toMetaData(), callback.data);
     }
 
     @Override

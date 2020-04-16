@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -16,18 +16,15 @@
  */
 package sasquatch.spi;
 
+import java.io.Closeable;
+import java.io.IOException;
+import sasquatch.SasRow;
+
 /**
  *
  * @author Philippe Charles
  */
-public enum SasFeature {
+public interface SasCursor extends SasRow, Closeable {
 
-    BIG_ENDIAN_32, LITTLE_ENDIAN_32,
-    BIG_ENDIAN_64, LITTLE_ENDIAN_64,
-    ATTRIBUTES, LABEL_META,
-    FIELD_ENCODING, COLUMN_ENCODING,
-    CHAR_COMP, BIN_COMP,
-    DATE_TYPE, DATE_TIME_TYPE, TIME_TYPE,
-    CUSTOM_NUMERIC,
-    COLUMN_FORMAT;
+    boolean nextRow() throws IOException;
 }

@@ -23,7 +23,7 @@ import java.time.LocalTime;
 import java.util.List;
 import sasquatch.SasColumn;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
@@ -39,8 +39,8 @@ public class FakeSasTable {
     @lombok.Singular
     private List<Object[]> rows;
 
-    public SasResultSet asResultSet() {
-        return new SasResultSet() {
+    public SasCursor asCursor() {
+        return new SasCursor() {
             private int row = -1;
 
             private <T> T getValue(Class<T> type, int columnIndex) throws IndexOutOfBoundsException, IllegalArgumentException {

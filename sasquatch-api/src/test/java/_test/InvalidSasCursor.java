@@ -21,13 +21,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class InvalidSasResultSet implements SasResultSet {
+public final class InvalidSasCursor implements SasCursor {
 
     @Override
     public boolean nextRow() throws IOException {

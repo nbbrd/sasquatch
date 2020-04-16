@@ -28,8 +28,8 @@ import java.util.stream.Stream;
 import nbbrd.picocsv.Csv;
 import sasquatch.SasColumn;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
 import sasquatch.SasRowMapper;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasReader;
 
 /**
@@ -80,7 +80,7 @@ public abstract class CsvContent implements SasContent {
 
     private FileError compareToCsv(SasReader reader, Path sasFile, Path csvFile) throws IOException {
         try (Csv.Reader csv = Csv.Reader.of(csvFile, getCharset(csvFile), getFormat(csvFile), getParsing(csvFile))) {
-            try (SasResultSet sas = reader.read(sasFile)) {
+            try (SasCursor sas = reader.read(sasFile)) {
                 SasMetaData meta = sas.getMetaData();
 
                 if (csv.readLine()) {

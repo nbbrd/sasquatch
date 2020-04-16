@@ -176,7 +176,7 @@ public final class CsvCommand extends SasReaderCommand {
             }
             writer.writeEndOfLine();
 
-            while (rs.nextRow()) {
+            while (rs.next()) {
                 for (SasRowMapper<String> o : fieldFunctions) {
                     writer.writeField(o.apply(rs));
                 }

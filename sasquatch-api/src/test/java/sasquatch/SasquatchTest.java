@@ -16,8 +16,8 @@
  */
 package sasquatch;
 
+import _test.EOFCursor;
 import _test.EOFReader;
-import _test.EOFResultSet;
 import _test.Sample;
 import java.io.EOFException;
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class SasquatchTest {
 
         List<Sample.Record> records = new ArrayList<>();
         try (SasResultSet rs = sample.read(Sample.FILE)) {
-            while (rs.nextRow()) {
+            while (rs.next()) {
                 records.add(Sample.parseRecord(rs));
             }
         }
@@ -120,7 +120,7 @@ public class SasquatchTest {
                 .isThrownBy(() -> {
                     EOFReader.Behavior behavior = EOFReader.Behavior.NONE
                             .withAllowRead(true)
-                            .withResultSet(EOFResultSet.Behavior.NONE.withAllowGetMetaData(true));
+                            .withResultSet(EOFCursor.Behavior.NONE.withAllowGetMetaData(true));
                     rowsToList(eof(behavior));
                 })
                 .withCauseExactlyInstanceOf(EOFException.class)
@@ -163,7 +163,7 @@ public class SasquatchTest {
                 .isThrownBy(() -> {
                     EOFReader.Behavior behavior = EOFReader.Behavior.NONE
                             .withAllowRead(true)
-                            .withResultSet(EOFResultSet.Behavior.NONE.withAllowGetMetaData(true));
+                            .withResultSet(EOFCursor.Behavior.NONE.withAllowGetMetaData(true));
                     getAllRows(eof(behavior));
                 })
                 .isExactlyInstanceOf(EOFException.class)

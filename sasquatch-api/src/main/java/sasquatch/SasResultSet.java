@@ -18,6 +18,8 @@ package sasquatch;
 
 import java.io.Closeable;
 import java.io.IOException;
+import lombok.AccessLevel;
+import sasquatch.spi.SasCursor;
 
 /**
  * A result set that contains some metadata and a way to browse the data inside
@@ -30,7 +32,11 @@ import java.io.IOException;
  * @author Philippe Charles
  */
 //@NotThreadSafe
-public interface SasResultSet extends SasRow, Closeable {
+@lombok.RequiredArgsConstructor(access = AccessLevel.PACKAGE)
+public final class SasResultSet implements SasRow, Closeable {
+
+    @lombok.experimental.Delegate(types = {SasRow.class, Closeable.class})
+    private final SasCursor cursor;
 
     /**
      * Moves to the next row.
@@ -38,5 +44,7 @@ public interface SasResultSet extends SasRow, Closeable {
      * @return true if there is a next row; false otherwise
      * @throws IOException if an I/O exception occurred
      */
-    boolean nextRow() throws IOException;
+    public boolean next() throws IOException {
+        return cursor.nextRow();
+    }
 }

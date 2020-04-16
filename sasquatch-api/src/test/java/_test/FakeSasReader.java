@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -49,11 +49,11 @@ public class FakeSasReader implements SasReader {
     private Map<Path, FakeSasTable> tables;
 
     @Override
-    public SasResultSet read(Path file) throws IOException {
+    public SasCursor read(Path file) throws IOException {
         FakeSasTable result = tables.get(file);
         if (result == null) {
             throw new IOException();
         }
-        return result.asResultSet();
+        return result.asCursor();
     }
 }

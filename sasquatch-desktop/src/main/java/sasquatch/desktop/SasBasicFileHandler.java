@@ -43,7 +43,7 @@ public final class SasBasicFileHandler implements BasicFileViewer.BasicFileHandl
             int colCount = metaData.getColumns().size();
             int row = 0;
             Object[][] data = new Object[rowCount][colCount];
-            while (resultSet.nextRow()) {
+            while (resultSet.next()) {
                 for (int col = 0; col < colCount; col++) {
                     data[row][col] = resultSet.getValue(col);
                 }

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasReader;
 
 /**
@@ -107,8 +107,8 @@ public class FailsafeSasReaderTest {
     @Test
     public void testRead() throws IOException {
         reset();
-        try (SasResultSet rs = valid.read(Sample.FILE)) {
-            assertThat(rs).isNotNull();
+        try (SasCursor cursor = valid.read(Sample.FILE)) {
+            assertThat(cursor).isNotNull();
         }
         assertThat(errors).isEmpty();
         assertThat(values).isEmpty();

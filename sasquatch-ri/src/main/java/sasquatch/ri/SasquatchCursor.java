@@ -35,21 +35,21 @@ import lombok.AccessLevel;
 import sasquatch.SasColumn;
 import static sasquatch.SasColumnType.*;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-final class SasquatchResultSet implements SasResultSet {
+final class SasquatchCursor implements SasCursor {
 
-    static SasquatchResultSet of(SeekableByteChannel sbc) throws IOException {
+    static SasquatchCursor of(SeekableByteChannel sbc) throws IOException {
         Document doc = Document.parse(sbc);
         SasMetaData metaData = DocumentUtil.getMetaData(doc);
         RowCursor rowCursor = RowCursor.of(sbc, doc);
         ValueReader[] readers = createReaders(metaData.getColumns(), DocumentUtil.getOffsets(doc), DocumentUtil.getCharset(doc));
-        return new SasquatchResultSet(metaData, rowCursor, readers, sbc);
+        return new SasquatchCursor(metaData, rowCursor, readers, sbc);
     }
 
     private final SasMetaData metaData;

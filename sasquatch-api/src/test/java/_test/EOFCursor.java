@@ -22,17 +22,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.RequiredArgsConstructor
-public final class EOFResultSet implements SasResultSet {
+public final class EOFCursor implements SasCursor {
 
     @lombok.NonNull
-    private final SasResultSet delegate;
+    private final SasCursor delegate;
 
     @lombok.NonNull
     private final Behavior behavior;

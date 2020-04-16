@@ -72,7 +72,7 @@ public final class Sasquatch {
     @NonNull
     public SasResultSet read(@NonNull Path file) throws IOException {
         Objects.requireNonNull(file);
-        return getReader().read(file);
+        return new SasResultSet(getReader().read(file));
     }
 
     /**
@@ -131,7 +131,7 @@ public final class Sasquatch {
         Objects.requireNonNull(rowMapper);
         try (SasResultSet rs = read(file)) {
             List<T> result = new ArrayList<>(getRowCount(rs));
-            while (rs.nextRow()) {
+            while (rs.next()) {
                 result.add(rowMapper.apply(rs));
             }
             return result;
@@ -182,7 +182,7 @@ public final class Sasquatch {
                 return true;
             }
             try {
-                if (rs.nextRow()) {
+                if (rs.next()) {
                     row = func.apply(rs);
                     return rowLoaded = true;
                 }

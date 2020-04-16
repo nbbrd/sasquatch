@@ -16,9 +16,9 @@
  */
 package internal.sasquatch.spi;
 
-import _test.EOFResultSet;
-import _test.FailingSasResultSet;
-import _test.InvalidSasResultSet;
+import _test.EOFCursor;
+import _test.FailingSasCursor;
+import _test.InvalidSasCursor;
 import _test.Sample;
 import java.io.EOFException;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class FailsafeSasResultSetTest {
+public class FailsafeSasCursorTest {
 
     @Test
     public void testNextRow() throws IOException {
@@ -49,7 +49,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> failing().nextRow())
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'nextRow' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'nextRow' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -72,7 +72,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> failing().close())
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'close' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'close' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -95,7 +95,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> failing().getMetaData())
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getMetaData' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getMetaData' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -103,7 +103,7 @@ public class FailsafeSasResultSetTest {
                 .isThrownBy(() -> invalid().getMetaData())
                 .withNoCause();
         assertThat(errors).isEmpty();
-        assertThat(values).contains("Unexpected null value while calling 'getMetaData' on '_test.InvalidSasResultSet'");
+        assertThat(values).contains("Unexpected null value while calling 'getMetaData' on '_test.InvalidSasCursor'");
 
         reset();
         assertThatIOException()
@@ -143,7 +143,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> withNext(failing()).getNumber(0))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getNumber' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getNumber' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -184,7 +184,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> withNext(failing()).getString(1))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getString' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getString' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -225,7 +225,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> withNext(failing()).getDate(2))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getDate' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getDate' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -266,7 +266,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> withNext(failing()).getDateTime(3))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getDateTime' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getDateTime' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -307,7 +307,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> withNext(failing()).getTime(4))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getTime' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getTime' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -362,7 +362,7 @@ public class FailsafeSasResultSetTest {
         assertThatIOException()
                 .isThrownBy(() -> withNext(failing()).getValue(0))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getValue' on '_test.FailingSasResultSet'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'getValue' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
@@ -374,7 +374,7 @@ public class FailsafeSasResultSetTest {
         assertThat(values).isEmpty();
     }
 
-    private FailsafeSasResultSet withNext(FailsafeSasResultSet o) {
+    private FailsafeSasCursor withNext(FailsafeSasCursor o) {
         try {
             o.getDelegate().nextRow();
         } catch (Exception ex) {
@@ -387,20 +387,20 @@ public class FailsafeSasResultSetTest {
 
     private final Failsafe failsafe = new Failsafe(errors::put, values::add);
 
-    private FailsafeSasResultSet valid() {
-        return new FailsafeSasResultSet(Sample.VALID_TABLE.asResultSet(), failsafe);
+    private FailsafeSasCursor valid() {
+        return new FailsafeSasCursor(Sample.VALID_TABLE.asCursor(), failsafe);
     }
 
-    private FailsafeSasResultSet failing() {
-        return new FailsafeSasResultSet(new FailingSasResultSet(), failsafe);
+    private FailsafeSasCursor failing() {
+        return new FailsafeSasCursor(new FailingSasCursor(), failsafe);
     }
 
-    private FailsafeSasResultSet invalid() {
-        return new FailsafeSasResultSet(new InvalidSasResultSet(), failsafe);
+    private FailsafeSasCursor invalid() {
+        return new FailsafeSasCursor(new InvalidSasCursor(), failsafe);
     }
 
-    private FailsafeSasResultSet eof() {
-        return new FailsafeSasResultSet(new EOFResultSet(Sample.VALID_TABLE.asResultSet(), EOFResultSet.Behavior.NONE), failsafe);
+    private FailsafeSasCursor eof() {
+        return new FailsafeSasCursor(new EOFCursor(Sample.VALID_TABLE.asCursor(), EOFCursor.Behavior.NONE), failsafe);
     }
 
     private void reset() {

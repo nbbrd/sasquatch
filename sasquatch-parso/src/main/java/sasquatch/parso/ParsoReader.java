@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 import nbbrd.service.ServiceProvider;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -70,7 +70,7 @@ public final class ParsoReader implements SasReader {
     }
 
     @Override
-    public SasResultSet read(Path file) throws IOException {
-        return new ParsoResultSet(file);
+    public SasCursor read(Path file) throws IOException {
+        return new ParsoCursor(file);
     }
 }

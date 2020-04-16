@@ -27,7 +27,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import nbbrd.service.ServiceProvider;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -39,7 +39,7 @@ import sasquatch.spi.SasReader;
 public final class SasquatchReader implements SasReader {
 
     public static final String NAME = "RI";
-    
+
     @Override
     public String getName() {
         return NAME;
@@ -77,10 +77,10 @@ public final class SasquatchReader implements SasReader {
     }
 
     @Override
-    public SasResultSet read(Path file) throws IOException {
+    public SasCursor read(Path file) throws IOException {
         SeekableByteChannel sbc = Files.newByteChannel(file, READ);
         try {
-            return SasquatchResultSet.of(sbc);
+            return SasquatchCursor.of(sbc);
         } catch (Error | RuntimeException e) {
             try {
                 sbc.close();

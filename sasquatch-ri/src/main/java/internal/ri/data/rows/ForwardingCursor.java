@@ -25,7 +25,7 @@ import java.io.IOException;
  *
  * @author Philippe Charles
  */
-abstract class AbstractRowCursor implements RowCursor {
+abstract class ForwardingCursor implements RowCursor {
 
     @Override
     public boolean next() throws IOException {

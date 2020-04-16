@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -59,9 +59,9 @@ public final class EOFReader implements SasReader {
     }
 
     @Override
-    public SasResultSet read(Path file) throws IOException {
+    public SasCursor read(Path file) throws IOException {
         if (behavior.allowRead) {
-            return new EOFResultSet(delegate.read(file), behavior.resultSet);
+            return new EOFCursor(delegate.read(file), behavior.resultSet);
         }
         throw new EOFException("read");
     }
@@ -86,13 +86,13 @@ public final class EOFReader implements SasReader {
         private boolean allowReadMetaData;
 
         @lombok.NonNull
-        private EOFResultSet.Behavior resultSet;
+        private EOFCursor.Behavior resultSet;
 
         public static BehaviorBuilder builder() {
             return new BehaviorBuilder()
                     .allowRead(false)
                     .allowReadMetaData(false)
-                    .resultSet(EOFResultSet.Behavior.NONE);
+                    .resultSet(EOFCursor.Behavior.NONE);
         }
     }
 }

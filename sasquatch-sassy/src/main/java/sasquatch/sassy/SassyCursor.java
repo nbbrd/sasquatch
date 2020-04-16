@@ -22,14 +22,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import sasquatch.SasResultSet;
+import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.RequiredArgsConstructor
-final class SassyResultSet implements SasResultSet {
+final class SassyCursor implements SasCursor {
 
     private final SasMetaData metaData;
     private final List<Object[]> data;

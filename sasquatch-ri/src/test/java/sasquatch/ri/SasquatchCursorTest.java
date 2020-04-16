@@ -22,14 +22,14 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.READ;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import sasquatch.SasResultSet;
 import static sasquatch.samples.SasResources.PPHAM27;
+import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-public class SasquatchResultSetTest {
+public class SasquatchCursorTest {
 
     @Test
     public void testReadWhenCountLowerThanFirstPageCount() throws IOException {
@@ -49,19 +49,19 @@ public class SasquatchResultSetTest {
         assertEquals(1d, (Double) data[9096][12], 0);
     }
 
-    static SasquatchResultSet of(Path file) throws IOException {
-        return SasquatchResultSet.of(Files.newByteChannel(file, READ));
+    static SasquatchCursor of(Path file) throws IOException {
+        return SasquatchCursor.of(Files.newByteChannel(file, READ));
     }
 
     static Object[][] readAll(Path file) throws IOException {
-        try (SasResultSet rs = of(file)) {
-            int rowCount = rs.getMetaData().getRowCount();
-            int colCount = rs.getMetaData().getColumns().size();
+        try (SasCursor cursor = of(file)) {
+            int rowCount = cursor.getMetaData().getRowCount();
+            int colCount = cursor.getMetaData().getColumns().size();
             Object[][] result = new Object[rowCount][colCount];
             int i = 0;
-            while (rs.nextRow()) {
+            while (cursor.nextRow()) {
                 for (int j = 0; j < colCount; j++) {
-                    result[i][j] = rs.getValue(j);
+                    result[i][j] = cursor.getValue(j);
                 }
                 i++;
             }

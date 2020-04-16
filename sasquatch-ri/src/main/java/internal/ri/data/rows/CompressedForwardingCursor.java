@@ -36,11 +36,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-final class CompressedDataCursor extends AbstractRowCursor {
+final class CompressedForwardingCursor extends ForwardingCursor {
 
     @NonNull
     public static RowCursor of(@NonNull SeekableByteChannel sbc, @NonNull Header header, @NonNull RowSize rowSize, @NonNull Decompressor decompressor) {
-        return new CompressedDataCursor(
+        return new CompressedForwardingCursor(
                 PageCursor.of(sbc, header),
                 header.isU64(),
                 rowSize.getCount(),
@@ -98,7 +98,7 @@ final class CompressedDataCursor extends AbstractRowCursor {
             currentPage = PageHeader.parse(pageCursor.getBytes(), u64, pageCursor.getIndex());
             currentPointer = SubHeaderPointer.parse(pageCursor.getBytes(), u64, lastMetaLocation.next());
         } else {
-            currentPage = AbstractRowCursor.nextPageWithData(pageCursor, u64, CompressedDataCursor::hasData);
+            currentPage = ForwardingCursor.nextPageWithData(pageCursor, u64, CompressedForwardingCursor::hasData);
             currentPointer = SubHeaderPointer.parse(pageCursor.getBytes(), u64, new SubHeaderLocation(currentPage.getIndex(), 0));
         }
         nextPointer = null;
