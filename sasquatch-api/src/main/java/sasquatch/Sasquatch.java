@@ -59,20 +59,37 @@ public final class Sasquatch {
     private final Optional<SasReader> reader;
 
     /**
-     * Read a SAS dataset into a result set.
+     * Read a SAS dataset into a forward cursor.
      * <p>
      * The result set might hold some resources opened so it is advised to call
      * the close method after use.
-     * <br>The result set is <u>not</u> thread-safe.
+     * <br>The cursor is <u>not</u> thread-safe.
      *
      * @param file the SAS dataset to read
-     * @return a non-null result set
+     * @return a non-null cursor
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    public SasResultSet read(@NonNull Path file) throws IOException {
+    public SasForwardCursor readForward(@NonNull Path file) throws IOException {
         Objects.requireNonNull(file);
-        return new SasResultSet(getReader().read(file));
+        return getReader().readForward(file);
+    }
+
+    /**
+     * Read a SAS dataset into a scrollable cursor.
+     * <p>
+     * The result set might hold some resources opened so it is advised to call
+     * the close method after use.
+     * <br>The cursor is <u>not</u> thread-safe.
+     *
+     * @param file the SAS dataset to read
+     * @return a non-null cursor
+     * @throws IOException if an I/O exception occurred
+     */
+    @NonNull
+    public SasScrollableCursor readScrollable(@NonNull Path file) throws IOException {
+        Objects.requireNonNull(file);
+        return getReader().readScrollable(file);
     }
 
     /**
@@ -112,8 +129,8 @@ public final class Sasquatch {
     public <T> Stream<T> rows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
         Objects.requireNonNull(file);
         Objects.requireNonNull(rowMapper);
-        SasResultSet rs = read(file);
-        return streamOf(rs, rowMapper).onClose(asUncheckedRunnable(rs));
+        SasForwardCursor cursor = readForward(file);
+        return streamOf(cursor, rowMapper).onClose(asUncheckedRunnable(cursor));
     }
 
     /**
@@ -129,10 +146,10 @@ public final class Sasquatch {
     public <T> List<T> getAllRows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
         Objects.requireNonNull(file);
         Objects.requireNonNull(rowMapper);
-        try (SasResultSet rs = read(file)) {
-            List<T> result = new ArrayList<>(getRowCount(rs));
-            while (rs.next()) {
-                result.add(rowMapper.apply(rs));
+        try (SasForwardCursor cursor = readForward(file)) {
+            List<T> result = new ArrayList<>(cursor.getRowCount());
+            while (cursor.next()) {
+                result.add(rowMapper.apply(cursor));
             }
             return result;
         }
@@ -142,16 +159,12 @@ public final class Sasquatch {
         return reader.orElseThrow(() -> new IOException("No reader available"));
     }
 
-    private static <T> Stream<T> streamOf(SasResultSet rs, SasRowMapper<T> rowMapper) throws IOException {
+    private static <T> Stream<T> streamOf(SasForwardCursor rs, SasRowMapper<T> rowMapper) throws IOException {
         return StreamSupport.stream(spliteratorOf(rs, rowMapper), false);
     }
 
-    private static <T> Spliterator<T> spliteratorOf(SasResultSet rs, SasRowMapper<T> rowMapper) throws IOException {
-        return Spliterators.spliterator(new SasIterator<>(rs, rowMapper), getRowCount(rs), Spliterator.ORDERED | Spliterator.NONNULL);
-    }
-
-    private static int getRowCount(SasResultSet rs) throws IOException {
-        return rs.getMetaData().getRowCount();
+    private static <T> Spliterator<T> spliteratorOf(SasForwardCursor cursor, SasRowMapper<T> rowMapper) throws IOException {
+        return Spliterators.spliterator(new SasIterator<>(cursor, rowMapper), cursor.getRowCount(), Spliterator.ORDERED | Spliterator.NONNULL);
     }
 
     private static Runnable asUncheckedRunnable(Closeable c) {
@@ -168,7 +181,7 @@ public final class Sasquatch {
     private static final class SasIterator<T> implements Iterator<T> {
 
         @lombok.NonNull
-        private final SasResultSet rs;
+        private final SasForwardCursor cursor;
 
         @lombok.NonNull
         private final SasRowMapper<T> func;
@@ -182,8 +195,8 @@ public final class Sasquatch {
                 return true;
             }
             try {
-                if (rs.next()) {
-                    row = func.apply(rs);
+                if (cursor.next()) {
+                    row = func.apply(cursor);
                     return rowLoaded = true;
                 }
                 row = null;

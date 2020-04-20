@@ -20,8 +20,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -36,7 +37,16 @@ public final class EOFReader implements SasReader {
     private final SasReader delegate;
 
     @lombok.NonNull
-    private final Behavior behavior;
+    private final Opts opts;
+
+    @lombok.NonNull
+    private final EOFCursor.Opts cursorOpts;
+
+    @lombok.NonNull
+    private final EOFForward.Opts forwardOpts;
+
+    @lombok.NonNull
+    private final EOFScrollable.Opts scrollableOpts;
 
     @Override
     public String getName() {
@@ -59,16 +69,24 @@ public final class EOFReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
-        if (behavior.allowRead) {
-            return new EOFCursor(delegate.read(file), behavior.resultSet);
+    public SasForwardCursor readForward(Path file) throws IOException {
+        if (opts.isAllowReadForward()) {
+            return new EOFForward(delegate.readForward(file), cursorOpts, forwardOpts);
         }
-        throw new EOFException("read");
+        throw new EOFException("readForward");
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
+        if (opts.isAllowReadScrollable()) {
+            return new EOFScrollable(delegate.readScrollable(file), cursorOpts, scrollableOpts);
+        }
+        throw new EOFException("readScrollable");
     }
 
     @Override
     public SasMetaData readMetaData(Path file) throws IOException {
-        if (behavior.allowReadMetaData) {
+        if (opts.isAllowReadMetaData()) {
             return delegate.readMetaData(file);
         }
         throw new EOFException("readMetaData");
@@ -77,22 +95,13 @@ public final class EOFReader implements SasReader {
     @lombok.Value
     @lombok.Builder
     @lombok.With
-    public static class Behavior {
+    public static class Opts {
 
-        public static final Behavior NONE = Behavior.builder().build();
+        public static final Opts NONE = Opts.builder().build();
+        public static final Opts ALL = Opts.builder().allowReadForward(true).allowReadScrollable(true).allowReadMetaData(true).build();
 
-        private boolean allowRead;
-
+        private boolean allowReadForward;
+        private boolean allowReadScrollable;
         private boolean allowReadMetaData;
-
-        @lombok.NonNull
-        private EOFCursor.Behavior resultSet;
-
-        public static BehaviorBuilder builder() {
-            return new BehaviorBuilder()
-                    .allowRead(false)
-                    .allowReadMetaData(false)
-                    .resultSet(EOFCursor.Behavior.NONE);
-        }
     }
 }

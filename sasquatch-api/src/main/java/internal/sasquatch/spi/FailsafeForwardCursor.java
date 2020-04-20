@@ -14,20 +14,27 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
+package internal.sasquatch.spi;
 
-module sasquatch.api {
+import java.io.IOException;
+import sasquatch.SasForwardCursor;
 
-    requires static nbbrd.service;
-    requires static org.checkerframework.checker.qual;
-    requires static lombok;
-    
-    requires java.logging;
+/**
+ *
+ * @author Philippe Charles
+ */
+final class FailsafeForwardCursor extends FailsafeCursor<SasForwardCursor> implements SasForwardCursor {
 
-    exports sasquatch;
-    exports sasquatch.util;
-    exports sasquatch.spi;
+    public FailsafeForwardCursor(SasForwardCursor cursor, Failsafe failsafe) {
+        super(cursor, failsafe);
+    }
 
-    provides java.nio.file.spi.FileTypeDetector with sasquatch.SasFileTypeDetector;
-    
-    uses sasquatch.spi.SasReader;
+    @Override
+    public boolean next() throws IOException {
+        try {
+            return delegate.next();
+        } catch (RuntimeException unexpected) {
+            throw forwardError("next", unexpected);
+        }
+    }
 }

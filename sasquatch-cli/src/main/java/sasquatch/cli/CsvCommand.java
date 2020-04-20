@@ -28,8 +28,8 @@ import nbbrd.picocsv.Csv;
 import picocli.CommandLine;
 import picocli.ext.CsvOptions;
 import sasquatch.SasColumn;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
 import sasquatch.SasRowMapper;
 import sasquatch.Sasquatch;
 
@@ -166,8 +166,8 @@ public final class CsvCommand extends SasReaderCommand {
         Sasquatch sas = getSasquatch();
         TextFormatter textFormatter = formatter.getFormatter();
 
-        try (SasResultSet rs = sas.read(getSingleFile())) {
-            List<SasColumn> columns = rs.getMetaData().getColumns();
+        try (SasForwardCursor cursor = sas.readForward(getSingleFile())) {
+            List<SasColumn> columns = cursor.getMetaData().getColumns();
 
             List<SasRowMapper<String>> fieldFunctions = new ArrayList<>();
             for (SasColumn o : columns) {
@@ -176,9 +176,9 @@ public final class CsvCommand extends SasReaderCommand {
             }
             writer.writeEndOfLine();
 
-            while (rs.next()) {
+            while (cursor.next()) {
                 for (SasRowMapper<String> o : fieldFunctions) {
-                    writer.writeField(o.apply(rs));
+                    writer.writeField(o.apply(cursor));
                 }
                 writer.writeEndOfLine();
             }

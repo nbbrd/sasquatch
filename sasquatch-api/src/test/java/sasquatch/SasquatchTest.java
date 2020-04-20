@@ -17,7 +17,9 @@
 package sasquatch;
 
 import _test.EOFCursor;
+import _test.EOFForward;
 import _test.EOFReader;
+import _test.EOFScrollable;
 import _test.Sample;
 import java.io.EOFException;
 import java.io.IOException;
@@ -45,17 +47,17 @@ public class SasquatchTest {
     }
 
     @Test
-    public void testRead() throws IOException {
+    public void testReadForward() throws IOException {
         assertThatNullPointerException()
-                .isThrownBy(() -> empty.read(null));
+                .isThrownBy(() -> empty.readForward(null));
 
         assertThatIOException()
-                .isThrownBy(() -> empty.read(Sample.FILE));
+                .isThrownBy(() -> empty.readForward(Sample.FILE));
 
         List<Sample.Record> records = new ArrayList<>();
-        try (SasResultSet rs = sample.read(Sample.FILE)) {
-            while (rs.next()) {
-                records.add(Sample.parseRecord(rs));
+        try (SasForwardCursor cursor = sample.readForward(Sample.FILE)) {
+            while (cursor.next()) {
+                records.add(Sample.parseRecord(cursor));
             }
         }
         assertThat(records)
@@ -63,7 +65,7 @@ public class SasquatchTest {
                 .contains(Sample.ROW1, Index.atIndex(0));
 
         assertThatIOException()
-                .isThrownBy(() -> eof.read(Sample.FILE))
+                .isThrownBy(() -> eof.readForward(Sample.FILE))
                 .isExactlyInstanceOf(EOFException.class)
                 .withMessageContaining("read");
     }
@@ -101,27 +103,21 @@ public class SasquatchTest {
 
         assertThatIOException()
                 .isThrownBy(() -> {
-                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE;
-                    rowsToList(eof(behavior));
+                    rowsToList(eof(EOFReader.Opts.NONE, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
                 })
                 .isExactlyInstanceOf(EOFException.class)
-                .withMessageContaining("read");
+                .withMessageContaining("readForward");
 
         assertThatIOException()
                 .isThrownBy(() -> {
-                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE
-                            .withAllowRead(true);
-                    rowsToList(eof(behavior));
+                    rowsToList(eof(EOFReader.Opts.ALL, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
                 })
                 .isExactlyInstanceOf(EOFException.class)
-                .withMessageContaining("getMetaData");
+                .withMessageContaining("getRowCount");
 
         assertThatExceptionOfType(UncheckedIOException.class)
                 .isThrownBy(() -> {
-                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE
-                            .withAllowRead(true)
-                            .withResultSet(EOFCursor.Behavior.NONE.withAllowGetMetaData(true));
-                    rowsToList(eof(behavior));
+                    rowsToList(eof(EOFReader.Opts.ALL, EOFCursor.Opts.META, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
                 })
                 .withCauseExactlyInstanceOf(EOFException.class)
                 .withStackTraceContaining("close");
@@ -144,39 +140,33 @@ public class SasquatchTest {
 
         assertThatIOException()
                 .isThrownBy(() -> {
-                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE;
-                    getAllRows(eof(behavior));
+                    getAllRows(eof(EOFReader.Opts.NONE, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
                 })
                 .isExactlyInstanceOf(EOFException.class)
-                .withMessageContaining("read");
+                .withMessageContaining("readForward");
 
         assertThatIOException()
                 .isThrownBy(() -> {
-                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE
-                            .withAllowRead(true);
-                    getAllRows(eof(behavior));
+                    getAllRows(eof(EOFReader.Opts.ALL, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
                 })
                 .isExactlyInstanceOf(EOFException.class)
-                .withMessageContaining("getMetaData");
+                .withMessageContaining("getRowCount");
 
         assertThatIOException()
                 .isThrownBy(() -> {
-                    EOFReader.Behavior behavior = EOFReader.Behavior.NONE
-                            .withAllowRead(true)
-                            .withResultSet(EOFCursor.Behavior.NONE.withAllowGetMetaData(true));
-                    getAllRows(eof(behavior));
+                    getAllRows(eof(EOFReader.Opts.ALL, EOFCursor.Opts.META, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
                 })
                 .isExactlyInstanceOf(EOFException.class)
-                .withMessageContaining("nextRow")
+                .withMessageContaining("next")
                 .withStackTraceContaining("close");
     }
 
     private final Sasquatch empty = Sasquatch.ofServiceLoader();
     private final Sasquatch sample = Sasquatch.of(Sample.VALID_READER);
-    private final Sasquatch eof = Sasquatch.of(new EOFReader(Sample.VALID_READER, EOFReader.Behavior.NONE));
+    private final Sasquatch eof = Sasquatch.of(new EOFReader(Sample.VALID_READER, EOFReader.Opts.NONE, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE));
 
-    private Sasquatch eof(EOFReader.Behavior behavior) {
-        return Sasquatch.of(new EOFReader(Sample.VALID_READER, behavior));
+    private Sasquatch eof(EOFReader.Opts reader, EOFCursor.Opts cursor, EOFForward.Opts forward, EOFScrollable.Opts scrollable) {
+        return Sasquatch.of(new EOFReader(Sample.VALID_READER, reader, cursor, forward, scrollable));
     }
 
     private List<Sample.Record> getAllRows(Sasquatch sasquatch) throws IOException {

@@ -60,6 +60,6 @@ public final class BigEndian32Assertion extends AbstractFeatureAssertion {
                 .contains(columnOf(4, NUMERIC, 8, "Column5", ""), Index.atIndex(4))
                 .hasSize(100);
 
-        super.assertSuccess(s, reader);
+        assertSameContent(s, reader);
     }
 }

@@ -16,6 +16,7 @@
  */
 package _test;
 
+import sasquatch.util.SasArray;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -23,10 +24,12 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.EnumSet;
 import org.assertj.core.util.Files;
 import sasquatch.SasColumn;
 import sasquatch.SasColumnType;
+import sasquatch.SasMetaData;
 import sasquatch.SasRow;
 import sasquatch.Sasquatch;
 import sasquatch.spi.SasFeature;
@@ -44,15 +47,16 @@ public class Sample {
 
     public final Record ROW1 = new Record(3.14, "abc", DATE.toLocalDate(), DATE, DATE.toLocalTime());
 
-    public final FakeSasTable VALID_TABLE = FakeSasTable
-            .builder()
-            .column(SasColumn.builder().name("c1").order(0).type(SasColumnType.NUMERIC).build())
-            .column(SasColumn.builder().name("c2").order(1).type(SasColumnType.CHARACTER).build())
-            .column(SasColumn.builder().name("c3").order(2).type(SasColumnType.DATE).build())
-            .column(SasColumn.builder().name("c4").order(3).type(SasColumnType.DATETIME).build())
-            .column(SasColumn.builder().name("c5").order(4).type(SasColumnType.TIME).build())
-            .row(ROW1.toArray())
-            .build();
+    public final SasArray VALID_TABLE = SasArray
+            .of(SasMetaData
+                    .builder()
+                    .column(SasColumn.builder().name("c1").order(0).type(SasColumnType.NUMERIC).build())
+                    .column(SasColumn.builder().name("c2").order(1).type(SasColumnType.CHARACTER).build())
+                    .column(SasColumn.builder().name("c3").order(2).type(SasColumnType.DATE).build())
+                    .column(SasColumn.builder().name("c4").order(3).type(SasColumnType.DATETIME).build())
+                    .column(SasColumn.builder().name("c5").order(4).type(SasColumnType.TIME).build())
+                    .build(),
+                    Collections.singletonList(ROW1.toArray()));
 
     public final FakeSasReader VALID_READER = FakeSasReader
             .builder()

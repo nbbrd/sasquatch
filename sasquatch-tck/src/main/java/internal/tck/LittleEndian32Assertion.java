@@ -67,6 +67,8 @@ public final class LittleEndian32Assertion extends AbstractFeatureAssertion {
                     .contains(new Little32("Hawaii", 6423d), Index.atIndex(49))
                     .hasSize(50);
         }
+        
+        assertSameContent(s, reader);
     }
 
     @lombok.Value

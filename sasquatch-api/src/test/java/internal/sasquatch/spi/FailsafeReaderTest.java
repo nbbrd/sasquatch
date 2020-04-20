@@ -16,7 +16,10 @@
  */
 package internal.sasquatch.spi;
 
+import _test.EOFCursor;
+import _test.EOFForward;
 import _test.EOFReader;
+import _test.EOFScrollable;
 import _test.FailingSasReader;
 import _test.InvalidSasReader;
 import _test.Sample;
@@ -28,14 +31,14 @@ import java.util.List;
 import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 import org.junit.Test;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasForwardCursor;
 import sasquatch.spi.SasReader;
 
 /**
  *
  * @author Philippe Charles
  */
-public class FailsafeSasReaderTest {
+public class FailsafeReaderTest {
 
     @Test
     public void testName() {
@@ -105,9 +108,9 @@ public class FailsafeSasReaderTest {
     }
 
     @Test
-    public void testRead() throws IOException {
+    public void testReadForward() throws IOException {
         reset();
-        try (SasCursor cursor = valid.read(Sample.FILE)) {
+        try (SasForwardCursor cursor = valid.readForward(Sample.FILE)) {
             assertThat(cursor).isNotNull();
         }
         assertThat(errors).isEmpty();
@@ -115,21 +118,21 @@ public class FailsafeSasReaderTest {
 
         reset();
         assertThatIOException()
-                .isThrownBy(() -> failing.read(Sample.FILE))
+                .isThrownBy(() -> failing.readForward(Sample.FILE))
                 .withCauseExactlyInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).containsKey("Unexpected error while calling 'read' on '_test.FailingSasReader'");
+        assertThat(errors).containsKey("Unexpected error while calling 'readForward' on '_test.FailingSasReader'");
         assertThat(values).isEmpty();
 
         reset();
         assertThatIOException()
-                .isThrownBy(() -> invalid.read(Sample.FILE))
+                .isThrownBy(() -> invalid.readForward(Sample.FILE))
                 .withNoCause();
         assertThat(errors).isEmpty();
-        assertThat(values).hasSize(1).contains("Unexpected null value while calling 'read' on '_test.InvalidSasReader'");
+        assertThat(values).hasSize(1).contains("Unexpected null value while calling 'readForward' on '_test.InvalidSasReader'");
 
         reset();
         assertThatIOException()
-                .isThrownBy(() -> eof.read(Sample.FILE))
+                .isThrownBy(() -> eof.readForward(Sample.FILE))
                 .isExactlyInstanceOf(EOFException.class)
                 .withNoCause();
         assertThat(errors).isEmpty();
@@ -171,10 +174,10 @@ public class FailsafeSasReaderTest {
 
     private final Failsafe failsafe = new Failsafe(errors::put, values::add);
 
-    private final FailsafeSasReader valid = new FailsafeSasReader(Sample.VALID_READER, failsafe);
-    private final FailsafeSasReader failing = new FailsafeSasReader(new FailingSasReader(), failsafe);
-    private final FailsafeSasReader invalid = new FailsafeSasReader(new InvalidSasReader(), failsafe);
-    private final FailsafeSasReader eof = new FailsafeSasReader(new EOFReader(Sample.VALID_READER, EOFReader.Behavior.NONE), failsafe);
+    private final FailsafeReader valid = new FailsafeReader(Sample.VALID_READER, failsafe);
+    private final FailsafeReader failing = new FailsafeReader(new FailingSasReader(), failsafe);
+    private final FailsafeReader invalid = new FailsafeReader(new InvalidSasReader(), failsafe);
+    private final FailsafeReader eof = new FailsafeReader(new EOFReader(Sample.VALID_READER, EOFReader.Opts.NONE, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE), failsafe);
 
     private void reset() {
         errors.clear();

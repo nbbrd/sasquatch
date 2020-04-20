@@ -34,15 +34,15 @@ import java.util.List;
 import lombok.AccessLevel;
 import sasquatch.SasColumn;
 import static sasquatch.SasColumnType.*;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
-final class SasquatchCursor implements SasCursor {
+final class SasquatchCursor implements SasForwardCursor {
 
     static SasquatchCursor of(SeekableByteChannel sbc) throws IOException {
         Document doc = Document.parse(sbc);
@@ -63,7 +63,7 @@ final class SasquatchCursor implements SasCursor {
     }
 
     @Override
-    public boolean nextRow() throws IOException {
+    public boolean next() throws IOException {
         return rowCursor.next();
     }
 

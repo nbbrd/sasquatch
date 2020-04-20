@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -31,13 +32,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface SasRow {
 
     /**
-     * Returns the metadata of the SAS dataset.
+     * The list of columns in the SAS dataset.
      *
-     * @return a non-null metadata
+     * @return a non-null unmodifiable list of non-null columns
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    SasMetaData getMetaData() throws IOException;
+    List<SasColumn> getColumns() throws IOException;
 
     /**
      * Retrieves the value of the specified column in the current row.
@@ -53,8 +54,7 @@ public interface SasRow {
      */
     @Nullable
     default Object getValue(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException {
-        SasColumn column = getMetaData().getColumns().get(columnIndex);
-        switch (column.getType()) {
+        switch (getColumns().get(columnIndex).getType()) {
             case CHARACTER:
                 return getString(columnIndex);
             case NUMERIC:

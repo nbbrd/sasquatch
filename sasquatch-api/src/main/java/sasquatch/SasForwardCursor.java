@@ -16,27 +16,14 @@
  */
 package sasquatch;
 
-import java.io.Closeable;
 import java.io.IOException;
-import lombok.AccessLevel;
-import sasquatch.spi.SasCursor;
 
 /**
- * A result set that contains some metadata and a way to browse the data inside
- * a SAS dataset.
- * <p>
- * This result set is <u>not</u> thread-safe since it is mutable to allow
- * iteration through the content of the dataset. Furthermore, it might hold some
- * resources opened so it is advised to close it after use.
+ * A cursor that browse data in forward mode only.
  *
  * @author Philippe Charles
  */
-//@NotThreadSafe
-@lombok.RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-public final class SasResultSet implements SasRow, Closeable {
-
-    @lombok.experimental.Delegate(types = {SasRow.class, Closeable.class})
-    private final SasCursor cursor;
+public interface SasForwardCursor extends SasCursor {
 
     /**
      * Moves to the next row.
@@ -44,7 +31,5 @@ public final class SasResultSet implements SasRow, Closeable {
      * @return true if there is a next row; false otherwise
      * @throws IOException if an I/O exception occurred
      */
-    public boolean next() throws IOException {
-        return cursor.nextRow();
-    }
+    boolean next() throws IOException;
 }

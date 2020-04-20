@@ -20,8 +20,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import sasquatch.SasColumn;
+import sasquatch.SasCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
 
 /**
  *
@@ -29,23 +31,14 @@ import sasquatch.spi.SasCursor;
  */
 @lombok.AllArgsConstructor
 @lombok.extern.java.Log
-class FailsafeSasCursor implements SasCursor {
+abstract class FailsafeCursor<T extends SasCursor> implements SasCursor {
 
     @lombok.Getter
     @lombok.NonNull
-    protected final SasCursor delegate;
+    protected final T delegate;
 
     @lombok.NonNull
     protected final Failsafe failsafe;
-
-    @Override
-    public boolean nextRow() throws IOException {
-        try {
-            return delegate.nextRow();
-        } catch (RuntimeException unexpected) {
-            throw forwardError("nextRow", unexpected);
-        }
-    }
 
     @Override
     public void close() throws IOException {
@@ -71,6 +64,24 @@ class FailsafeSasCursor implements SasCursor {
         }
 
         return result;
+    }
+
+    @Override
+    public List<SasColumn> getColumns() throws IOException {
+        try {
+            return delegate.getColumns();
+        } catch (RuntimeException unexpected) {
+            throw forwardError("getColumns", unexpected);
+        }
+    }
+
+    @Override
+    public int getRowCount() throws IOException {
+        try {
+            return delegate.getRowCount();
+        } catch (RuntimeException unexpected) {
+            throw forwardError("getRowCount", unexpected);
+        }
     }
 
     @Override
@@ -165,12 +176,12 @@ class FailsafeSasCursor implements SasCursor {
         return failsafe.forwardError(msg, unexpected, IOException::new);
     }
 
-    private IOException forwardNull(String method) {
+    protected IOException forwardNull(String method) {
         String msg = Failsafe.getNullMsg(getSource(), method);
         return failsafe.forwardValue(msg, IOException::new);
     }
 
-    private Class<?> getSource() {
+    protected Class<?> getSource() {
         return delegate.getClass();
     }
 }

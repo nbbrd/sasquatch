@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasForwardCursor;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -52,7 +52,12 @@ public final class FailingSasReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
+    public SasForwardCursor readForward(Path file) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

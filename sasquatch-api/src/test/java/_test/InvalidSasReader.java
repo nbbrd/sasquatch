@@ -19,8 +19,9 @@ package _test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -51,7 +52,12 @@ public final class InvalidSasReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
+    public SasForwardCursor readForward(Path file) throws IOException {
+        return null;
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
         return null;
     }
 

@@ -26,8 +26,9 @@ import java.util.Set;
 import nbbrd.service.ServiceProvider;
 import sasquatch.SasColumn;
 import sasquatch.SasColumnType;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -68,7 +69,16 @@ public final class BiostatmattReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
+    public SasForwardCursor readForward(Path file) throws IOException {
+        return newCursor(file);
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
+        return newCursor(file);
+    }
+
+    private static BiostatmattCursor newCursor(Path file) throws IOException {
         RUtils.RFrame frame = readFrame(file);
         return new BiostatmattCursor(getMetaData(frame.getAttributes()), frame.getData());
     }

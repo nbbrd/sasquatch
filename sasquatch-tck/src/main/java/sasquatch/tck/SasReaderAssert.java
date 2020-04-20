@@ -41,7 +41,8 @@ public final class SasReaderAssert {
         s.assertThat(reader.getName()).isNotBlank();
         s.assertThat(reader.getCost()).isGreaterThanOrEqualTo(0);
         s.assertThat(reader.getFeatures()).isNotNull();
-        s.assertThatThrownBy(() -> reader.read(null)).isInstanceOf(NullPointerException.class);
+        s.assertThatThrownBy(() -> reader.readForward(null)).isInstanceOf(NullPointerException.class);
+        s.assertThatThrownBy(() -> reader.readScrollable(null)).isInstanceOf(NullPointerException.class);
         s.assertThatThrownBy(() -> reader.readMetaData(null)).isInstanceOf(NullPointerException.class);
 
         for (SasFeatureAssertion x : SasFeatureAssertionLoader.get()) {

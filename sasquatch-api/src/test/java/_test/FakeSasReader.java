@@ -16,11 +16,14 @@
  */
 package _test;
 
+import sasquatch.util.SasArray;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasForwardCursor;
+import sasquatch.SasMetaData;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -46,14 +49,28 @@ public class FakeSasReader implements SasReader {
     private Set<SasFeature> features;
 
     @lombok.Singular
-    private Map<Path, FakeSasTable> tables;
+    private Map<Path, SasArray> tables;
 
-    @Override
-    public SasCursor read(Path file) throws IOException {
-        FakeSasTable result = tables.get(file);
+    private SasArray getTable(Path file) throws IOException {
+        SasArray result = tables.get(file);
         if (result == null) {
             throw new IOException();
         }
-        return result.asCursor();
+        return result;
+    }
+
+    @Override
+    public SasForwardCursor readForward(Path file) throws IOException {
+        return getTable(file).readForward();
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
+        return getTable(file).readScrollable();
+    }
+
+    @Override
+    public SasMetaData readMetaData(Path file) throws IOException {
+        return getTable(file).getMetaData();
     }
 }

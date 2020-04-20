@@ -20,17 +20,18 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class FailingSasCursor implements SasCursor {
+public final class FailingSasCursor implements SasForwardCursor, SasScrollableCursor {
 
     @Override
-    public boolean nextRow() throws IOException {
+    public boolean next() throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -66,6 +67,16 @@ public final class FailingSasCursor implements SasCursor {
 
     @Override
     public void close() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public int getRow() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean moveTo(int row) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

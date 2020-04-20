@@ -23,7 +23,6 @@ import static java.nio.file.StandardOpenOption.READ;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import static sasquatch.samples.SasResources.PPHAM27;
-import sasquatch.spi.SasCursor;
 
 /**
  *
@@ -54,12 +53,12 @@ public class SasquatchCursorTest {
     }
 
     static Object[][] readAll(Path file) throws IOException {
-        try (SasCursor cursor = of(file)) {
-            int rowCount = cursor.getMetaData().getRowCount();
-            int colCount = cursor.getMetaData().getColumns().size();
+        try (SasquatchCursor cursor = of(file)) {
+            int rowCount = cursor.getRowCount();
+            int colCount = cursor.getColumns().size();
             Object[][] result = new Object[rowCount][colCount];
             int i = 0;
-            while (cursor.nextRow()) {
+            while (cursor.next()) {
                 for (int j = 0; j < colCount; j++) {
                     result[i][j] = cursor.getValue(j);
                 }

@@ -17,12 +17,11 @@
 package sasquatch.desktop;
 
 import sasquatch.SasFilenameFilter;
-import sasquatch.SasMetaData;
 import ec.util.various.swing.BasicFileViewer;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import sasquatch.SasResultSet;
+import sasquatch.SasForwardCursor;
 import sasquatch.Sasquatch;
 
 /**
@@ -37,22 +36,21 @@ public final class SasBasicFileHandler implements BasicFileViewer.BasicFileHandl
 
     @Override
     public Object asyncLoad(File file, BasicFileViewer.ProgressCallback progress) throws IOException {
-        try (SasResultSet resultSet = reader.read(file.toPath())) {
-            SasMetaData metaData = resultSet.getMetaData();
-            int rowCount = metaData.getRowCount();
-            int colCount = metaData.getColumns().size();
+        try (SasForwardCursor cursor = reader.readForward(file.toPath())) {
+            int rowCount = cursor.getRowCount();
+            int colCount = cursor.getColumns().size();
             int row = 0;
             Object[][] data = new Object[rowCount][colCount];
-            while (resultSet.next()) {
+            while (cursor.next()) {
                 for (int col = 0; col < colCount; col++) {
-                    data[row][col] = resultSet.getValue(col);
+                    data[row][col] = cursor.getValue(col);
                 }
                 row++;
                 if (row % 1000 == 0) {
                     progress.setProgress(0, rowCount, row);
                 }
             }
-            return new SasBasicFileModel(metaData, data);
+            return new SasBasicFileModel(cursor.getMetaData(), data);
         }
     }
 

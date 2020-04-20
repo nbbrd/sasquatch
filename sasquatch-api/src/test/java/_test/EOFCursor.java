@@ -21,41 +21,52 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import sasquatch.SasColumn;
+import sasquatch.SasCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
 
 /**
  *
  * @author Philippe Charles
+ * @param <T>
  */
 @lombok.RequiredArgsConstructor
-public final class EOFCursor implements SasCursor {
+public abstract class EOFCursor<T extends SasCursor> implements SasCursor {
 
     @lombok.NonNull
-    private final SasCursor delegate;
+    protected final T delegate;
 
     @lombok.NonNull
-    private final Behavior behavior;
-
-    @Override
-    public boolean nextRow() throws IOException {
-        if (behavior.allowNextRow) {
-            return delegate.nextRow();
-        }
-        throw new EOFException("nextRow");
-    }
+    protected final Opts opts;
 
     @Override
     public SasMetaData getMetaData() throws IOException {
-        if (behavior.allowGetMetaData) {
+        if (opts.isAllowGetMetaData()) {
             return delegate.getMetaData();
         }
         throw new EOFException("getMetaData");
     }
 
     @Override
+    public int getRowCount() throws IOException {
+        if (opts.isAllowGetRowCount()) {
+            return delegate.getRowCount();
+        }
+        throw new EOFException("getRowCount");
+    }
+
+    @Override
+    public List<SasColumn> getColumns() throws IOException {
+        if (opts.isAllowGetColumns()) {
+            return delegate.getColumns();
+        }
+        throw new EOFException("allowGetColumns");
+    }
+
+    @Override
     public double getNumber(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        if (behavior.allowGetNumber) {
+        if (opts.isAllowGetNumber()) {
             return delegate.getNumber(columnIndex);
         }
         throw new EOFException("getNumber");
@@ -63,7 +74,7 @@ public final class EOFCursor implements SasCursor {
 
     @Override
     public String getString(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        if (behavior.allowGetString) {
+        if (opts.isAllowGetString()) {
             return delegate.getString(columnIndex);
         }
         throw new EOFException("getString");
@@ -71,7 +82,7 @@ public final class EOFCursor implements SasCursor {
 
     @Override
     public LocalDate getDate(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        if (behavior.allowGetDate) {
+        if (opts.isAllowGetDate()) {
             return delegate.getDate(columnIndex);
         }
         throw new EOFException("getDate");
@@ -79,7 +90,7 @@ public final class EOFCursor implements SasCursor {
 
     @Override
     public LocalDateTime getDateTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        if (behavior.allowGetDateTime) {
+        if (opts.allowGetDateTime) {
             return delegate.getDateTime(columnIndex);
         }
         throw new EOFException("getDateTime");
@@ -87,7 +98,7 @@ public final class EOFCursor implements SasCursor {
 
     @Override
     public LocalTime getTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        if (behavior.allowGetTime) {
+        if (opts.isAllowGetTime()) {
             return delegate.getTime(columnIndex);
         }
         throw new EOFException("getTime");
@@ -95,7 +106,7 @@ public final class EOFCursor implements SasCursor {
 
     @Override
     public void close() throws IOException {
-        if (behavior.allowClose) {
+        if (opts.isAllowClose()) {
             delegate.close();
         }
         throw new EOFException("close");
@@ -104,12 +115,19 @@ public final class EOFCursor implements SasCursor {
     @lombok.Value
     @lombok.Builder
     @lombok.With
-    public static class Behavior {
+    public static class Opts {
 
-        public static final Behavior NONE = Behavior.builder().build();
+        public static final Opts NONE = Opts.builder().build();
+        public static final Opts META = Opts
+                .builder()
+                .allowGetMetaData(true)
+                .allowGetRowCount(true)
+                .allowGetColumns(true)
+                .build();
 
-        private boolean allowNextRow;
         private boolean allowGetMetaData;
+        private boolean allowGetRowCount;
+        private boolean allowGetColumns;
         private boolean allowGetNumber;
         private boolean allowGetString;
         private boolean allowGetDate;

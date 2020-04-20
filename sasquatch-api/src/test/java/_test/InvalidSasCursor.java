@@ -20,17 +20,18 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class InvalidSasCursor implements SasCursor {
+public final class InvalidSasCursor implements SasForwardCursor, SasScrollableCursor {
 
     @Override
-    public boolean nextRow() throws IOException {
+    public boolean next() throws IOException {
         return false;
     }
 
@@ -66,5 +67,15 @@ public final class InvalidSasCursor implements SasCursor {
 
     @Override
     public void close() throws IOException {
+    }
+
+    @Override
+    public int getRow() throws IOException {
+        return -1;
+    }
+
+    @Override
+    public boolean moveTo(int row) throws IOException {
+        return false;
     }
 }

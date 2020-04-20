@@ -16,7 +16,7 @@
  */
 package sasquatch.spi;
 
-import internal.sasquatch.spi.FailsafeSasReader;
+import internal.sasquatch.spi.FailsafeReader;
 import sasquatch.*;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -36,7 +36,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 //@ThreadSafe
 @ServiceDefinition(
         quantifier = Quantifier.MULTIPLE,
-        wrapper = FailsafeSasReader.class
+        wrapper = FailsafeReader.class
 )
 public interface SasReader {
 
@@ -59,18 +59,32 @@ public interface SasReader {
     Set<SasFeature> getFeatures();
 
     /**
-     * Read a SAS dataset into a result set.
+     * Read a SAS dataset into a forward cursor.
      * <p>
      * The result set might hold some resources opened so it is advised to call
      * the close method after use.
-     * <br>The result set is <u>not</u> thread-safe.
+     * <br>The cursor is <u>not</u> thread-safe.
      *
      * @param file the SAS dataset to read
-     * @return a non-null result set
+     * @return a non-null cursor
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    SasCursor read(@NonNull Path file) throws IOException;
+    SasForwardCursor readForward(@NonNull Path file) throws IOException;
+
+    /**
+     * Read a SAS dataset into a scrollable cursor.
+     * <p>
+     * The result set might hold some resources opened so it is advised to call
+     * the close method after use.
+     * <br>The cursor is <u>not</u> thread-safe.
+     *
+     * @param file the SAS dataset to read
+     * @return a non-null cursor
+     * @throws IOException if an I/O exception occurred
+     */
+    @NonNull
+    SasScrollableCursor readScrollable(@NonNull Path file) throws IOException;
 
     /**
      * Read the metadata of a SAS dataset.
@@ -84,11 +98,7 @@ public interface SasReader {
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    default SasMetaData readMetaData(@NonNull Path file) throws IOException {
-        try (SasCursor cursor = read(file)) {
-            return cursor.getMetaData();
-        }
-    }
+    SasMetaData readMetaData(@NonNull Path file) throws IOException;
 
     public static final int NATIVE = 0;
     public static final int FAST = 100;

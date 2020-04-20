@@ -20,8 +20,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -30,10 +31,10 @@ import sasquatch.spi.SasReader;
  * @author Philippe Charles
  */
 @lombok.AllArgsConstructor
-public final class FailsafeSasReader implements SasReader {
+public final class FailsafeReader implements SasReader {
 
-    public static FailsafeSasReader wrap(SasReader delegate) {
-        return new FailsafeSasReader(delegate, Failsafe.DEFAULT);
+    public static FailsafeReader wrap(SasReader delegate) {
+        return new FailsafeReader(delegate, Failsafe.DEFAULT);
     }
 
     @lombok.Getter
@@ -104,20 +105,37 @@ public final class FailsafeSasReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
-        SasCursor result;
+    public SasForwardCursor readForward(Path file) throws IOException {
+        SasForwardCursor result;
 
         try {
-            result = delegate.read(file);
+            result = delegate.readForward(file);
         } catch (RuntimeException unexpected) {
-            throw forwardError("read", unexpected);
+            throw forwardError("readForward", unexpected);
         }
 
         if (result == null) {
-            throw forwardNull("read");
+            throw forwardNull("readForward");
         }
 
-        return new FailsafeSasCursor(result, failsafe);
+        return new FailsafeForwardCursor(result, failsafe);
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
+        SasScrollableCursor result;
+
+        try {
+            result = delegate.readScrollable(file);
+        } catch (RuntimeException unexpected) {
+            throw forwardError("readScrollable", unexpected);
+        }
+
+        if (result == null) {
+            throw forwardNull("readScrollable");
+        }
+
+        return new FailsafeScrollableCursor(result, failsafe);
     }
 
     @Override

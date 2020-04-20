@@ -17,6 +17,7 @@
 package internal.sasquatch.spi;
 
 import _test.EOFCursor;
+import _test.EOFScrollable;
 import _test.FailingSasCursor;
 import _test.InvalidSasCursor;
 import _test.Sample;
@@ -36,25 +37,25 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class FailsafeSasCursorTest {
+public class FailsafeScrollableCursorTest {
 
     @Test
-    public void testNextRow() throws IOException {
+    public void testMoveTo() throws IOException {
         reset();
-        assertThat(valid().nextRow()).isEqualTo(true);
+        assertThat(valid().moveTo(0)).isEqualTo(true);
         assertThat(errors).isEmpty();
         assertThat(values).isEmpty();
 
         reset();
         assertThatIOException()
-                .isThrownBy(() -> failing().nextRow())
+                .isThrownBy(() -> failing().moveTo(0))
                 .withCauseInstanceOf(UnsupportedOperationException.class);
-        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'nextRow' on '_test.FailingSasCursor'");
+        assertThat(errors).hasSize(1).containsKey("Unexpected error while calling 'moveTo' on '_test.FailingSasCursor'");
         assertThat(values).isEmpty();
 
         reset();
         assertThatIOException()
-                .isThrownBy(() -> eof().nextRow())
+                .isThrownBy(() -> eof().moveTo(0))
                 .isExactlyInstanceOf(EOFException.class)
                 .withNoCause();
         assertThat(errors).isEmpty();
@@ -374,9 +375,9 @@ public class FailsafeSasCursorTest {
         assertThat(values).isEmpty();
     }
 
-    private FailsafeSasCursor withNext(FailsafeSasCursor o) {
+    private FailsafeScrollableCursor withNext(FailsafeScrollableCursor o) {
         try {
-            o.getDelegate().nextRow();
+            o.getDelegate().moveTo(o.getDelegate().getRow() + 1);
         } catch (Exception ex) {
         }
         return o;
@@ -387,20 +388,20 @@ public class FailsafeSasCursorTest {
 
     private final Failsafe failsafe = new Failsafe(errors::put, values::add);
 
-    private FailsafeSasCursor valid() {
-        return new FailsafeSasCursor(Sample.VALID_TABLE.asCursor(), failsafe);
+    private FailsafeScrollableCursor valid() {
+        return new FailsafeScrollableCursor(Sample.VALID_TABLE.readScrollable(), failsafe);
     }
 
-    private FailsafeSasCursor failing() {
-        return new FailsafeSasCursor(new FailingSasCursor(), failsafe);
+    private FailsafeScrollableCursor failing() {
+        return new FailsafeScrollableCursor(new FailingSasCursor(), failsafe);
     }
 
-    private FailsafeSasCursor invalid() {
-        return new FailsafeSasCursor(new InvalidSasCursor(), failsafe);
+    private FailsafeScrollableCursor invalid() {
+        return new FailsafeScrollableCursor(new InvalidSasCursor(), failsafe);
     }
 
-    private FailsafeSasCursor eof() {
-        return new FailsafeSasCursor(new EOFCursor(Sample.VALID_TABLE.asCursor(), EOFCursor.Behavior.NONE), failsafe);
+    private FailsafeScrollableCursor eof() {
+        return new FailsafeScrollableCursor(new EOFScrollable(Sample.VALID_TABLE.readScrollable(), EOFCursor.Opts.NONE, EOFScrollable.Opts.NONE), failsafe);
     }
 
     private void reset() {

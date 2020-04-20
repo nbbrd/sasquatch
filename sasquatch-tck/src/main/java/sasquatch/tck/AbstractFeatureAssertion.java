@@ -27,8 +27,11 @@ import org.assertj.core.api.SoftAssertions;
 import sasquatch.SasColumn;
 import sasquatch.SasColumnFormat;
 import sasquatch.SasColumnType;
+import sasquatch.SasForwardCursor;
+import sasquatch.SasMetaData;
 import sasquatch.SasRow;
 import sasquatch.SasRowMapper;
+import sasquatch.SasScrollableCursor;
 import sasquatch.Sasquatch;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -73,7 +76,31 @@ public abstract class AbstractFeatureAssertion implements SasFeatureAssertion {
                 .isInstanceOf(IOException.class);
     }
 
-    private <X> List<X> toList(SasReader reader, SasRowMapper<X> rowMapper) throws IOException {
+    protected void assertSameContent(SoftAssertions s, SasReader reader) throws IOException {
+        SasMetaData meta = reader.readMetaData(file);
+        try (SasForwardCursor forward = reader.readForward(file)) {
+            s.assertThat(forward.getRowCount()).isEqualTo(meta.getRowCount());
+            s.assertThat(forward.getColumns()).isEqualTo(meta.getColumns());
+            try (SasScrollableCursor scrollable = reader.readScrollable(file)) {
+                s.assertThat(scrollable.getRowCount()).isEqualTo(meta.getRowCount());
+                s.assertThat(scrollable.getColumns()).isEqualTo(meta.getColumns());
+                int row = -1;
+                while (forward.next()) {
+                    row++;
+                    s.assertThat(scrollable.moveTo(row)).isTrue();
+                    s.assertThat(scrollable.getRow()).isEqualTo(row);
+                    for (int j = 0; j < forward.getColumns().size(); j++) {
+                        s.assertThat(forward.getValue(j)).isEqualTo(scrollable.getValue(j));
+                    }
+                }
+                s.assertThat(scrollable.moveTo(row + 1)).isFalse();
+                s.assertThat(scrollable.moveTo(-1)).isFalse();
+                s.assertThat(row).isEqualTo(meta.getRowCount() - 1);
+            }
+        }
+    }
+
+    protected <X> List<X> toList(SasReader reader, SasRowMapper<X> rowMapper) throws IOException {
         try (Stream<X> stream = rows(reader, rowMapper)) {
             return stream.collect(Collectors.toList());
         } catch (UncheckedIOException ex) {
@@ -82,7 +109,7 @@ public abstract class AbstractFeatureAssertion implements SasFeatureAssertion {
     }
 
     private static Object[] rowToArray(SasRow row) throws IOException {
-        Object[] result = new Object[row.getMetaData().getColumns().size()];
+        Object[] result = new Object[row.getColumns().size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = row.getValue(i);
         }

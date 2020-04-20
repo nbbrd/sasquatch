@@ -21,9 +21,12 @@ import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.Set;
 import nbbrd.service.ServiceProvider;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasForwardCursor;
+import sasquatch.SasMetaData;
+import sasquatch.SasScrollableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
+import sasquatch.util.SasArray;
 
 /**
  *
@@ -69,7 +72,21 @@ public final class ParsoReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
+    public SasForwardCursor readForward(Path file) throws IOException {
         return new ParsoCursor(file);
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
+        try (SasForwardCursor cursor = readForward(file)) {
+            return SasArray.copyOf(cursor).readScrollable();
+        }
+    }
+
+    @Override
+    public SasMetaData readMetaData(Path file) throws IOException {
+        try (SasForwardCursor cursor = readForward(file)) {
+            return cursor.getMetaData();
+        }
     }
 }

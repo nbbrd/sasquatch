@@ -37,13 +37,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import sasquatch.SasColumnFormat;
 import sasquatch.SasColumnType;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasForwardCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-final class ParsoCursor implements SasCursor {
+final class ParsoCursor implements SasForwardCursor {
 
     private final InputStream stream;
     private final SasFileReader reader;
@@ -65,13 +65,13 @@ final class ParsoCursor implements SasCursor {
     }
 
     @Override
-    public boolean nextRow() throws IOException {
+    public boolean next() throws IOException {
         return (currentRow = reader.readNext()) != null;
     }
 
     @Override
     public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
-        return numberTypes[columnIndex] ? currentRow[columnIndex] : SasCursor.super.getValue(columnIndex);
+        return numberTypes[columnIndex] ? currentRow[columnIndex] : SasForwardCursor.super.getValue(columnIndex);
     }
 
     @Override

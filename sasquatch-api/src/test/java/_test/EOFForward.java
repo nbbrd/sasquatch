@@ -14,17 +14,41 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package sasquatch.spi;
+package _test;
 
-import java.io.Closeable;
+import java.io.EOFException;
 import java.io.IOException;
-import sasquatch.SasRow;
+import sasquatch.SasForwardCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-public interface SasCursor extends SasRow, Closeable {
+public final class EOFForward extends EOFCursor<SasForwardCursor> implements SasForwardCursor {
 
-    boolean nextRow() throws IOException;
+    @lombok.NonNull
+    private final Opts opts;
+
+    public EOFForward(SasForwardCursor delegate, EOFCursor.Opts cursorOpts, Opts opts) {
+        super(delegate, cursorOpts);
+        this.opts = opts;
+    }
+
+    @Override
+    public boolean next() throws IOException {
+        if (opts.isAllowNext()) {
+            return delegate.next();
+        }
+        throw new EOFException("next");
+    }
+
+    @lombok.Value
+    @lombok.Builder
+    @lombok.With
+    public static class Opts {
+
+        public static final Opts NONE = builder().build();
+
+        private boolean allowNext;
+    }
 }

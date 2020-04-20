@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import picocli.CommandLine;
 import sasquatch.SasColumn;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.SasResultSet;
 import sasquatch.SasRowMapper;
 import sasquatch.Sasquatch;
 
@@ -81,8 +81,8 @@ public final class SqlCommand extends SasReaderCommand {
     private static TextFormatter SQL_FORMAT = TextFormatter.of(Locale.ROOT, "yyyy-MM-dd", "HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "", "");
 
     private static void dump(Sasquatch reader, Path input, SqlWriter output, TextFormatter formats) throws IOException {
-        try (SasResultSet rs = reader.read(input)) {
-            SasMetaData meta = rs.getMetaData();
+        try (SasForwardCursor cursor = reader.readForward(input)) {
+            SasMetaData meta = cursor.getMetaData();
 
             // 1. Get table name and structure
             SqlWriter.Table table = getSqlTable(getTableName(meta.getName(), input), meta.getColumns());
@@ -92,8 +92,8 @@ public final class SqlCommand extends SasReaderCommand {
 
             // 3. Retrieve data and write output
             output.dropTableIfExist(table).createTable(table);
-            while (rs.next()) {
-                output.insertInto(table, rowMapper.apply(rs));
+            while (cursor.next()) {
+                output.insertInto(table, rowMapper.apply(cursor));
             }
         }
     }

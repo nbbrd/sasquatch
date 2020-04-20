@@ -54,6 +54,8 @@ public final class DateTimeTypeAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
-        assertFealure(s, reader, o -> o.getDateTime(60));
+        s.assertThatThrownBy(() -> toList(reader, o -> o.getDateTime(60)))
+                .describedAs("Excepting feature '%s' to raise IllegalArgumentException or IOException on '%s'", getFeature(), getFile())
+                .isInstanceOfAny(IllegalArgumentException.class, IOException.class);
     }
 }

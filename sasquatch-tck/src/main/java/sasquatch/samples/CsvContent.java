@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import nbbrd.picocsv.Csv;
 import sasquatch.SasColumn;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasRowMapper;
-import sasquatch.spi.SasCursor;
 import sasquatch.spi.SasReader;
 
 /**
@@ -80,7 +80,7 @@ public abstract class CsvContent implements SasContent {
 
     private FileError compareToCsv(SasReader reader, Path sasFile, Path csvFile) throws IOException {
         try (Csv.Reader csv = Csv.Reader.of(csvFile, getCharset(csvFile), getFormat(csvFile), getParsing(csvFile))) {
-            try (SasCursor sas = reader.read(sasFile)) {
+            try (SasForwardCursor sas = reader.readForward(sasFile)) {
                 SasMetaData meta = sas.getMetaData();
 
                 if (csv.readLine()) {
@@ -99,7 +99,7 @@ public abstract class CsvContent implements SasContent {
 
                 int row = 0;
                 List<SasRowMapper<String>> func = getRowFunc(meta);
-                while (csv.readLine() && sas.nextRow()) {
+                while (csv.readLine() && sas.next()) {
                     int col = 0;
                     while (csv.readField()) {
                         CharSequence expected = csv;
@@ -116,7 +116,7 @@ public abstract class CsvContent implements SasContent {
                     return new BodyError(getName(), relativizeSasFile(sasFile), row, 0, "", null);
                 }
 
-                if (sas.nextRow()) {
+                if (sas.next()) {
                     return new BodyError(getName(), relativizeSasFile(sasFile), row, 0, null, "");
                 }
             }

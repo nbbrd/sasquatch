@@ -20,47 +20,49 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.SasScrollableCursor;
 
 /**
  *
  * @author Philippe Charles
  */
 @lombok.RequiredArgsConstructor
-final class BiostatmattCursor implements SasCursor {
+final class BiostatmattCursor implements SasForwardCursor, SasScrollableCursor {
 
-    @lombok.Getter
     @lombok.NonNull
     private final SasMetaData metaData;
 
     @lombok.NonNull
     private final RUtils.RList<RUtils.RVector<Object>> data;
 
-    @lombok.Getter
-    private int index = -1;
+    private int row = -1;
 
-    private int getCount() {
-        return metaData.getRowCount();
-    }
-
-    private void moveTo(int index) {
-        this.index = index;
+    @Override
+    public SasMetaData getMetaData() throws IOException {
+        return metaData;
     }
 
     @Override
-    public boolean nextRow() throws IOException {
-        int nextIndex = getIndex() + 1;
-        if (nextIndex >= getCount()) {
-            return false;
-        }
-        moveTo(nextIndex);
-        return true;
+    public boolean next() throws IOException {
+        return moveTo(getRow() + 1);
+    }
+
+    @Override
+    public int getRow() throws IOException {
+        return row;
+    }
+
+    @Override
+    public boolean moveTo(int row) throws IOException {
+        this.row = row;
+        return 0 <= row && row < getRowCount();
     }
 
     @Override
     public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
-        return data.get(columnIndex + 1).get(index + 1);
+        return data.get(columnIndex + 1).get(row + 1);
     }
 
     @Override

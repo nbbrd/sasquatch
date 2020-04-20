@@ -25,10 +25,10 @@ import static java.nio.file.StandardOpenOption.READ;
 import java.util.EnumSet;
 import java.util.Set;
 import nbbrd.service.ServiceProvider;
-import sasquatch.SasMetaData;
-import sasquatch.spi.SasCursor;
+import sasquatch.*;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
+import sasquatch.util.SasArray;
 
 /**
  *
@@ -76,7 +76,7 @@ public final class SasquatchReader implements SasReader {
     }
 
     @Override
-    public SasCursor read(Path file) throws IOException {
+    public SasForwardCursor readForward(Path file) throws IOException {
         SeekableByteChannel sbc = Files.newByteChannel(file, READ);
         try {
             return SasquatchCursor.of(sbc);
@@ -90,6 +90,13 @@ public final class SasquatchReader implements SasReader {
                 }
             }
             throw e;
+        }
+    }
+
+    @Override
+    public SasScrollableCursor readScrollable(Path file) throws IOException {
+        try (SasForwardCursor cursor = readForward(file)) {
+            return SasArray.copyOf(cursor).readScrollable();
         }
     }
 
