@@ -27,7 +27,7 @@ module sasquatch.api {
     exports sasquatch.util;
     exports sasquatch.spi;
 
-    provides java.nio.file.spi.FileTypeDetector with sasquatch.SasFileTypeDetector;
+    provides java.nio.file.spi.FileTypeDetector with sasquatch.util.SasFileTypeDetector;
     
     uses sasquatch.spi.SasReader;
 }

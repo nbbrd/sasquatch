@@ -16,13 +16,13 @@
  */
 package sasquatch.desktop;
 
-import sasquatch.SasFilenameFilter;
 import ec.util.various.swing.BasicFileViewer;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import sasquatch.SasForwardCursor;
 import sasquatch.Sasquatch;
+import sasquatch.util.SasFilenameFilter;
 
 /**
  *

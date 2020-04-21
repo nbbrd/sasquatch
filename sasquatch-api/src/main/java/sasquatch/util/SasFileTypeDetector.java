@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package sasquatch;
+package sasquatch.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +32,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 @ServiceProvider(FileTypeDetector.class)
 public final class SasFileTypeDetector extends FileTypeDetector {
+
+    public static final String MIME_TYPE = "application/x-sas-data";
 
     @Override
     public String probeContentType(Path file) throws IOException {
@@ -60,8 +62,6 @@ public final class SasFileTypeDetector extends FileTypeDetector {
     public static boolean isSasId(@NonNull byte[] bytes) {
         return Arrays.equals(MAGIC_NUMBER, bytes);
     }
-
-    private static final String MIME_TYPE = "application/x-sas-data";
 
     private static final byte[] MAGIC_NUMBER = new byte[]{
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,

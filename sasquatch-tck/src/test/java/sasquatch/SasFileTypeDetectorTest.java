@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 import static sasquatch.samples.SasResources.LITTLE_32;
+import sasquatch.util.SasFileTypeDetector;
 
 /**
  *

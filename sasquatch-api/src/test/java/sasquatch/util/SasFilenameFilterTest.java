@@ -14,7 +14,7 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package sasquatch;
+package sasquatch.util;
 
 import _test.Sample;
 import java.io.IOException;
@@ -27,45 +27,24 @@ import org.junit.Test;
  *
  * @author Philippe Charles
  */
-public class SasFileTypeDetectorTest {
+public class SasFilenameFilterTest {
 
     @Test
-    public void testProbeContentType() throws IOException {
-        SasFileTypeDetector x = new SasFileTypeDetector();
+    public void testAccept() throws IOException {
+        SasFilenameFilter x = new SasFilenameFilter();
 
-        assertThatNullPointerException()
-                .isThrownBy(() -> x.probeContentType(null));
+        assertThat(x.accept(valid.getParent().toFile(), valid.getFileName().toString()))
+                .isEqualTo(true);
 
-        assertThat(x.probeContentType(valid)).isNotBlank();
+        assertThat(x.accept(invalid.getParent().toFile(), invalid.getFileName().toString()))
+                .isEqualTo(false);
 
-        assertThat(x.probeContentType(invalid)).isNull();
-
-        assertThatIOException()
-                .isThrownBy(() -> x.probeContentType(missing));
-
-        assertThatIOException()
-                .isThrownBy(() -> x.probeContentType(folder));
-    }
-
-    @Test
-    public void testHasSasId() throws IOException {
-        assertThatNullPointerException()
-                .isThrownBy(() -> SasFileTypeDetector.hasSasId(null));
-
-        assertThat(SasFileTypeDetector.hasSasId(valid)).isTrue();
-
-        assertThat(SasFileTypeDetector.hasSasId(invalid)).isFalse();
-
-        assertThatIOException()
-                .isThrownBy(() -> SasFileTypeDetector.hasSasId(missing));
-
-        assertThatIOException()
-                .isThrownBy(() -> SasFileTypeDetector.hasSasId(folder));
+        assertThat(x.accept(missing.getParent().toFile(), missing.getFileName().toString()))
+                .isEqualTo(true);
     }
 
     private final Path sasTestfiles = Sample.getSasTestFiles();
     private final Path valid = sasTestfiles.resolve(Paths.get("github_dumbmatter", "test", "data", "sas7bdat", "acadindx.sas7bdat"));
     private final Path invalid = sasTestfiles.resolve(Paths.get("github_dumbmatter", "test", "data", "csv", "acadindx.csv"));
     private final Path missing = sasTestfiles.resolve(Paths.get("github_dumbmatter", "test", "data", "sas7bdat", "zzz.sas7bdat"));
-    private final Path folder = sasTestfiles.resolve(Paths.get("github_dumbmatter", "test", "data", "sas7bdat"));
 }

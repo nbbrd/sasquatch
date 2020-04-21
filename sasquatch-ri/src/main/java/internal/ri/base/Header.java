@@ -30,7 +30,7 @@ import static java.nio.file.StandardOpenOption.READ;
 import java.time.LocalDateTime;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import sasquatch.SasFileTypeDetector;
+import sasquatch.util.SasFileTypeDetector;
 
 /**
  * Header
