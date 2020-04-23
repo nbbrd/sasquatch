@@ -30,7 +30,6 @@ import sasquatch.SasColumnType;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasRow;
-import sasquatch.SasRowMapper;
 import sasquatch.SasScrollableCursor;
 import sasquatch.Sasquatch;
 import sasquatch.spi.SasFeature;
@@ -56,22 +55,26 @@ public abstract class AbstractFeatureAssertion implements SasFeatureAssertion {
         }
     }
 
-    protected <T> Stream<T> rows(SasReader reader, SasRowMapper<T> rowMapper) throws IOException {
-        return Sasquatch.of(reader).rows(file, rowMapper);
+    protected <T> Stream<T> rows(SasReader reader, SasRow.Factory<T> factory) throws IOException {
+        return Sasquatch.of(reader).rows(file, factory);
+    }
+
+    protected <T> Stream<T> rowsWithMapper(SasReader reader, SasRow.Mapper<T> mapper) throws IOException {
+        return rows(reader, cursor -> mapper);
     }
 
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-        s.assertThat(toList(reader, AbstractFeatureAssertion::rowToArray))
+        s.assertThat(toList(reader, cursor -> SasRow::getValues))
                 .describedAs("Excepting feature '%s' to have the right row count on '%s'", feature, file)
                 .hasSize(reader.readMetaData(file).getRowCount());
     }
 
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
-        assertFealure(s, reader, AbstractFeatureAssertion::rowToArray);
+        assertFealure(s, reader, cursor -> SasRow::getValues);
     }
 
-    protected void assertFealure(SoftAssertions s, SasReader reader, SasRowMapper<?> rowMapper) throws IOException {
-        s.assertThatThrownBy(() -> toList(reader, rowMapper))
+    protected <T> void assertFealure(SoftAssertions s, SasReader reader, SasRow.Factory<T> mapper) throws IOException {
+        s.assertThatThrownBy(() -> toList(reader, mapper))
                 .describedAs("Excepting feature '%s' to raise IOException on '%s'", feature, file)
                 .isInstanceOf(IOException.class);
     }
@@ -100,20 +103,12 @@ public abstract class AbstractFeatureAssertion implements SasFeatureAssertion {
         }
     }
 
-    protected <X> List<X> toList(SasReader reader, SasRowMapper<X> rowMapper) throws IOException {
-        try (Stream<X> stream = rows(reader, rowMapper)) {
+    protected <T> List<T> toList(SasReader reader, SasRow.Factory<T> mapper) throws IOException {
+        try (Stream<T> stream = rows(reader, mapper)) {
             return stream.collect(Collectors.toList());
         } catch (UncheckedIOException ex) {
             throw ex.getCause();
         }
-    }
-
-    private static Object[] rowToArray(SasRow row) throws IOException {
-        Object[] result = new Object[row.getColumns().size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = row.getValue(i);
-        }
-        return result;
     }
 
     public static SasColumn columnOf(int order, SasColumnType type, int length, String name, String label) {

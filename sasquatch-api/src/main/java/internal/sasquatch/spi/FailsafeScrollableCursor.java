@@ -23,7 +23,7 @@ import sasquatch.SasScrollableCursor;
  *
  * @author Philippe Charles
  */
-final class FailsafeScrollableCursor extends FailsafeCursor<SasScrollableCursor> implements SasScrollableCursor {
+final class FailsafeScrollableCursor extends FailsafeRowCursor<SasScrollableCursor> implements SasScrollableCursor {
 
     public FailsafeScrollableCursor(SasScrollableCursor cursor, Failsafe failsafe) {
         super(cursor, failsafe);

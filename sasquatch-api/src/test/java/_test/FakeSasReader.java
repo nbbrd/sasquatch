@@ -16,7 +16,6 @@
  */
 package _test;
 
-import sasquatch.util.SasArray;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
@@ -24,6 +23,7 @@ import java.util.Set;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -67,6 +67,11 @@ public class FakeSasReader implements SasReader {
     @Override
     public SasScrollableCursor readScrollable(Path file) throws IOException {
         return getTable(file).readScrollable();
+    }
+
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
+        return getTable(file).readSplittable();
     }
 
     @Override

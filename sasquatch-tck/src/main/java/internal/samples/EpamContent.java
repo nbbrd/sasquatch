@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import nbbrd.service.ServiceProvider;
 import sasquatch.SasColumn;
 import sasquatch.SasColumnFormat;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 import sasquatch.samples.CsvContent;
 import sasquatch.samples.SasContent;
 import sasquatch.samples.SasResources;
@@ -67,7 +67,7 @@ public final class EpamContent extends CsvContent {
     }
 
     @Override
-    protected SasRowMapper<String> getColumnFunc(SasColumn c) {
+    protected SasRow.Mapper<String> getColumnFunc(SasColumn c) {
         int columnIndex = c.getOrder();
         switch (c.getType()) {
             case CHARACTER: {

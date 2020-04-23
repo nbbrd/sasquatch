@@ -19,11 +19,11 @@ package sasquatch;
 import java.io.IOException;
 
 /**
- * A cursor that browse data in scrollable mode.
+ * A cursor that browses data in scrollable mode.
  *
  * @author Philippe Charles
  */
-public interface SasScrollableCursor extends SasCursor {
+public interface SasScrollableCursor extends SasCursor, SasRow {
 
     /**
      * Gets the current zero-based row position.<br>Note that this position can

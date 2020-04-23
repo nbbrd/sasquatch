@@ -41,7 +41,7 @@ public final class CustomNumericAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-        try (Stream<Number> stream = rows(reader, o -> o.getNumber(0))) {
+        try (Stream<Number> stream = rowsWithMapper(reader, o -> o.getNumber(0))) {
             s.assertThat(stream)
                     .contains(66500d, Index.atIndex(0))
                     .contains(374000d, Index.atIndex(1079))
@@ -52,7 +52,7 @@ public final class CustomNumericAssertion extends AbstractFeatureAssertion {
     @Override
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
         try {
-            try (Stream<Number> stream = rows(reader, o -> o.getNumber(0))) {
+            try (Stream<Number> stream = rowsWithMapper(reader, o -> o.getNumber(0))) {
                 s.assertThat(stream)
                         .doesNotContain(374000d, Index.atIndex(1079))
                         .hasSize(1080);

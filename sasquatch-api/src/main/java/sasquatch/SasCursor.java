@@ -32,7 +32,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Philippe Charles
  */
 //@NotThreadSafe
-public interface SasCursor extends SasRow, Closeable {
+public interface SasCursor extends Closeable {
 
     /**
      * Returns the metadata of the SAS dataset.
@@ -43,7 +43,13 @@ public interface SasCursor extends SasRow, Closeable {
     @NonNull
     SasMetaData getMetaData() throws IOException;
 
-    @Override
+    /**
+     * Returns the columns of the SAS dataset.
+     *
+     * @return a non-null unmodifiable list of non-null columns
+     * @throws IOException if an I/O exception occurred
+     */
+    @NonNull
     default List<SasColumn> getColumns() throws IOException {
         return getMetaData().getColumns();
     }

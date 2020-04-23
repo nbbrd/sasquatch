@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import nbbrd.service.ServiceProvider;
@@ -29,8 +31,10 @@ import sasquatch.SasColumnType;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
+import sasquatch.util.SasCursors;
 
 /**
  *
@@ -70,17 +74,26 @@ public final class BiostatmattReader implements SasReader {
 
     @Override
     public SasForwardCursor readForward(Path file) throws IOException {
-        return newCursor(file);
+        RUtils.RFrame frame = readFrame(file);
+        SasMetaData meta = getMetaData(frame.getAttributes());
+        List<Object[]> data = getData(meta, frame.getData());
+        return SasCursors.forwardOf(meta, data);
     }
 
     @Override
     public SasScrollableCursor readScrollable(Path file) throws IOException {
-        return newCursor(file);
+        RUtils.RFrame frame = readFrame(file);
+        SasMetaData meta = getMetaData(frame.getAttributes());
+        List<Object[]> data = getData(meta, frame.getData());
+        return SasCursors.scrollableOf(meta, data);
     }
 
-    private static BiostatmattCursor newCursor(Path file) throws IOException {
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
         RUtils.RFrame frame = readFrame(file);
-        return new BiostatmattCursor(getMetaData(frame.getAttributes()), frame.getData());
+        SasMetaData meta = getMetaData(frame.getAttributes());
+        List<Object[]> data = getData(meta, frame.getData());
+        return SasCursors.splittableOf(meta, data);
     }
 
     static RUtils.RFrame readFrame(Path file) throws IOException {
@@ -109,6 +122,24 @@ public final class BiostatmattReader implements SasReader {
         }
 
         return result.build();
+    }
+
+    static List<Object[]> getData(SasMetaData meta, RUtils.RList<RUtils.RVector<Object>> list) {
+        return new AbstractList<Object[]>() {
+            @Override
+            public Object[] get(int row) {
+                Object[] result = new Object[meta.getColumns().size()];
+                for (int column = 0; column < result.length; column++) {
+                    result[column] = list.get(column + 1).get(row + 1);
+                }
+                return result;
+            }
+
+            @Override
+            public int size() {
+                return meta.getRowCount();
+            }
+        };
     }
 
     private static String nullToEmpty(String o) {

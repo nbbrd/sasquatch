@@ -23,6 +23,7 @@ import java.util.Set;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -136,6 +137,23 @@ public final class FailsafeReader implements SasReader {
         }
 
         return new FailsafeScrollableCursor(result, failsafe);
+    }
+
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
+        SasSplittableCursor result;
+
+        try {
+            result = delegate.readSplittable(file);
+        } catch (RuntimeException unexpected) {
+            throw forwardError("readSplittable", unexpected);
+        }
+
+        if (result == null) {
+            throw forwardNull("readSplittable");
+        }
+
+        return new FailsafeSplittableCursor(result, failsafe);
     }
 
     @Override

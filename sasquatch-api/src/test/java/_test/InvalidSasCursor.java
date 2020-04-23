@@ -41,6 +41,11 @@ public final class InvalidSasCursor implements SasForwardCursor, SasScrollableCu
     }
 
     @Override
+    public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
+        return null;
+    }
+
+    @Override
     public double getNumber(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
         return Double.NaN;
     }
@@ -62,6 +67,11 @@ public final class InvalidSasCursor implements SasForwardCursor, SasScrollableCu
 
     @Override
     public LocalTime getTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
+        return null;
+    }
+
+    @Override
+    public Object[] getValues() throws IOException {
         return null;
     }
 

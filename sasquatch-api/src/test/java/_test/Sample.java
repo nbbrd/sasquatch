@@ -16,7 +16,6 @@
  */
 package _test;
 
-import sasquatch.util.SasArray;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -55,6 +54,7 @@ public class Sample {
                     .column(SasColumn.builder().name("c3").order(2).type(SasColumnType.DATE).build())
                     .column(SasColumn.builder().name("c4").order(3).type(SasColumnType.DATETIME).build())
                     .column(SasColumn.builder().name("c5").order(4).type(SasColumnType.TIME).build())
+                    .rowCount(1)
                     .build(),
                     Collections.singletonList(ROW1.toArray()));
 

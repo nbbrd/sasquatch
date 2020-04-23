@@ -31,7 +31,7 @@ import picocli.CommandLine;
 import sasquatch.SasColumn;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 import sasquatch.Sasquatch;
 
 /**
@@ -88,7 +88,7 @@ public final class SqlCommand extends SasReaderCommand {
             SqlWriter.Table table = getSqlTable(getTableName(meta.getName(), input), meta.getColumns());
 
             // 2. Create functions to get the values in a proper format
-            SasRowMapper<String[]> rowMapper = formats.asSasFuncs(meta.getColumns());
+            SasRow.Mapper<String[]> rowMapper = formats.asSasFuncs(meta.getColumns());
 
             // 3. Retrieve data and write output
             output.dropTableIfExist(table).createTable(table);

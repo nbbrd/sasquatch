@@ -22,6 +22,7 @@ import java.util.Set;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -58,6 +59,11 @@ public final class InvalidSasReader implements SasReader {
 
     @Override
     public SasScrollableCursor readScrollable(Path file) throws IOException {
+        return null;
+    }
+
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
         return null;
     }
 

@@ -18,6 +18,7 @@ package internal.sasquatch.spi;
 
 import _test.EOFCursor;
 import _test.EOFForward;
+import _test.EOFRowCursor;
 import _test.FailingSasCursor;
 import _test.InvalidSasCursor;
 import _test.Sample;
@@ -401,7 +402,7 @@ public class FailsafeForwardCursorTest {
     }
 
     private FailsafeForwardCursor eof() {
-        return new FailsafeForwardCursor(new EOFForward(Sample.VALID_TABLE.readForward(), EOFCursor.Opts.NONE, EOFForward.Opts.NONE), failsafe);
+        return new FailsafeForwardCursor(new EOFForward(Sample.VALID_TABLE.readForward(), EOFCursor.Opts.NONE, EOFRowCursor.Opts.NONE, EOFForward.Opts.NONE), failsafe);
     }
 
     private void reset() {

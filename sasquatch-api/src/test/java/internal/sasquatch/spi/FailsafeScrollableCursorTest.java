@@ -17,6 +17,7 @@
 package internal.sasquatch.spi;
 
 import _test.EOFCursor;
+import _test.EOFRowCursor;
 import _test.EOFScrollable;
 import _test.FailingSasCursor;
 import _test.InvalidSasCursor;
@@ -401,7 +402,7 @@ public class FailsafeScrollableCursorTest {
     }
 
     private FailsafeScrollableCursor eof() {
-        return new FailsafeScrollableCursor(new EOFScrollable(Sample.VALID_TABLE.readScrollable(), EOFCursor.Opts.NONE, EOFScrollable.Opts.NONE), failsafe);
+        return new FailsafeScrollableCursor(new EOFScrollable(Sample.VALID_TABLE.readScrollable(), EOFCursor.Opts.NONE, EOFRowCursor.Opts.NONE, EOFScrollable.Opts.NONE), failsafe);
     }
 
     private void reset() {

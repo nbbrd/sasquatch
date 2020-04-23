@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import sasquatch.SasColumnFormat;
-import sasquatch.SasColumnType;
 import sasquatch.SasForwardCursor;
 
 /**
@@ -48,14 +47,12 @@ final class ParsoCursor implements SasForwardCursor {
     private final InputStream stream;
     private final SasFileReader reader;
     private final SasMetaData metaData;
-    private final boolean[] numberTypes;
     private Object[] currentRow;
 
     public ParsoCursor(Path file) throws IOException {
         this.stream = Files.newInputStream(file);
         this.reader = new SasFileReaderImpl(stream);
         this.metaData = getMetaData(reader);
-        this.numberTypes = getNumberTypes(metaData.getColumns());
         this.currentRow = null;
     }
 
@@ -71,7 +68,19 @@ final class ParsoCursor implements SasForwardCursor {
 
     @Override
     public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
-        return numberTypes[columnIndex] ? currentRow[columnIndex] : SasForwardCursor.super.getValue(columnIndex);
+        switch (getColumns().get(columnIndex).getType()) {
+            case CHARACTER:
+                return currentRow[columnIndex];
+            case NUMERIC:
+                return currentRow[columnIndex];
+            case DATE:
+                return getDate(columnIndex);
+            case DATETIME:
+                return getDateTime(columnIndex);
+            case TIME:
+                return getTime(columnIndex);
+        }
+        throw new RuntimeException("Invalid type");
     }
 
     @Override
@@ -116,11 +125,20 @@ final class ParsoCursor implements SasForwardCursor {
     @Override
     public LocalTime getTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
         try {
-            Number number = ((Number) currentRow[columnIndex]);
+            Number number = (Number) currentRow[columnIndex];
             return number != null ? toLocalTime(number) : null;
         } catch (ClassCastException ex) {
             throw new IllegalArgumentException(ex);
         }
+    }
+
+    @Override
+    public Object[] getValues() throws IOException {
+        Object[] result = new Object[currentRow.length];
+        for (int j = 0; j < result.length; j++) {
+            result[j] = getValue(j);
+        }
+        return result;
     }
 
     @Override
@@ -170,13 +188,5 @@ final class ParsoCursor implements SasForwardCursor {
                 .width(o.getWidth())
                 .precision(o.getPrecision())
                 .build();
-    }
-
-    private static boolean[] getNumberTypes(List<SasColumn> columns) {
-        boolean[] result = new boolean[columns.size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = columns.get(i).getType().equals(SasColumnType.NUMERIC);
-        }
-        return result;
     }
 }

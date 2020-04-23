@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
 import static org.assertj.core.data.Index.atIndex;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 import sasquatch.samples.SasResources;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -42,7 +42,7 @@ public final class FieldEncodingAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-        try (Stream<String> stream = rows(reader, row -> row.getString(3))) {
+        try (Stream<String> stream = rowsWithMapper(reader, row -> row.getString(3))) {
             s.assertThat(stream)
                     .contains("Κρήτης", atIndex(0))
                     .contains("Πελοποννήσου", atIndex(858));
@@ -50,8 +50,8 @@ public final class FieldEncodingAssertion extends AbstractFeatureAssertion {
     }
 
     @Override
-    protected void assertFealure(SoftAssertions s, SasReader reader, SasRowMapper<?> rowMapper) throws IOException {
-        try (Stream<String> stream = rows(reader, row -> row.getString(3))) {
+    protected <T> void assertFealure(SoftAssertions s, SasReader reader, SasRow.Factory<T> rowMapper) throws IOException {
+        try (Stream<String> stream = rowsWithMapper(reader, row -> row.getString(3))) {
             s.assertThat(stream)
                     .doesNotContain("Κρήτης", atIndex(0))
                     .doesNotContain("Πελοποννήσου", atIndex(858));

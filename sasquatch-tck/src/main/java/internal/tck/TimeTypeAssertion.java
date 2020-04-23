@@ -41,7 +41,7 @@ public final class TimeTypeAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-        try (Stream<LocalTime> stream = rows(reader, o -> o.getTime(2))) {
+        try (Stream<LocalTime> stream = rowsWithMapper(reader, o -> o.getTime(2))) {
             s.assertThat(stream)
                     .contains(LocalTime.of(8, 21, 0), Index.atIndex(0))
                     .contains(LocalTime.of(21, 6, 0), Index.atIndex(634))
@@ -51,7 +51,7 @@ public final class TimeTypeAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
-        s.assertThatThrownBy(() -> toList(reader, o -> o.getTime(2)))
+        s.assertThatThrownBy(() -> toList(reader, meta -> o -> o.getTime(2)))
                 .describedAs("Excepting feature '%s' to raise IllegalArgumentException or IOException on '%s'", getFeature(), getFile())
                 .isInstanceOfAny(IllegalArgumentException.class, IOException.class);
     }

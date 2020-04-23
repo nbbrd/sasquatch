@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  * 
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -17,17 +17,16 @@
 package sasquatch;
 
 import java.io.IOException;
+import java.util.Spliterator;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
+ * A cursor that browses data using a spliterator.
  *
  * @author Philippe Charles
- * @param <T>
  */
-@FunctionalInterface
-public interface SasRowMapper<T> {
+public interface SasSplittableCursor extends SasCursor {
 
-    @Nullable
-    T apply(@NonNull SasRow row) throws IOException;
+    @NonNull
+    Spliterator<SasRow> getSpliterator() throws IOException;
 }

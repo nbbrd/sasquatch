@@ -41,7 +41,7 @@ public final class DateTypeAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertSuccess(SoftAssertions s, SasReader reader) throws IOException {
-        try (Stream<LocalDate> stream = rows(reader, o -> o.getDate(1))) {
+        try (Stream<LocalDate> stream = rowsWithMapper(reader, o -> o.getDate(1))) {
             s.assertThat(stream)
                     .contains(LocalDate.of(2000, 3, 1), Index.atIndex(0))
                     .contains(null, Index.atIndex(463))
@@ -51,7 +51,7 @@ public final class DateTypeAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
-        s.assertThatThrownBy(() -> toList(reader, o -> o.getDate(1)))
+        s.assertThatThrownBy(() -> toList(reader, meta -> o -> o.getDate(1)))
                 .describedAs("Excepting feature '%s' to raise IllegalArgumentException or IOException on '%s'", getFeature(), getFile())
                 .isInstanceOfAny(IllegalArgumentException.class, IOException.class);
     }

@@ -87,6 +87,20 @@ public interface SasReader {
     SasScrollableCursor readScrollable(@NonNull Path file) throws IOException;
 
     /**
+     * Read a SAS dataset into a splittable cursor.
+     * <p>
+     * The result set might hold some resources opened so it is advised to call
+     * the close method after use.
+     * <br>The cursor is <u>not</u> thread-safe.
+     *
+     * @param file the SAS dataset to read
+     * @return a non-null cursor
+     * @throws IOException if an I/O exception occurred
+     */
+    @NonNull
+    SasSplittableCursor readSplittable(@NonNull Path file) throws IOException;
+
+    /**
      * Read the metadata of a SAS dataset.
      * <p>
      * Note that this same metadata can also be obtained by using the read

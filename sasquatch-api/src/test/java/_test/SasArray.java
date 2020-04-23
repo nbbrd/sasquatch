@@ -16,39 +16,40 @@
  */
 package _test;
 
-import java.io.EOFException;
-import java.io.IOException;
+import java.util.List;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import sasquatch.SasForwardCursor;
+import sasquatch.SasMetaData;
+import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
+import sasquatch.util.SasCursors;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class EOFForward extends EOFRowCursor<SasForwardCursor> implements SasForwardCursor {
+@lombok.Value(staticConstructor = "of")
+public class SasArray {
+
+    @lombok.Getter
+    @lombok.NonNull
+    private SasMetaData metaData;
 
     @lombok.NonNull
-    private final Opts opts;
+    private List<Object[]> rows;
 
-    public EOFForward(SasForwardCursor delegate, EOFCursor.Opts cursor, EOFRowCursor.Opts row, Opts opts) {
-        super(delegate, cursor, row);
-        this.opts = opts;
+    @NonNull
+    public SasForwardCursor readForward() {
+        return SasCursors.forwardOf(metaData, rows);
     }
 
-    @Override
-    public boolean next() throws IOException {
-        if (opts.isAllowNext()) {
-            return delegate.next();
-        }
-        throw new EOFException("next");
+    @NonNull
+    public SasScrollableCursor readScrollable() {
+        return SasCursors.scrollableOf(metaData, rows);
     }
 
-    @lombok.Value
-    @lombok.Builder
-    @lombok.With
-    public static class Opts {
-
-        public static final Opts NONE = builder().build();
-
-        private boolean allowNext;
+    @NonNull
+    public SasSplittableCursor readSplittable() {
+        return SasCursors.splittableOf(metaData, rows);
     }
 }

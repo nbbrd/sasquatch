@@ -23,6 +23,7 @@ import java.util.Set;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
 
@@ -43,10 +44,16 @@ public final class EOFReader implements SasReader {
     private final EOFCursor.Opts cursorOpts;
 
     @lombok.NonNull
+    private final EOFRowCursor.Opts rowOpts;
+
+    @lombok.NonNull
     private final EOFForward.Opts forwardOpts;
 
     @lombok.NonNull
     private final EOFScrollable.Opts scrollableOpts;
+
+    @lombok.NonNull
+    private final EOFSplittable.Opts splittableOpts;
 
     @Override
     public String getName() {
@@ -71,7 +78,7 @@ public final class EOFReader implements SasReader {
     @Override
     public SasForwardCursor readForward(Path file) throws IOException {
         if (opts.isAllowReadForward()) {
-            return new EOFForward(delegate.readForward(file), cursorOpts, forwardOpts);
+            return new EOFForward(delegate.readForward(file), cursorOpts, rowOpts, forwardOpts);
         }
         throw new EOFException("readForward");
     }
@@ -79,9 +86,17 @@ public final class EOFReader implements SasReader {
     @Override
     public SasScrollableCursor readScrollable(Path file) throws IOException {
         if (opts.isAllowReadScrollable()) {
-            return new EOFScrollable(delegate.readScrollable(file), cursorOpts, scrollableOpts);
+            return new EOFScrollable(delegate.readScrollable(file), cursorOpts, rowOpts, scrollableOpts);
         }
         throw new EOFException("readScrollable");
+    }
+
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
+        if (opts.isAllowReadSplittable()) {
+            return new EOFSplittable(delegate.readSplittable(file), cursorOpts, splittableOpts);
+        }
+        throw new EOFException("readSplittable");
     }
 
     @Override
@@ -98,10 +113,17 @@ public final class EOFReader implements SasReader {
     public static class Opts {
 
         public static final Opts NONE = Opts.builder().build();
-        public static final Opts ALL = Opts.builder().allowReadForward(true).allowReadScrollable(true).allowReadMetaData(true).build();
+        public static final Opts ALL = Opts
+                .builder()
+                .allowReadForward(true)
+                .allowReadScrollable(true)
+                .allowReadSplittable(true)
+                .allowReadMetaData(true)
+                .build();
 
         private boolean allowReadForward;
         private boolean allowReadScrollable;
+        private boolean allowReadSplittable;
         private boolean allowReadMetaData;
     }
 }

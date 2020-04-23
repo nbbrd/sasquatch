@@ -30,9 +30,10 @@ import org.eobjects.sassy.SasReaderCallback;
 import sasquatch.SasColumnFormat;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
-import sasquatch.util.SasArray;
+import sasquatch.util.SasCursors;
 
 /**
  *
@@ -68,14 +69,21 @@ public final class SassyReader implements SasReader {
     public SasForwardCursor readForward(Path file) throws IOException {
         DataCallback callback = new DataCallback();
         read(file, callback);
-        return SasArray.of(callback.toMetaData(), callback.data).readForward();
+        return SasCursors.forwardOf(callback.toMetaData(), callback.data);
     }
 
     @Override
     public SasScrollableCursor readScrollable(Path file) throws IOException {
         DataCallback callback = new DataCallback();
         read(file, callback);
-        return SasArray.of(callback.toMetaData(), callback.data).readScrollable();
+        return SasCursors.scrollableOf(callback.toMetaData(), callback.data);
+    }
+
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
+        DataCallback callback = new DataCallback();
+        read(file, callback);
+        return SasCursors.splittableOf(callback.toMetaData(), callback.data);
     }
 
     @Override

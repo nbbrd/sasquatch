@@ -17,9 +17,6 @@
 package internal.sasquatch.spi;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import sasquatch.SasColumn;
 import sasquatch.SasCursor;
@@ -81,93 +78,6 @@ abstract class FailsafeCursor<T extends SasCursor> implements SasCursor {
             return delegate.getRowCount();
         } catch (RuntimeException unexpected) {
             throw forwardError("getRowCount", unexpected);
-        }
-    }
-
-    @Override
-    public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
-        try {
-            return delegate.getValue(columnIndex);
-        } catch (RuntimeException unexpected) {
-            if (unexpected instanceof IndexOutOfBoundsException) {
-                throw unexpected;
-            }
-            throw forwardError("getValue", unexpected);
-        }
-    }
-
-    @Override
-    public double getNumber(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        try {
-            return delegate.getNumber(columnIndex);
-        } catch (RuntimeException unexpected) {
-            if (unexpected instanceof IndexOutOfBoundsException) {
-                throw unexpected;
-            }
-            if (unexpected instanceof IllegalArgumentException) {
-                throw unexpected;
-            }
-            throw forwardError("getNumber", unexpected);
-        }
-    }
-
-    @Override
-    public String getString(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        try {
-            return delegate.getString(columnIndex);
-        } catch (RuntimeException unexpected) {
-            if (unexpected instanceof IndexOutOfBoundsException) {
-                throw unexpected;
-            }
-            if (unexpected instanceof IllegalArgumentException) {
-                throw unexpected;
-            }
-            throw forwardError("getString", unexpected);
-        }
-    }
-
-    @Override
-    public LocalDate getDate(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        try {
-            return delegate.getDate(columnIndex);
-        } catch (RuntimeException unexpected) {
-            if (unexpected instanceof IndexOutOfBoundsException) {
-                throw unexpected;
-            }
-            if (unexpected instanceof IllegalArgumentException) {
-                throw unexpected;
-            }
-            throw forwardError("getDate", unexpected);
-        }
-    }
-
-    @Override
-    public LocalDateTime getDateTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        try {
-            return delegate.getDateTime(columnIndex);
-        } catch (RuntimeException unexpected) {
-            if (unexpected instanceof IndexOutOfBoundsException) {
-                throw unexpected;
-            }
-            if (unexpected instanceof IllegalArgumentException) {
-                throw unexpected;
-            }
-            throw forwardError("getDateTime", unexpected);
-        }
-    }
-
-    @Override
-    public LocalTime getTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
-        try {
-            return delegate.getTime(columnIndex);
-        } catch (RuntimeException unexpected) {
-            if (unexpected instanceof IndexOutOfBoundsException) {
-                throw unexpected;
-            }
-            if (unexpected instanceof IllegalArgumentException) {
-                throw unexpected;
-            }
-            throw forwardError("getTime", unexpected);
         }
     }
 

@@ -45,7 +45,7 @@ public final class DateTimeTypeAssertion extends AbstractFeatureAssertion {
 //                        .allMatch(o -> !o.getSubType().equals(SasColumn.SubType.NONE))
 //                        .hasSize(67);
 
-        try (Stream<LocalDateTime> stream = rows(reader, o -> o.getDateTime(60))) {
+        try (Stream<LocalDateTime> stream = rowsWithMapper(reader, o -> o.getDateTime(60))) {
             s.assertThat(stream)
                     .contains(LocalDateTime.parse("2017-03-14T15:36:56.546"), Index.atIndex(0))
                     .hasSize(1);
@@ -54,7 +54,7 @@ public final class DateTimeTypeAssertion extends AbstractFeatureAssertion {
 
     @Override
     protected void assertFealure(SoftAssertions s, SasReader reader) throws IOException {
-        s.assertThatThrownBy(() -> toList(reader, o -> o.getDateTime(60)))
+        s.assertThatThrownBy(() -> toList(reader, meta -> o -> o.getDateTime(60)))
                 .describedAs("Excepting feature '%s' to raise IllegalArgumentException or IOException on '%s'", getFeature(), getFile())
                 .isInstanceOfAny(IllegalArgumentException.class, IOException.class);
     }

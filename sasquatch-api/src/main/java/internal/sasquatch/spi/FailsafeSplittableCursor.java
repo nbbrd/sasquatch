@@ -14,41 +14,37 @@
  * See the Licence for the specific language governing permissions and 
  * limitations under the Licence.
  */
-package _test;
+package internal.sasquatch.spi;
 
-import java.io.EOFException;
 import java.io.IOException;
-import sasquatch.SasForwardCursor;
+import java.util.Spliterator;
+import sasquatch.SasRow;
+import sasquatch.SasSplittableCursor;
 
 /**
  *
  * @author Philippe Charles
  */
-public final class EOFForward extends EOFRowCursor<SasForwardCursor> implements SasForwardCursor {
+final class FailsafeSplittableCursor extends FailsafeCursor<SasSplittableCursor> implements SasSplittableCursor {
 
-    @lombok.NonNull
-    private final Opts opts;
-
-    public EOFForward(SasForwardCursor delegate, EOFCursor.Opts cursor, EOFRowCursor.Opts row, Opts opts) {
-        super(delegate, cursor, row);
-        this.opts = opts;
+    public FailsafeSplittableCursor(SasSplittableCursor delegate, Failsafe failsafe) {
+        super(delegate, failsafe);
     }
 
     @Override
-    public boolean next() throws IOException {
-        if (opts.isAllowNext()) {
-            return delegate.next();
+    public Spliterator<SasRow> getSpliterator() throws IOException {
+        Spliterator<SasRow> result;
+
+        try {
+            result = delegate.getSpliterator();
+        } catch (RuntimeException ex) {
+            throw forwardError("getSpliterator", ex);
         }
-        throw new EOFException("next");
-    }
 
-    @lombok.Value
-    @lombok.Builder
-    @lombok.With
-    public static class Opts {
+        if (result == null) {
+            throw forwardNull("getSpliterator");
+        }
 
-        public static final Opts NONE = builder().build();
-
-        private boolean allowNext;
+        return result;
     }
 }

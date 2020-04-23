@@ -61,13 +61,13 @@ public final class LittleEndian32Assertion extends AbstractFeatureAssertion {
                 .contains(columnOf(2, NUMERIC, 8, "Size", ""), atIndex(2))
                 .hasSize(3);
 
-        try (Stream<Little32> stream = rows(reader, o -> new Little32(o.getString(0), o.getNumber(2)))) {
+        try (Stream<Little32> stream = rowsWithMapper(reader, o -> new Little32(o.getString(0), o.getNumber(2)))) {
             s.assertThat(stream)
                     .contains(new Little32("Delaware", 1955d), Index.atIndex(0))
                     .contains(new Little32("Hawaii", 6423d), Index.atIndex(49))
                     .hasSize(50);
         }
-        
+
         assertSameContent(s, reader);
     }
 

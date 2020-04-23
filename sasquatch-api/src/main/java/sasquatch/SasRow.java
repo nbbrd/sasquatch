@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -30,15 +29,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @author Philippe Charles
  */
 public interface SasRow {
-
-    /**
-     * The list of columns in the SAS dataset.
-     *
-     * @return a non-null unmodifiable list of non-null columns
-     * @throws IOException if an I/O exception occurred
-     */
-    @NonNull
-    List<SasColumn> getColumns() throws IOException;
 
     /**
      * Retrieves the value of the specified column in the current row.
@@ -53,21 +43,7 @@ public interface SasRow {
      * @throws IndexOutOfBoundsException if the columnIndex is invalid
      */
     @Nullable
-    default Object getValue(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException {
-        switch (getColumns().get(columnIndex).getType()) {
-            case CHARACTER:
-                return getString(columnIndex);
-            case NUMERIC:
-                return getNumber(columnIndex);
-            case DATE:
-                return getDate(columnIndex);
-            case DATETIME:
-                return getDateTime(columnIndex);
-            case TIME:
-                return getTime(columnIndex);
-        }
-        throw new RuntimeException("Invalid type");
-    }
+    Object getValue(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException;
 
     /**
      * Retrieves the number value of the specified column in the current row.
@@ -130,4 +106,28 @@ public interface SasRow {
      */
     @Nullable
     LocalTime getTime(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException;
+
+    /**
+     * Retrieves the values of all columns in the current row.
+     *
+     * @return a non-null array of nullable values
+     * @throws IOException if an I/O exception occurred
+     * @throws IndexOutOfBoundsException if the columnIndex is invalid
+     */
+    @NonNull
+    Object[] getValues() throws IOException;
+
+    @FunctionalInterface
+    public interface Mapper<T> {
+
+        @Nullable
+        T apply(@NonNull SasRow row) throws IOException;
+    }
+
+    @FunctionalInterface
+    public interface Factory<T> {
+
+        @NonNull
+        Mapper<T> get(@NonNull SasCursor cursor) throws IOException;
+    }
 }

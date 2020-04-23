@@ -118,6 +118,15 @@ final class SasquatchCursor implements SasForwardCursor {
     }
 
     @Override
+    public Object[] getValues() throws IOException {
+        Object[] result = new Object[readers.length];
+        for (int j = 0; j < result.length; j++) {
+            result[j] = getValue(j);
+        }
+        return result;
+    }
+
+    @Override
     public void close() throws IOException {
         resource.close();
     }

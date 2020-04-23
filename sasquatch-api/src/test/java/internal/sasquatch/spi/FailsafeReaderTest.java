@@ -19,7 +19,9 @@ package internal.sasquatch.spi;
 import _test.EOFCursor;
 import _test.EOFForward;
 import _test.EOFReader;
+import _test.EOFRowCursor;
 import _test.EOFScrollable;
+import _test.EOFSplittable;
 import _test.FailingSasReader;
 import _test.InvalidSasReader;
 import _test.Sample;
@@ -177,7 +179,7 @@ public class FailsafeReaderTest {
     private final FailsafeReader valid = new FailsafeReader(Sample.VALID_READER, failsafe);
     private final FailsafeReader failing = new FailsafeReader(new FailingSasReader(), failsafe);
     private final FailsafeReader invalid = new FailsafeReader(new InvalidSasReader(), failsafe);
-    private final FailsafeReader eof = new FailsafeReader(new EOFReader(Sample.VALID_READER, EOFReader.Opts.NONE, EOFCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE), failsafe);
+    private final FailsafeReader eof = new FailsafeReader(new EOFReader(Sample.VALID_READER, EOFReader.Opts.NONE, EOFCursor.Opts.NONE, EOFRowCursor.Opts.NONE, EOFForward.Opts.NONE, EOFScrollable.Opts.NONE, EOFSplittable.Opts.NONE), failsafe);
 
     private void reset() {
         errors.clear();

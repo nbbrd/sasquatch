@@ -24,9 +24,10 @@ import nbbrd.service.ServiceProvider;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
 import sasquatch.SasScrollableCursor;
+import sasquatch.SasSplittableCursor;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
-import sasquatch.util.SasArray;
+import sasquatch.util.SasCursors;
 
 /**
  *
@@ -78,9 +79,12 @@ public final class ParsoReader implements SasReader {
 
     @Override
     public SasScrollableCursor readScrollable(Path file) throws IOException {
-        try (SasForwardCursor cursor = readForward(file)) {
-            return SasArray.copyOf(cursor).readScrollable();
-        }
+        return SasCursors.asScrollable(readForward(file));
+    }
+
+    @Override
+    public SasSplittableCursor readSplittable(Path file) throws IOException {
+        return SasCursors.asSplittable(readForward(file));
     }
 
     @Override

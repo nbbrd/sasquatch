@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import nbbrd.service.ServiceProvider;
 import org.assertj.core.api.SoftAssertions;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 import sasquatch.samples.SasResources;
 import sasquatch.spi.SasFeature;
 import sasquatch.spi.SasReader;
@@ -45,7 +45,7 @@ public final class ColumnEncodingAssertion extends AbstractFeatureAssertion {
     }
 
     @Override
-    protected void assertFealure(SoftAssertions s, SasReader reader, SasRowMapper<?> rowMapper) throws IOException {
+    protected <T> void assertFealure(SoftAssertions s, SasReader reader, SasRow.Factory<T> mapper) throws IOException {
         try {
             s.assertThat(reader.readMetaData(getFile()).getColumns().get(0).getName())
                     .isNotEqualTo("测试");

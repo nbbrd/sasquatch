@@ -23,7 +23,7 @@ import sasquatch.SasForwardCursor;
  *
  * @author Philippe Charles
  */
-final class FailsafeForwardCursor extends FailsafeCursor<SasForwardCursor> implements SasForwardCursor {
+final class FailsafeForwardCursor extends FailsafeRowCursor<SasForwardCursor> implements SasForwardCursor {
 
     public FailsafeForwardCursor(SasForwardCursor cursor, Failsafe failsafe) {
         super(cursor, failsafe);

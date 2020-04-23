@@ -28,7 +28,7 @@ import java.util.Locale;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import sasquatch.SasColumn;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 
 /**
  *
@@ -53,7 +53,7 @@ public final class TextFormatter {
                 nullValue);
     }
 
-    public SasRowMapper<String> asSasFunc(SasColumn column) {
+    public SasRow.Mapper<String> asSasFunc(SasColumn column) {
         switch (column.getType()) {
             case CHARACTER:
                 return o -> o.getString(column.getOrder());
@@ -93,18 +93,18 @@ public final class TextFormatter {
         }
     }
 
-    public SasRowMapper<String[]> asSasFuncs(List<SasColumn> columns) {
+    public SasRow.Mapper<String[]> asSasFuncs(List<SasColumn> columns) {
         return columns
                 .stream()
                 .map(this::asSasFunc)
                 .collect(TextFormatter.grouping());
     }
 
-    private static Collector<SasRowMapper<String>, ?, SasRowMapper<String[]>> grouping() {
+    private static Collector<SasRow.Mapper<String>, ?, SasRow.Mapper<String[]>> grouping() {
         return Collectors.collectingAndThen(Collectors.toList(), TextFormatter::group);
     }
 
-    private static SasRowMapper<String[]> group(List<SasRowMapper<String>> mappers) {
+    private static SasRow.Mapper<String[]> group(List<SasRow.Mapper<String>> mappers) {
         final String[] row = new String[mappers.size()];
         return rs -> {
             for (int j = 0; j < row.length; j++) {

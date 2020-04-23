@@ -21,20 +21,17 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import lombok.AccessLevel;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import sasquatch.spi.SasReader;
 import sasquatch.spi.SasReaderLoader;
+import sasquatch.util.SasCursors;
 
 /**
  * A thread-safe reader used to read SAS datasets (*.sas7bdat).
@@ -93,6 +90,23 @@ public final class Sasquatch {
     }
 
     /**
+     * Read a SAS dataset into a splittable cursor.
+     * <p>
+     * The result set might hold some resources opened so it is advised to call
+     * the close method after use.
+     * <br>The cursor is <u>not</u> thread-safe.
+     *
+     * @param file the SAS dataset to read
+     * @return a non-null cursor
+     * @throws IOException if an I/O exception occurred
+     */
+    @NonNull
+    public SasSplittableCursor readSplittable(@NonNull Path file) throws IOException {
+        Objects.requireNonNull(file);
+        return getReader().readSplittable(file);
+    }
+
+    /**
      * Read the metadata of a SAS dataset.
      * <p>
      * Note that this same metadata can also be obtained by using the read
@@ -121,16 +135,19 @@ public final class Sasquatch {
      *
      * @param <T>
      * @param file the SAS dataset to read
-     * @param rowMapper
+     * @param factory
      * @return a non-null stream
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    public <T> Stream<T> rows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
+    public <T> Stream<T> rows(@NonNull Path file, SasRow.@NonNull Factory<T> factory) throws IOException {
         Objects.requireNonNull(file);
-        Objects.requireNonNull(rowMapper);
-        SasForwardCursor cursor = readForward(file);
-        return streamOf(cursor, rowMapper).onClose(asUncheckedRunnable(cursor));
+        Objects.requireNonNull(factory);
+        SasSplittableCursor cursor = getReader().readSplittable(file);
+        SasRow.Mapper<T> mapper = factory.get(cursor);
+        return StreamSupport.stream(cursor.getSpliterator(), true)
+                .map(asUnchecked(mapper))
+                .onClose(asUnchecked(cursor));
     }
 
     /**
@@ -138,20 +155,17 @@ public final class Sasquatch {
      *
      * @param <T>
      * @param file the SAS dataset to read
-     * @param rowMapper
+     * @param factory
      * @return a non-null list
      * @throws IOException if an I/O exception occurred
      */
     @NonNull
-    public <T> List<T> getAllRows(@NonNull Path file, @NonNull SasRowMapper<T> rowMapper) throws IOException {
+    public <T> List<T> getAllRows(@NonNull Path file, SasRow.@NonNull Factory<T> factory) throws IOException {
         Objects.requireNonNull(file);
-        Objects.requireNonNull(rowMapper);
+        Objects.requireNonNull(factory);
         try (SasForwardCursor cursor = readForward(file)) {
-            List<T> result = new ArrayList<>(cursor.getRowCount());
-            while (cursor.next()) {
-                result.add(rowMapper.apply(cursor));
-            }
-            return result;
+            SasRow.Mapper<T> mapper = factory.get(cursor);
+            return SasCursors.toList(cursor, mapper);
         }
     }
 
@@ -159,60 +173,23 @@ public final class Sasquatch {
         return reader.orElseThrow(() -> new IOException("No reader available"));
     }
 
-    private static <T> Stream<T> streamOf(SasForwardCursor rs, SasRowMapper<T> rowMapper) throws IOException {
-        return StreamSupport.stream(spliteratorOf(rs, rowMapper), false);
-    }
-
-    private static <T> Spliterator<T> spliteratorOf(SasForwardCursor cursor, SasRowMapper<T> rowMapper) throws IOException {
-        return Spliterators.spliterator(new SasIterator<>(cursor, rowMapper), cursor.getRowCount(), Spliterator.ORDERED | Spliterator.NONNULL);
-    }
-
-    private static Runnable asUncheckedRunnable(Closeable c) {
-        return () -> {
+    private static <T> Function<SasRow, T> asUnchecked(SasRow.Mapper<T> mapper) {
+        return row -> {
             try {
-                c.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                return mapper.apply(row);
+            } catch (IOException ex) {
+                throw new UncheckedIOException(ex);
             }
         };
     }
 
-    @lombok.RequiredArgsConstructor
-    private static final class SasIterator<T> implements Iterator<T> {
-
-        @lombok.NonNull
-        private final SasForwardCursor cursor;
-
-        @lombok.NonNull
-        private final SasRowMapper<T> func;
-
-        private T row = null;
-        private boolean rowLoaded = false;
-
-        @Override
-        public boolean hasNext() {
-            if (rowLoaded) {
-                return true;
-            }
+    private static Runnable asUnchecked(Closeable resource) {
+        return () -> {
             try {
-                if (cursor.next()) {
-                    row = func.apply(cursor);
-                    return rowLoaded = true;
-                }
-                row = null;
-                return rowLoaded = false;
+                resource.close();
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
-        }
-
-        @Override
-        public T next() {
-            if (hasNext()) {
-                rowLoaded = false;
-                return row;
-            }
-            throw new NoSuchElementException();
-        }
+        };
     }
 }

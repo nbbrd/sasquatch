@@ -30,7 +30,7 @@ import picocli.ext.CsvOptions;
 import sasquatch.SasColumn;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 import sasquatch.Sasquatch;
 
 /**
@@ -169,7 +169,7 @@ public final class CsvCommand extends SasReaderCommand {
         try (SasForwardCursor cursor = sas.readForward(getSingleFile())) {
             List<SasColumn> columns = cursor.getMetaData().getColumns();
 
-            List<SasRowMapper<String>> fieldFunctions = new ArrayList<>();
+            List<SasRow.Mapper<String>> fieldFunctions = new ArrayList<>();
             for (SasColumn o : columns) {
                 writer.writeField(o.getName());
                 fieldFunctions.add(textFormatter.asSasFunc(o));
@@ -177,7 +177,7 @@ public final class CsvCommand extends SasReaderCommand {
             writer.writeEndOfLine();
 
             while (cursor.next()) {
-                for (SasRowMapper<String> o : fieldFunctions) {
+                for (SasRow.Mapper<String> o : fieldFunctions) {
                     writer.writeField(o.apply(cursor));
                 }
                 writer.writeEndOfLine();

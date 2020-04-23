@@ -41,6 +41,11 @@ public final class FailingSasCursor implements SasForwardCursor, SasScrollableCu
     }
 
     @Override
+    public Object getValue(int columnIndex) throws IOException, IndexOutOfBoundsException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public double getNumber(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -62,6 +67,11 @@ public final class FailingSasCursor implements SasForwardCursor, SasScrollableCu
 
     @Override
     public LocalTime getTime(int columnIndex) throws IOException, IndexOutOfBoundsException, IllegalArgumentException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object[] getValues() throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

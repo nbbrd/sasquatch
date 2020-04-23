@@ -24,13 +24,13 @@ import sasquatch.SasScrollableCursor;
  *
  * @author Philippe Charles
  */
-public final class EOFScrollable extends EOFCursor<SasScrollableCursor> implements SasScrollableCursor {
+public final class EOFScrollable extends EOFRowCursor<SasScrollableCursor> implements SasScrollableCursor {
 
     @lombok.NonNull
     private final Opts opts;
 
-    public EOFScrollable(SasScrollableCursor delegate, EOFCursor.Opts cursorOpts, Opts opts) {
-        super(delegate, cursorOpts);
+    public EOFScrollable(SasScrollableCursor delegate, EOFCursor.Opts cursor, EOFRowCursor.Opts row, Opts opts) {
+        super(delegate, cursor, row);
         this.opts = opts;
     }
 

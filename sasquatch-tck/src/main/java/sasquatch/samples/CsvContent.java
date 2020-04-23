@@ -29,7 +29,7 @@ import nbbrd.picocsv.Csv;
 import sasquatch.SasColumn;
 import sasquatch.SasForwardCursor;
 import sasquatch.SasMetaData;
-import sasquatch.SasRowMapper;
+import sasquatch.SasRow;
 import sasquatch.spi.SasReader;
 
 /**
@@ -52,7 +52,7 @@ public abstract class CsvContent implements SasContent {
 
     abstract protected Path relativizeSasFile(Path sasFile);
 
-    abstract protected SasRowMapper<String> getColumnFunc(SasColumn c);
+    abstract protected SasRow.Mapper<String> getColumnFunc(SasColumn c);
 
     protected Charset getCharset(Path csvFile) {
         return StandardCharsets.UTF_8;
@@ -98,7 +98,7 @@ public abstract class CsvContent implements SasContent {
                 }
 
                 int row = 0;
-                List<SasRowMapper<String>> func = getRowFunc(meta);
+                List<SasRow.Mapper<String>> func = getRowFunc(meta);
                 while (csv.readLine() && sas.next()) {
                     int col = 0;
                     while (csv.readField()) {
@@ -124,7 +124,7 @@ public abstract class CsvContent implements SasContent {
         return null;
     }
 
-    private List<SasRowMapper<String>> getRowFunc(SasMetaData meta) {
+    private List<SasRow.Mapper<String>> getRowFunc(SasMetaData meta) {
         return meta.getColumns().stream()
                 .map(this::getColumnFunc)
                 .collect(Collectors.toList());

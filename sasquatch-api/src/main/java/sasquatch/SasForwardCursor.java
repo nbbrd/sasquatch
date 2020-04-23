@@ -19,11 +19,11 @@ package sasquatch;
 import java.io.IOException;
 
 /**
- * A cursor that browse data in forward mode only.
+ * A cursor that browses data in forward mode only.
  *
  * @author Philippe Charles
  */
-public interface SasForwardCursor extends SasCursor {
+public interface SasForwardCursor extends SasCursor, SasRow {
 
     /**
      * Moves to the next row.
