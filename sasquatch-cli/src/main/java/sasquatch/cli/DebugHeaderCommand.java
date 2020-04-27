@@ -16,7 +16,8 @@
  */
 package sasquatch.cli;
 
-import internal.cli.FileCommand;
+import internal.cli.BaseCommand;
+import internal.cli.MultiFileCommand;
 import internal.cli.FilterOptions;
 import internal.ri.base.Header;
 import internal.cli.YamlOptions;
@@ -36,8 +37,11 @@ import picocli.CommandLine;
 )
 @SuppressWarnings("FieldMayBeFinal")
 @lombok.extern.java.Log
-public final class DebugHeaderCommand extends FileCommand {
+public final class DebugHeaderCommand extends BaseCommand {
 
+    @CommandLine.Mixin
+    private MultiFileCommand files = new MultiFileCommand();
+    
     @CommandLine.ArgGroup(validate = false, heading = "%nFilter options:%n")
     private FilterOptions filter = new FilterOptions();
 
@@ -46,13 +50,13 @@ public final class DebugHeaderCommand extends FileCommand {
 
     @Override
     protected void exec() throws Exception {
-        if (isSingleFile()) {
-            yaml.dump(HeaderReport.class, createReport(getSingleFile()));
+        if (files.isSingleFile()) {
+            yaml.dump(HeaderReport.class, createReport(files.getSingleFile()));
         } else {
-            List<HeaderReport> items = getFiles()
+            List<HeaderReport> items = files.getFiles()
                     .stream()
                     .parallel()
-                    .map(asFunction(this::createReport))
+                    .map(files.asFunction(this::createReport))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .filter(this::testReport)

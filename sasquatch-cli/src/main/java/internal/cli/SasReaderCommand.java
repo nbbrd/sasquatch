@@ -29,7 +29,7 @@ import sasquatch.spi.SasReaderLoader;
  * @author Philippe Charles
  */
 @lombok.extern.java.Log
-public abstract class SasReaderCommand extends FileCommand {
+public abstract class SasReaderCommand extends BaseCommand {
 
     @CommandLine.Option(
             names = {"--engine"},

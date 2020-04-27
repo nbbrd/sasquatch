@@ -16,7 +16,8 @@
  */
 package sasquatch.cli;
 
-import internal.cli.FileCommand;
+import internal.cli.BaseCommand;
+import internal.cli.MultiFileCommand;
 import internal.cli.YamlOptions;
 import internal.ri.assumptions.SasFileAssumption;
 import internal.ri.assumptions.SasFileError;
@@ -37,20 +38,23 @@ import picocli.CommandLine;
 )
 @SuppressWarnings("FieldMayBeFinal")
 @lombok.extern.java.Log
-public final class DebugCheckCommand extends FileCommand {
+public final class DebugCheckCommand extends BaseCommand {
 
+    @CommandLine.Mixin
+    private MultiFileCommand files = new MultiFileCommand();
+    
     @CommandLine.ArgGroup
     private YamlOptions yaml = new YamlOptions();
 
     @Override
     protected void exec() throws Exception {
-        if (isSingleFile()) {
-            yaml.dump(CheckReport.class, createReport(getSingleFile()));
+        if (files.isSingleFile()) {
+            yaml.dump(CheckReport.class, createReport(files.getSingleFile()));
         } else {
-            List<CheckReport> items = getFiles()
+            List<CheckReport> items = files.getFiles()
                     .stream()
                     .parallel()
-                    .map(asFunction(this::createReport))
+                    .map(files.asFunction(this::createReport))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .filter(this::testReport)

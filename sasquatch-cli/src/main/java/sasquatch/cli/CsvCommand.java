@@ -20,6 +20,7 @@ import internal.cli.SasReaderCommand;
 import internal.cli.TextFormatter;
 import internal.cli.TextFormatterOptions;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -39,16 +40,22 @@ import sasquatch.Sasquatch;
  */
 @CommandLine.Command(
         name = "csv",
-        description = "Dump dataset to CSV file."
+        description = "Dump SAS dataset to CSV file."
 )
 @SuppressWarnings("FieldMayBeFinal")
 @lombok.extern.java.Log
 public final class CsvCommand extends SasReaderCommand {
 
+    @CommandLine.Parameters(
+            paramLabel = "<file>",
+            description = "Input SAS7BDAT file"
+    )
+    private Path input;
+
     @CommandLine.Option(
             names = {"-t", "--data-type"},
             paramLabel = "<data_type>",
-            description = "Type of data to export (HEADER, COLUMNS or ROWS)"
+            description = "Type of data to export (${COMPLETION-CANDIDATES})"
     )
     private DataType dataType = DataType.ROWS;
 
@@ -60,11 +67,7 @@ public final class CsvCommand extends SasReaderCommand {
 
     @Override
     protected void exec() throws Exception {
-        if (dataType.equals(DataType.ROWS) && !isSingleFile()) {
-            throw new IllegalArgumentException("Cannot export rows on multiple files");
-        }
-
-        try (Csv.Writer writer = csv.newWriter(this::getStdOutEncoding)) {
+        try ( Csv.Writer writer = csv.newWriter(this::getStdOutEncoding)) {
             switch (dataType) {
                 case HEADER:
                     exportHeader(writer);
@@ -86,17 +89,8 @@ public final class CsvCommand extends SasReaderCommand {
         DateTimeFormatter dateTimeFormatter = textFormatter.getDateTimeFormatter();
         NumberFormat numberFormatter = textFormatter.getNumberFormat();
 
-        if (isSingleFile()) {
-            writeHeaderHead(writer);
-            writeHeaderBody(sas.readMetaData(getSingleFile()), writer, dateTimeFormatter, numberFormatter);
-        } else {
-            writer.writeField("File");
-            writeHeaderHead(writer);
-            getFiles().forEach(asConsumer(file -> {
-                writer.writeField(file.toString());
-                writeHeaderBody(sas.readMetaData(file), writer, dateTimeFormatter, numberFormatter);
-            }));
-        }
+        writeHeaderHead(writer);
+        writeHeaderBody(sas.readMetaData(input), writer, dateTimeFormatter, numberFormatter);
     }
 
     private void writeHeaderHead(Csv.Writer output) throws IOException {
@@ -127,14 +121,8 @@ public final class CsvCommand extends SasReaderCommand {
 
         NumberFormat numberFormatter = textFormatter.getNumberFormat();
 
-        if (isSingleFile()) {
-            writeColumnsHead(writer);
-            writeColumnsBody(sas.readMetaData(getSingleFile()), writer, numberFormatter, null);
-        } else {
-            writer.writeField("File");
-            writeColumnsHead(writer);
-            getFiles().forEach(asConsumer(file -> writeColumnsBody(sas.readMetaData(file), writer, numberFormatter, file.toString())));
-        }
+        writeColumnsHead(writer);
+        writeColumnsBody(sas.readMetaData(input), writer, numberFormatter);
     }
 
     private void writeColumnsHead(Csv.Writer output) throws IOException {
@@ -147,11 +135,8 @@ public final class CsvCommand extends SasReaderCommand {
         output.writeEndOfLine();
     }
 
-    private void writeColumnsBody(SasMetaData meta, Csv.Writer output, NumberFormat numberFormatter, String fileName) throws IOException {
+    private void writeColumnsBody(SasMetaData meta, Csv.Writer output, NumberFormat numberFormatter) throws IOException {
         for (SasColumn o : meta.getColumns()) {
-            if (fileName != null) {
-                output.writeField(fileName);
-            }
             output.writeField(numberFormatter.format(o.getOrder()));
             output.writeField(o.getName());
             output.writeField(o.getType().name());
@@ -166,11 +151,9 @@ public final class CsvCommand extends SasReaderCommand {
         Sasquatch sas = getSasquatch();
         TextFormatter textFormatter = formatter.getFormatter();
 
-        try (SasForwardCursor cursor = sas.readForward(getSingleFile())) {
-            List<SasColumn> columns = cursor.getMetaData().getColumns();
-
+        try ( SasForwardCursor cursor = sas.readForward(input)) {
             List<SasRow.Mapper<String>> fieldFunctions = new ArrayList<>();
-            for (SasColumn o : columns) {
+            for (SasColumn o : cursor.getColumns()) {
                 writer.writeField(o.getName());
                 fieldFunctions.add(textFormatter.asSasFunc(o));
             }

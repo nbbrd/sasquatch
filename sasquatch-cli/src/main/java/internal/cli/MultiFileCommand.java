@@ -38,7 +38,7 @@ import picocli.CommandLine;
  * @author Philippe Charles
  */
 @lombok.extern.java.Log
-public abstract class FileCommand extends BaseCommand {
+public class MultiFileCommand {
 
     @CommandLine.Parameters(
             paramLabel = "<file>",
@@ -70,7 +70,7 @@ public abstract class FileCommand extends BaseCommand {
     public List<Path> getFiles() throws IOException {
         List<Path> result = new ArrayList<>();
         for (Path item : input) {
-            try (Stream<Path> files = walk(item, recursive)) {
+            try ( Stream<Path> files = walk(item, recursive)) {
                 files.forEach(result::add);
             }
         }
@@ -121,8 +121,8 @@ public abstract class FileCommand extends BaseCommand {
     private static Stream<Path> walk(Path path, boolean recursive) throws IOException {
         if (Files.isDirectory(path)) {
             return recursive
-                    ? Files.walk(path).filter(FileCommand::isSasFile)
-                    : StreamSupport.stream(Files.newDirectoryStream(path, FileCommand::isSasFile).spliterator(), false);
+                    ? Files.walk(path).filter(MultiFileCommand::isSasFile)
+                    : StreamSupport.stream(Files.newDirectoryStream(path, MultiFileCommand::isSasFile).spliterator(), false);
         }
         return Stream.of(path);
     }

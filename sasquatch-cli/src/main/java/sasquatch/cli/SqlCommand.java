@@ -16,6 +16,7 @@
  */
 package sasquatch.cli;
 
+import internal.cli.MultiFileCommand;
 import internal.cli.SqlWriter;
 import internal.cli.TextFormatter;
 import internal.cli.SasReaderCommand;
@@ -40,10 +41,13 @@ import sasquatch.Sasquatch;
  */
 @CommandLine.Command(
         name = "sql",
-        description = "Dump dataset to SQL script."
+        description = "Dump SAS dataset to SQL script."
 )
 @SuppressWarnings("FieldMayBeFinal")
 public final class SqlCommand extends SasReaderCommand {
+
+    @CommandLine.Mixin
+    private MultiFileCommand files = new MultiFileCommand();
 
     @CommandLine.Option(
             names = {"-o", "--output-file"},
@@ -63,11 +67,11 @@ public final class SqlCommand extends SasReaderCommand {
     protected void exec() throws Exception {
         Sasquatch sas = getSasquatch();
 
-        try (SqlWriter sql = newWriter()) {
-            if (isSingleFile()) {
-                dump(sas, getSingleFile(), sql, SQL_FORMAT);
+        try ( SqlWriter sql = newWriter()) {
+            if (files.isSingleFile()) {
+                dump(sas, files.getSingleFile(), sql, SQL_FORMAT);
             } else {
-                getFiles().forEach(asConsumer(file -> dump(sas, file, sql, SQL_FORMAT)));
+                files.getFiles().forEach(files.asConsumer(file -> dump(sas, file, sql, SQL_FORMAT)));
             }
         }
     }
@@ -81,7 +85,7 @@ public final class SqlCommand extends SasReaderCommand {
     private static TextFormatter SQL_FORMAT = TextFormatter.of(Locale.ROOT, "yyyy-MM-dd", "HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "", "");
 
     private static void dump(Sasquatch reader, Path input, SqlWriter output, TextFormatter formats) throws IOException {
-        try (SasForwardCursor cursor = reader.readForward(input)) {
+        try ( SasForwardCursor cursor = reader.readForward(input)) {
             SasMetaData meta = cursor.getMetaData();
 
             // 1. Get table name and structure

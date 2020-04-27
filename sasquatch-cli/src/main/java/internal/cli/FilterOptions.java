@@ -16,7 +16,6 @@
  */
 package internal.cli;
 
-import internal.ri.data.ColAttrs;
 import internal.ri.data.Document;
 import internal.ri.base.Header;
 import internal.ri.base.PageHeader;

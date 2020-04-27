@@ -25,6 +25,7 @@ import picocli.CommandLine;
  */
 @CommandLine.Command(
         name = "debug",
+        description = "Set of debugging tools.",
         hidden = true,
         subcommands = {
             DebugHeaderCommand.class,
