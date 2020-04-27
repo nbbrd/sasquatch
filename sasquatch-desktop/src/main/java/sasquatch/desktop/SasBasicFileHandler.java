@@ -16,6 +16,7 @@
  */
 package sasquatch.desktop;
 
+import ec.util.chart.ColorScheme;
 import ec.util.various.swing.BasicFileViewer;
 import java.awt.Component;
 import java.io.File;
@@ -36,7 +37,7 @@ public final class SasBasicFileHandler implements BasicFileViewer.BasicFileHandl
 
     @Override
     public Object asyncLoad(File file, BasicFileViewer.ProgressCallback progress) throws IOException {
-        try (SasForwardCursor cursor = reader.readForward(file.toPath())) {
+        try ( SasForwardCursor cursor = reader.readForward(file.toPath())) {
             int rowCount = cursor.getRowCount();
             int colCount = cursor.getColumns().size();
             int row = 0;
@@ -73,5 +74,13 @@ public final class SasBasicFileHandler implements BasicFileViewer.BasicFileHandl
     @Override
     public void recycleViewer(Component c) {
         ((SasBasicFileView) c).setModel(SasBasicFileModel.EMPTY);
+    }
+
+    public ColorScheme getColorScheme() {
+        return uniqueView.getColorScheme();
+    }
+
+    public void setColorScheme(ColorScheme colorScheme) {
+        uniqueView.setColorScheme(colorScheme);
     }
 }
