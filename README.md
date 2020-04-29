@@ -2,12 +2,12 @@
 
 [![Download](https://img.shields.io/github/release/nbbrd/sasquatch.svg)](https://github.com/nbbrd/sasquatch/releases/latest)
 
-This Java library provides a reader for SAS datasets.  
-It also provides a command-line tool and a desktop application.
+This [Java library](#java-library) provides a reader for SAS datasets.  
+It also provides a [command-line tool](#command-line-tool) and a [desktop application](#desktop-application).
 
 Key points:
 
-- lightweight library designed as a facade
+- lightweight library designed as a [facade](https://en.wikipedia.org/wiki/Facade_pattern)
 - Java 8 minimum requirement
 - has a module-info that makes it compatible with [JPMS](https://www.baeldung.com/java-9-modularity) 
 
@@ -86,11 +86,31 @@ At least one implementation must be available at runtime (on classpath or module
 Sasquatch supports the following implementations:
 
 | artifactId | description | support |
-| --- | --- | --- |
+| --- | --- | :-: |
 | `sasquatch-ri` | native reference implementation | advanced |
 | `sasquatch-parso` | wrapper around parso library | advanced |
 | `sasquatch-sassy` | wrapper around sassy library | basic |
 | `sasquatch-biostatmatt` | java version of biostatmatt r code | basic |
+
+Feature matrix:
+
+| | `ri` | `parso` | `sassy` | `biostatmatt` |
+| --: | :-: | :-: | :-: | :-: |
+| `BIG_ENDIAN_32` | x | x | - | - |
+| `LITTLE_ENDIAN_32` | x | x | x | x |
+| `BIG_ENDIAN_64` | x | x | - | - |
+| `LITTLE_ENDIAN_64` | x | x | - | x |
+| `ATTRIBUTES` | x | x | - | x |
+| `LABEL_META` | x | x | - | - |
+| `FIELD_ENCODING` | x | x | - | - |
+| `COLUMN_ENCODING` | x | x | - | - |
+| `CHAR_COMP` | x | x | - | - |
+| `BIN_COMP` | x | x | - | - |
+| `DATE_TYPE` | x | x | - | - |
+| `DATE_TIME_TYPE` | x | x | - | - |
+| `TIME_TYPE` | x | x | - | - |
+| `CUSTOM_NUMERIC` | x | x | x | - |
+| `COLUMN_FORMAT` | x | x | - | - |
 
 ### Dependencies setup
 
