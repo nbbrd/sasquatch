@@ -54,7 +54,7 @@ public final class SasquatchReader implements SasReader {
 
     @Override
     public int getCost() {
-        return NATIVE;
+        return ADVANCED_SUPPORT;
     }
 
     @Override

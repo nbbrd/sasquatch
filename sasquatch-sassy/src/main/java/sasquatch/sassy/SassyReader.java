@@ -54,7 +54,7 @@ public final class SassyReader implements SasReader {
 
     @Override
     public int getCost() {
-        return SLOW;
+        return BASIC_SUPPORT;
     }
 
     @Override

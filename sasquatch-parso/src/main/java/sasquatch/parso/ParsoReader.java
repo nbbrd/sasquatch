@@ -48,7 +48,7 @@ public final class ParsoReader implements SasReader {
 
     @Override
     public int getCost() {
-        return FAST;
+        return ADVANCED_SUPPORT;
     }
 
     @Override

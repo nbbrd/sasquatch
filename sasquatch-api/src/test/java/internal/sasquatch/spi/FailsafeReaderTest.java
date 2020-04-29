@@ -76,7 +76,7 @@ public class FailsafeReaderTest {
     @Test
     public void testGetCost() {
         reset();
-        assertThat(valid.getCost()).isEqualTo(SasReader.NATIVE);
+        assertThat(valid.getCost()).isEqualTo(SasReader.ADVANCED_SUPPORT);
         assertThat(errors).isEmpty();
         assertThat(values).isEmpty();
 

@@ -55,7 +55,7 @@ public final class BiostatmattReader implements SasReader {
 
     @Override
     public int getCost() {
-        return SLOW;
+        return BASIC_SUPPORT;
     }
 
     @Override

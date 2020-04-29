@@ -114,7 +114,6 @@ public interface SasReader {
     @NonNull
     SasMetaData readMetaData(@NonNull Path file) throws IOException;
 
-    public static final int NATIVE = 0;
-    public static final int FAST = 100;
-    public static final int SLOW = 1000;
+    public static final int ADVANCED_SUPPORT = 100;
+    public static final int BASIC_SUPPORT = 1000;
 }

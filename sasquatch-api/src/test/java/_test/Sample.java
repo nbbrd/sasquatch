@@ -62,7 +62,7 @@ public class Sample {
             .builder()
             .name("valid")
             .available(true)
-            .cost(SasReader.NATIVE)
+            .cost(SasReader.ADVANCED_SUPPORT)
             .features(EnumSet.allOf(SasFeature.class))
             .table(FILE, VALID_TABLE)
             .build();
