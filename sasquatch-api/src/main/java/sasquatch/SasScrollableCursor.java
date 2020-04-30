@@ -19,7 +19,12 @@ package sasquatch;
 import java.io.IOException;
 
 /**
- * A cursor that browses data in scrollable mode.
+ * A SAS dataset cursor that browses rows in scrollable mode by using their
+ * position.
+ *
+ * @apiNote This cursor is <u>not</u> thread-safe since it is mutable to allow
+ * iteration through the content.<br>Furthermore, it might hold some resources
+ * opened so it is advised to close it after use.
  *
  * @author Philippe Charles
  */

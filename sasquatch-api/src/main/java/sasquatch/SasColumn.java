@@ -19,7 +19,9 @@ package sasquatch;
 import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
- * An immutable object that describes a column in a .sas7bdat file.
+ * A column in a SAS dataset.
+ *
+ * @apiNote This class is immutable.
  *
  * @author Philippe Charles
  */
@@ -28,8 +30,8 @@ import org.checkerframework.checker.index.qual.NonNegative;
 public class SasColumn {
 
     /**
-     * A zero-based index that defines the column order in a sas table. This
-     * order is unique by table.
+     * A zero-based index that defines the column order. This order is unique by
+     * dataset.
      *
      * @return a zero-based index
      */
@@ -37,7 +39,7 @@ public class SasColumn {
     private int order;
 
     /**
-     * This column's name. This name is unique by table.
+     * The column's name. This name is unique by dataset.
      *
      * @return a non-null name.
      */
@@ -45,7 +47,7 @@ public class SasColumn {
     private String name;
 
     /**
-     * This column's type.
+     * The column's type.
      *
      * @return a non-null type.
      */
@@ -53,7 +55,7 @@ public class SasColumn {
     private SasColumnType type;
 
     /**
-     * This column's length (in bytes) in a row.
+     * The column's length (in bytes) in a row.
      *
      * @return a length
      */
@@ -61,8 +63,7 @@ public class SasColumn {
     private int length;
 
     /**
-     * This column's format used for formatting. Note that it also determines
-     * the column's type.
+     * The column's format.
      *
      * @return a non-null format
      */
@@ -70,7 +71,7 @@ public class SasColumn {
     private SasColumnFormat format;
 
     /**
-     * This column's label.
+     * The column's label.
      *
      * @return a non-null label
      */

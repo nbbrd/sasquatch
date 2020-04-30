@@ -25,6 +25,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
+ * A SAS dataset row that retrieves data from fields.
  *
  * @author Philippe Charles
  */
@@ -32,10 +33,7 @@ public interface SasRow {
 
     /**
      * Retrieves the value of the specified column in the current row.
-     * <p>
-     * The value type depends on the column type and subtype; a pure numeric
-     * will return a Double, a character will return a String and a time-related
-     * subtype will return a Long.
+     * <br>The value type depends on the column type.
      *
      * @param columnIndex the zero-based column index
      * @return a value if available, null otherwise
@@ -46,7 +44,7 @@ public interface SasRow {
     Object getValue(@NonNegative int columnIndex) throws IOException, IndexOutOfBoundsException;
 
     /**
-     * Retrieves the number value of the specified column in the current row.
+     * Retrieves the numeric value of the specified column in the current row.
      *
      * @param columnIndex the zero-based column index
      * @return a number value if available, NaN otherwise
@@ -112,11 +110,15 @@ public interface SasRow {
      *
      * @return a non-null array of nullable values
      * @throws IOException if an I/O exception occurred
-     * @throws IndexOutOfBoundsException if the columnIndex is invalid
      */
     @NonNull
     Object[] getValues() throws IOException;
 
+    /**
+     * A function that creates an typed object from a row.
+     *
+     * @param <T> the type of the resulting object
+     */
     @FunctionalInterface
     public interface Mapper<T> {
 
@@ -124,6 +126,11 @@ public interface SasRow {
         T apply(@NonNull SasRow row) throws IOException;
     }
 
+    /**
+     * A function that creates a {@link Mapper} from a cursor.
+     *
+     * @param <T> the type of the mapper resulting object
+     */
     @FunctionalInterface
     public interface Factory<T> {
 

@@ -21,12 +21,23 @@ import java.util.Spliterator;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A cursor that browses data using a spliterator.
+ * A SAS dataset cursor that browses rows by using a {@link Spliterator} and
+ * therefore makes it compatible with the Java stream API.
+ *
+ * @apiNote This cursor is <u>not</u> thread-safe since it is mutable to allow
+ * iteration through the content.<br>Furthermore, it might hold some resources
+ * opened so it is advised to close it after use.
  *
  * @author Philippe Charles
  */
 public interface SasSplittableCursor extends SasCursor {
 
+    /**
+     * Gets a spliterator over rows.
+     *
+     * @return a non-null spliterator
+     * @throws IOException if an I/O exception occurred
+     */
     @NonNull
     Spliterator<SasRow> getSpliterator() throws IOException;
 }

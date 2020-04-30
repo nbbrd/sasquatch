@@ -17,6 +17,7 @@
 package sasquatch.spi;
 
 /**
+ * List of features that a reader can implement.
  *
  * @author Philippe Charles
  */

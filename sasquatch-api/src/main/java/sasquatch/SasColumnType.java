@@ -16,14 +16,33 @@
  */
 package sasquatch;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 /**
- * The type of a column.
+ * The type of a column in a SAS dataset.
  */
 public enum SasColumnType {
 
+    /**
+     * Character string as {@link String} class.
+     */
     CHARACTER,
+    /**
+     * Numeric value as {@link double} primitive.
+     */
     NUMERIC,
+    /**
+     * Date value as {@link LocalDate} class.
+     */
     DATE,
+    /**
+     * Date and time value as {@link LocalDateTime} class.
+     */
     DATETIME,
+    /**
+     * Time value as {@link LocalTime} class.
+     */
     TIME;
 }

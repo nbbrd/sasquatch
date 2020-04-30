@@ -34,7 +34,9 @@ import sasquatch.spi.SasReaderLoader;
 import sasquatch.util.SasCursors;
 
 /**
- * A thread-safe reader used to read SAS datasets (*.sas7bdat).
+ * A simple facade to read SAS dataset (*.sas7bdat).
+ *
+ * @apiNote This class is thread-safe.
  *
  * @author Philippe Charles
  */
@@ -42,11 +44,22 @@ import sasquatch.util.SasCursors;
 @lombok.AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Sasquatch {
 
+    /**
+     * A factory that uses Java ServiceLoader to locate underlying readers.
+     *
+     * @return a non-null instance
+     */
     @NonNull
     public static Sasquatch ofServiceLoader() {
         return new Sasquatch(SasReaderLoader.load().stream().findFirst());
     }
 
+    /**
+     * A factory that uses a specific reader.
+     *
+     * @param reader a non-null reader
+     * @return a non-null instance
+     */
     @NonNull
     public static Sasquatch of(@NonNull SasReader reader) {
         return new Sasquatch(Optional.of(reader));
@@ -56,11 +69,11 @@ public final class Sasquatch {
     private final Optional<SasReader> reader;
 
     /**
-     * Read a SAS dataset into a forward cursor.
-     * <p>
-     * The result set might hold some resources opened so it is advised to call
-     * the close method after use.
-     * <br>The cursor is <u>not</u> thread-safe.
+     * Reads a SAS dataset into a forward cursor.
+     *
+     * @apiNote This method must be used within a try-with-resources statement
+     * or similar control structure to ensure that the cursor's open file is
+     * closed promptly after the cursor's operations have completed.
      *
      * @param file the SAS dataset to read
      * @return a non-null cursor
@@ -73,11 +86,11 @@ public final class Sasquatch {
     }
 
     /**
-     * Read a SAS dataset into a scrollable cursor.
-     * <p>
-     * The result set might hold some resources opened so it is advised to call
-     * the close method after use.
-     * <br>The cursor is <u>not</u> thread-safe.
+     * Reads a SAS dataset into a scrollable cursor.
+     *
+     * @apiNote This method must be used within a try-with-resources statement
+     * or similar control structure to ensure that the cursor's open file is
+     * closed promptly after the cursor's operations have completed.
      *
      * @param file the SAS dataset to read
      * @return a non-null cursor
@@ -90,11 +103,11 @@ public final class Sasquatch {
     }
 
     /**
-     * Read a SAS dataset into a splittable cursor.
-     * <p>
-     * The result set might hold some resources opened so it is advised to call
-     * the close method after use.
-     * <br>The cursor is <u>not</u> thread-safe.
+     * Reads a SAS dataset into a splittable cursor.
+     *
+     * @apiNote This method must be used within a try-with-resources statement
+     * or similar control structure to ensure that the cursor's open file is
+     * closed promptly after the cursor's operations have completed.
      *
      * @param file the SAS dataset to read
      * @return a non-null cursor
@@ -107,11 +120,7 @@ public final class Sasquatch {
     }
 
     /**
-     * Read the metadata of a SAS dataset.
-     * <p>
-     * Note that this same metadata can also be obtained by using the read
-     * method. <br>This is a shortcut when you don't need data (the resources
-     * are automatically released).
+     * Reads the metadata of a SAS dataset.
      *
      * @param file the SAS dataset to read
      * @return a non-null metadata
@@ -124,7 +133,7 @@ public final class Sasquatch {
     }
 
     /**
-     * Read all rows of a SAS dataset as a {@code Stream}. Unlike {@link
+     * Reads all rows of a SAS dataset as a {@code Stream}. Unlike {@link
      * #getAllRows(Path, Charset) getAllRows}, this method does not read all
      * lines into a {@code List}, but instead populates lazily as the stream is
      * consumed.
@@ -133,9 +142,9 @@ public final class Sasquatch {
      * or similar control structure to ensure that the stream's open file is
      * closed promptly after the stream's operations have completed.
      *
-     * @param <T>
+     * @param <T> the type of the mapper resulting object
      * @param file the SAS dataset to read
-     * @param factory
+     * @param factory a non-null mapper factory
      * @return a non-null stream
      * @throws IOException if an I/O exception occurred
      */
@@ -151,11 +160,11 @@ public final class Sasquatch {
     }
 
     /**
-     * Read all rows of a SAS dataset.
+     * Reads all rows of a SAS dataset.
      *
-     * @param <T>
+     * @param <T> the type of the mapper resulting object
      * @param file the SAS dataset to read
-     * @param factory
+     * @param factory a non-null mapper factory
      * @return a non-null list
      * @throws IOException if an I/O exception occurred
      */
@@ -163,7 +172,7 @@ public final class Sasquatch {
     public <T> List<T> getAllRows(@NonNull Path file, SasRow.@NonNull Factory<T> factory) throws IOException {
         Objects.requireNonNull(file);
         Objects.requireNonNull(factory);
-        try (SasForwardCursor cursor = readForward(file)) {
+        try ( SasForwardCursor cursor = readForward(file)) {
             SasRow.Mapper<T> mapper = factory.get(cursor);
             return SasCursors.toList(cursor, mapper);
         }
@@ -187,8 +196,8 @@ public final class Sasquatch {
         return () -> {
             try {
                 resource.close();
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            } catch (IOException ex) {
+                throw new UncheckedIOException(ex);
             }
         };
     }

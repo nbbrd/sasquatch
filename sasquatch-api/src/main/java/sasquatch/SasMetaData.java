@@ -21,8 +21,9 @@ import java.util.List;
 import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
- * An immutable object that contains the metadata available in a SAS dataset
- * (*.sas7bdat).
+ * The metadata of a SAS dataset.
+ *
+ * @apiNote This class is immutable.
  *
  * @author Philippe Charles
  */
@@ -31,7 +32,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
 public class SasMetaData {
 
     /**
-     * The name of the SAS dataset.<br>Note that this name might be empty.
+     * The dataset's name.<br>Note that this name might be empty.
      *
      * @return a non-null name
      */
@@ -39,7 +40,7 @@ public class SasMetaData {
     private String name;
 
     /**
-     * The label of the SAS dataset.<br>Note that this label might be empty.
+     * The dataset's label.<br>Note that this label might be empty.
      *
      * @return a non-null label
      */
@@ -47,23 +48,23 @@ public class SasMetaData {
     private String label;
 
     /**
-     * The creation time of the SAS dataset.
+     * The dataset's creation time.
      *
-     * @return the creation time
+     * @return a non-null creation time
      */
     @lombok.NonNull
     private LocalDateTime creationTime;
 
     /**
-     * The last modification time of the SAS dataset.
+     * The dataset's last modification time.
      *
-     * @return the last modification time
+     * @return a non-null last modification time
      */
     @lombok.NonNull
     private LocalDateTime lastModificationTime;
 
     /**
-     * The SAS release used to create the SAS dataset.
+     * The SAS release used to create the dataset.
      *
      * @return a non-null SAS release
      */
@@ -71,7 +72,7 @@ public class SasMetaData {
     private String release;
 
     /**
-     * The SAS server type used to create the SAS dataset.
+     * The SAS server type used to create the dataset.
      *
      * @return a non-null host
      */
@@ -81,13 +82,13 @@ public class SasMetaData {
     /**
      * Returns the total number of rows.
      *
-     * @return a count
+     * @return a non-negative count
      */
     @NonNegative
     private int rowCount;
 
     /**
-     * The list of columns in the SAS dataset.
+     * The list of columns in the dataset.
      *
      * @return a non-null unmodifiable list of non-null columns
      */

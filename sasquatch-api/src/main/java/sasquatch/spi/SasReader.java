@@ -29,7 +29,9 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A thread-safe reader used to read SAS datasets (*.sas7bdat).
+ * A reader of SAS dataset. This class is part of SPI, do not use it directly.
+ *
+ * @implNote This class must be thread-safe.
  *
  * @author Philippe Charles
  */
@@ -43,27 +45,40 @@ public interface SasReader {
     /**
      * The name of the reader.
      *
-     * @return a non-null name
+     * @return a non-null not-empty name
      */
     @NonNull
     String getName();
 
+    /**
+     * Checks if the reader is available or not. This check is used to filter
+     * implementations at runtime.
+     *
+     * @return true if available, false otherwise
+     */
     @ServiceFilter
     boolean isAvailable();
 
+    /**
+     * Gets the cost of using this reader (the lower the better). This cost is
+     * used to sort implementations at runtime.
+     *
+     * @return a non-negative value
+     */
     @ServiceSorter
     @NonNegative
     int getCost();
 
+    /**
+     * Gets the supported features of this reader.
+     *
+     * @return a non-null set of features
+     */
     @NonNull
     Set<SasFeature> getFeatures();
 
     /**
-     * Read a SAS dataset into a forward cursor.
-     * <p>
-     * The result set might hold some resources opened so it is advised to call
-     * the close method after use.
-     * <br>The cursor is <u>not</u> thread-safe.
+     * Reads a SAS dataset into a forward cursor.
      *
      * @param file the SAS dataset to read
      * @return a non-null cursor
@@ -73,11 +88,7 @@ public interface SasReader {
     SasForwardCursor readForward(@NonNull Path file) throws IOException;
 
     /**
-     * Read a SAS dataset into a scrollable cursor.
-     * <p>
-     * The result set might hold some resources opened so it is advised to call
-     * the close method after use.
-     * <br>The cursor is <u>not</u> thread-safe.
+     * Reads a SAS dataset into a scrollable cursor.
      *
      * @param file the SAS dataset to read
      * @return a non-null cursor
@@ -87,11 +98,7 @@ public interface SasReader {
     SasScrollableCursor readScrollable(@NonNull Path file) throws IOException;
 
     /**
-     * Read a SAS dataset into a splittable cursor.
-     * <p>
-     * The result set might hold some resources opened so it is advised to call
-     * the close method after use.
-     * <br>The cursor is <u>not</u> thread-safe.
+     * Reads a SAS dataset into a splittable cursor.
      *
      * @param file the SAS dataset to read
      * @return a non-null cursor
@@ -101,11 +108,7 @@ public interface SasReader {
     SasSplittableCursor readSplittable(@NonNull Path file) throws IOException;
 
     /**
-     * Read the metadata of a SAS dataset.
-     * <p>
-     * Note that this same metadata can also be obtained by using the read
-     * method. <br>This is a shortcut when you don't need data (the resources
-     * are automatically released).
+     * Reads the metadata of a SAS dataset.
      *
      * @param file the SAS dataset to read
      * @return a non-null metadata

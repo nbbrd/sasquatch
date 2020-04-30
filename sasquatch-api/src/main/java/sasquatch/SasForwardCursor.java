@@ -19,7 +19,12 @@ package sasquatch;
 import java.io.IOException;
 
 /**
- * A cursor that browses data in forward mode only.
+ * A SAS dataset cursor that browses rows in forward-only mode from first to
+ * last.
+ *
+ * @apiNote This cursor is <u>not</u> thread-safe since it is mutable to allow
+ * iteration through the content.<br>Furthermore, it might hold some resources
+ * opened so it is advised to close it after use.
  *
  * @author Philippe Charles
  */

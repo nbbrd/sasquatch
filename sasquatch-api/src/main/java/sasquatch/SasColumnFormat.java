@@ -19,6 +19,9 @@ package sasquatch;
 import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
+ * A column format in a SAS dataset.
+ *
+ * @apiNote This class is immutable.
  *
  * @author Philippe Charles
  * @see
@@ -28,22 +31,25 @@ import org.checkerframework.checker.index.qual.NonNegative;
 @lombok.Builder(toBuilder = true, builderClassName = "Builder")
 public class SasColumnFormat {
 
+    /**
+     * A default empty format.
+     */
     public static final SasColumnFormat EMPTY = new SasColumnFormat("", 0, 0);
 
     /**
-     * Format name.
+     * The format name.
      */
     @lombok.NonNull
     private String name;
 
     /**
-     * Format width.
+     * The format width.
      */
     @NonNegative
     private int width;
 
     /**
-     * Optional decimal scaling factor in the numeric formats.
+     * An optional decimal scaling factor in the numeric formats.
      */
     @NonNegative
     private int precision;

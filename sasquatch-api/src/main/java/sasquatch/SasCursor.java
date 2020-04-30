@@ -23,11 +23,16 @@ import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A cursor that contains metadata and a way to browse data.
- * <p>
- * This result set is <u>not</u> thread-safe since it is mutable to allow
- * iteration through the content. Furthermore, it might hold some resources
+ * A generic SAS dataset cursor that provides metadata. Rows are browsed in
+ * several ways by specialized types.
+ *
+ * @apiNote This cursor is <u>not</u> thread-safe since it is mutable to allow
+ * iteration through the content.<br>Furthermore, it might hold some resources
  * opened so it is advised to close it after use.
+ *
+ * @see SasForwardCursor
+ * @see SasScrollableCursor
+ * @see SasSplittableCursor
  *
  * @author Philippe Charles
  */
@@ -35,7 +40,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public interface SasCursor extends Closeable {
 
     /**
-     * Returns the metadata of the SAS dataset.
+     * Returns the metadata.
      *
      * @return a non-null metadata
      * @throws IOException if an I/O exception occurred
@@ -44,7 +49,7 @@ public interface SasCursor extends Closeable {
     SasMetaData getMetaData() throws IOException;
 
     /**
-     * Returns the columns of the SAS dataset.
+     * Returns the columns as an ordered list.
      *
      * @return a non-null unmodifiable list of non-null columns
      * @throws IOException if an I/O exception occurred
@@ -54,6 +59,12 @@ public interface SasCursor extends Closeable {
         return getMetaData().getColumns();
     }
 
+    /**
+     * Returns the row count.
+     *
+     * @return a non-negative count
+     * @throws IOException if an I/O exception occurred
+     */
     @NonNegative
     default int getRowCount() throws IOException {
         return getMetaData().getRowCount();
