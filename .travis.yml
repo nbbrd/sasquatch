@@ -13,6 +13,7 @@ env:
   global:
     - DEPLOY_JDK=openjdk11
     - DEPLOY_REPO=nbbrd/sasquatch
+    - DEPLOY_BIN=target/binaries/*
 
 deploy:
   # Maven snapshots from develop branch
@@ -39,6 +40,8 @@ deploy:
     api_key: "${GITHUB_KEY}"
     skip_cleanup: true
     draft: true
+    file_glob: true
+    file: "${DEPLOY_BIN}"
     on:
       tags: true
       repo: "${DEPLOY_REPO}"
