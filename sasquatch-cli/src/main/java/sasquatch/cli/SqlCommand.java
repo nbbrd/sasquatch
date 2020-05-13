@@ -1,42 +1,36 @@
 /*
  * Copyright 2018 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.cli;
 
-import internal.cli.MultiFileCommand;
-import internal.cli.SqlWriter;
-import internal.cli.TextFormatter;
 import internal.cli.SasReaderCommand;
+import internal.cli.SasRowFormat;
+import internal.picocli.sql.SqlOutputOptions;
+import internal.picocli.sql.SqlWriter;
+import nbbrd.console.picocli.MultiFileInputOptions;
+import picocli.CommandLine;
+import sasquatch.*;
+import sasquatch.util.SasFilenameFilter;
+
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
-import picocli.CommandLine;
-import sasquatch.SasColumn;
-import sasquatch.SasForwardCursor;
-import sasquatch.SasMetaData;
-import sasquatch.SasRow;
-import sasquatch.Sasquatch;
+import java.util.logging.Level;
 
 /**
- *
  * @author Philippe Charles
  */
 @CommandLine.Command(
@@ -44,55 +38,42 @@ import sasquatch.Sasquatch;
         description = "Dump SAS dataset to SQL script."
 )
 @SuppressWarnings("FieldMayBeFinal")
+@lombok.extern.java.Log
 public final class SqlCommand extends SasReaderCommand {
 
     @CommandLine.Mixin
-    private MultiFileCommand files = new MultiFileCommand();
+    private MultiFileInputOptions input = new MultiFileInputOptions();
 
-    @CommandLine.Option(
-            names = {"-o", "--output-file"},
-            paramLabel = "<file>",
-            description = "Output SQL file"
-    )
-    private Path output = null;
-
-    @CommandLine.Option(
-            names = {"-e", "--encoding"},
-            paramLabel = "<encoding>",
-            description = "Charset used to encode text."
-    )
-    private Charset charset = StandardCharsets.UTF_8;
+    @CommandLine.ArgGroup(validate = false, heading = "%nSQL options:%n")
+    private SqlOutputOptions output = new SqlOutputOptions();
 
     @Override
     protected void exec() throws Exception {
         Sasquatch sas = getSasquatch();
 
-        try ( SqlWriter sql = newWriter()) {
-            if (files.isSingleFile()) {
-                dump(sas, files.getSingleFile(), sql, SQL_FORMAT);
+        try (SqlWriter sql = output.newSqlWriter(this::getStdOutEncoding)) {
+            if (input.isSingleFile()) {
+                dump(sas, input.getSingleFile(), sql, SasRowFormat.DEFAULT);
             } else {
-                files.getFiles().forEach(files.asConsumer(file -> dump(sas, file, sql, SQL_FORMAT)));
+                input.getAllFiles(new SasFilenameFilter()::accept)
+                        .forEach(input.asConsumer(file -> dump(sas, file, sql, SasRowFormat.DEFAULT), this::log));
             }
         }
     }
 
-    private SqlWriter newWriter() throws IOException {
-        return output != null
-                ? new SqlWriter(Files.newBufferedWriter(output, charset))
-                : new SqlWriter(new PrintWriter(System.out));
+    private void log(Exception ex, Path file) {
+        log.log(Level.INFO, "While reading '" + file + "'", ex);
     }
 
-    private static TextFormatter SQL_FORMAT = TextFormatter.of(Locale.ROOT, "yyyy-MM-dd", "HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "", "");
-
-    private static void dump(Sasquatch reader, Path input, SqlWriter output, TextFormatter formats) throws IOException {
-        try ( SasForwardCursor cursor = reader.readForward(input)) {
+    private static void dump(Sasquatch reader, Path input, SqlWriter output, SasRowFormat formats) throws IOException {
+        try (SasForwardCursor cursor = reader.readForward(input)) {
             SasMetaData meta = cursor.getMetaData();
 
             // 1. Get table name and structure
             SqlWriter.Table table = getSqlTable(getTableName(meta.getName(), input), meta.getColumns());
 
             // 2. Create functions to get the values in a proper format
-            SasRow.Mapper<String[]> rowMapper = formats.asSasFuncs(meta.getColumns());
+            SasRow.Mapper<String[]> rowMapper = getDumpRowMapper(formats.asMappers(meta.getColumns()));
 
             // 3. Retrieve data and write output
             output.dropTableIfExist(table).createTable(table);
@@ -100,6 +81,16 @@ public final class SqlCommand extends SasReaderCommand {
                 output.insertInto(table, rowMapper.apply(cursor));
             }
         }
+    }
+
+    private static SasRow.Mapper<String[]> getDumpRowMapper(List<SasRow.Mapper<String>> mappers) {
+        String[] values = new String[mappers.size()];
+        return row -> {
+            for (int i = 0; i < values.length; i++) {
+                values[i] = mappers.get(i).apply(row);
+            }
+            return values;
+        };
     }
 
     private static SqlWriter.Table getSqlTable(String name, List<SasColumn> columns) {

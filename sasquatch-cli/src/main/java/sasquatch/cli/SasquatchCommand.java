@@ -1,30 +1,30 @@
 /*
  * Copyright 2018 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.cli;
 
 import internal.cli.BaseCommand;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import nbbrd.console.picocli.ManifestVersionProvider;
 import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
-import picocli.ext.ManifestVersionProvider;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- *
  * @author Philippe Charles
  */
 @CommandLine.Command(
@@ -32,9 +32,9 @@ import picocli.ext.ManifestVersionProvider;
         description = "Reader of SAS datasets.",
         versionProvider = ManifestVersionProvider.class,
         subcommands = {
-            CsvCommand.class,
-            SqlCommand.class,
-            DebugCommand.class
+                CsvCommand.class,
+                SqlCommand.class,
+                DebugCommand.class
         }
 )
 public final class SasquatchCommand extends BaseCommand {

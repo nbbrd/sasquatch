@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 National Bank of Belgium
+ * Copyright 2020 National Bank of Belgium
  *
  * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
@@ -14,30 +14,23 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package sasquatch.cli;
+package internal.picocli.sql;
 
-import internal.cli.BaseCommand;
-import picocli.CommandLine;
+
+import nbbrd.console.picocli.text.TextOutputOptions;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * @author Philippe Charles
  */
-@CommandLine.Command(
-        name = "debug",
-        description = "Set of debugging tools.",
-        hidden = true,
-        subcommands = {
-                DebugHeaderCommand.class,
-                DebugDocumentCommand.class,
-                DebugFileCommand.class,
-                DebugCheckCommand.class
-        }
-)
-@SuppressWarnings("FieldMayBeFinal")
-public final class DebugCommand extends BaseCommand {
+@lombok.Data
+public class SqlOutputOptions extends TextOutputOptions {
 
-    @Override
-    protected void exec() throws Exception {
-        CommandLine.usage(new SasquatchCommand(), System.out);
+    public SqlWriter newSqlWriter(Supplier<Optional<Charset>> stdOutEncoding) throws IOException {
+        return new SqlWriter(newCharWriter(stdOutEncoding));
     }
 }

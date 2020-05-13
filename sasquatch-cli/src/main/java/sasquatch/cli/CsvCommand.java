@@ -1,41 +1,37 @@
 /*
  * Copyright 2018 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.cli;
 
+import internal.cli.RowFormatterOptions;
 import internal.cli.SasReaderCommand;
-import internal.cli.TextFormatter;
-import internal.cli.TextFormatterOptions;
+import internal.cli.SasRowFormat;
+import nbbrd.console.picocli.csv.CsvOutputOptions;
+import nbbrd.picocsv.Csv;
+import picocli.CommandLine;
+import sasquatch.*;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import nbbrd.picocsv.Csv;
-import picocli.CommandLine;
-import picocli.ext.CsvOptions;
-import sasquatch.SasColumn;
-import sasquatch.SasForwardCursor;
-import sasquatch.SasMetaData;
-import sasquatch.SasRow;
-import sasquatch.Sasquatch;
 
 /**
- *
  * @author Philippe Charles
  */
 @CommandLine.Command(
@@ -48,26 +44,27 @@ public final class CsvCommand extends SasReaderCommand {
 
     @CommandLine.Parameters(
             paramLabel = "<file>",
-            description = "Input SAS7BDAT file"
+            description = "Input file"
     )
     private Path input;
 
     @CommandLine.Option(
             names = {"-t", "--data-type"},
             paramLabel = "<data_type>",
-            description = "Type of data to export (${COMPLETION-CANDIDATES})"
+            description = "Type of data to export (${COMPLETION-CANDIDATES})",
+            defaultValue = "ROWS"
     )
-    private DataType dataType = DataType.ROWS;
+    private DataType dataType;
 
     @CommandLine.ArgGroup(validate = false, heading = "%nCSV options:%n")
-    private CsvOptions.Output csv = new CsvOptions.Output();
+    private CsvOutputOptions output = new CsvOutputOptions();
 
     @CommandLine.ArgGroup(validate = false, heading = "%nText format:%n")
-    private TextFormatterOptions formatter = new TextFormatterOptions();
+    private RowFormatterOptions formatter = new RowFormatterOptions();
 
     @Override
     protected void exec() throws Exception {
-        try ( Csv.Writer writer = csv.newWriter(this::getStdOutEncoding)) {
+        try (Csv.Writer writer = output.newCsvWriter(this::getStdOutEncoding)) {
             switch (dataType) {
                 case HEADER:
                     exportHeader(writer);
@@ -84,10 +81,10 @@ public final class CsvCommand extends SasReaderCommand {
 
     private void exportHeader(Csv.Writer writer) throws IOException {
         Sasquatch sas = getSasquatch();
-        TextFormatter textFormatter = formatter.getFormatter();
+        SasRowFormat rowFormat = formatter.toRowFormat();
 
-        DateTimeFormatter dateTimeFormatter = textFormatter.getDateTimeFormatter();
-        NumberFormat numberFormatter = textFormatter.getNumberFormat();
+        DateTimeFormatter dateTimeFormatter = rowFormat.newDateTimeFormatter();
+        NumberFormat numberFormatter = rowFormat.newNumberFormat();
 
         writeHeaderHead(writer);
         writeHeaderBody(sas.readMetaData(input), writer, dateTimeFormatter, numberFormatter);
@@ -117,9 +114,9 @@ public final class CsvCommand extends SasReaderCommand {
 
     private void exportColumns(Csv.Writer writer) throws IOException {
         Sasquatch sas = getSasquatch();
-        TextFormatter textFormatter = formatter.getFormatter();
+        SasRowFormat rowFormat = formatter.toRowFormat();
 
-        NumberFormat numberFormatter = textFormatter.getNumberFormat();
+        NumberFormat numberFormatter = rowFormat.newNumberFormat();
 
         writeColumnsHead(writer);
         writeColumnsBody(sas.readMetaData(input), writer, numberFormatter);
@@ -149,18 +146,18 @@ public final class CsvCommand extends SasReaderCommand {
 
     private void exportRows(Csv.Writer writer) throws IOException {
         Sasquatch sas = getSasquatch();
-        TextFormatter textFormatter = formatter.getFormatter();
+        SasRowFormat rowFormat = formatter.toRowFormat();
 
-        try ( SasForwardCursor cursor = sas.readForward(input)) {
-            List<SasRow.Mapper<String>> fieldFunctions = new ArrayList<>();
+        try (SasForwardCursor cursor = sas.readForward(input)) {
+            List<SasRow.Mapper<String>> mappers = new ArrayList<>();
             for (SasColumn o : cursor.getColumns()) {
                 writer.writeField(o.getName());
-                fieldFunctions.add(textFormatter.asSasFunc(o));
+                mappers.add(rowFormat.asMapper(o));
             }
             writer.writeEndOfLine();
 
             while (cursor.next()) {
-                for (SasRow.Mapper<String> o : fieldFunctions) {
+                for (SasRow.Mapper<String> o : mappers) {
                     writer.writeField(o.apply(cursor));
                 }
                 writer.writeEndOfLine();

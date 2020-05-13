@@ -1,38 +1,37 @@
 /*
  * Copyright 2020 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package internal.cli;
 
-import internal.ri.data.Document;
 import internal.ri.base.Header;
 import internal.ri.base.PageHeader;
 import internal.ri.base.SubHeaderPointer;
 import internal.ri.data.ColAttr;
+import internal.ri.data.Document;
+import picocli.CommandLine;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import picocli.CommandLine;
 
 /**
- *
  * @author Philippe Charles
  */
-@lombok.Getter
-@lombok.Setter
-public final class FilterOptions {
+@lombok.Data
+public final class DebugFilterOptions {
 
     public enum Scope {
         ALL, KNOWN, UNKNOWN;
@@ -41,9 +40,10 @@ public final class FilterOptions {
     @CommandLine.Option(
             names = {"--scope"},
             description = "Filter on scope (${COMPLETION-CANDIDATES}).",
-            paramLabel = "<scope>"
+            paramLabel = "<scope>",
+            defaultValue = "ALL"
     )
-    private Scope scope = Scope.ALL;
+    private Scope scope;
 
     @CommandLine.Option(
             names = {"--where"},
@@ -112,7 +112,7 @@ public final class FilterOptions {
         return keyValues.entrySet()
                 .stream()
                 .map(entry -> entry.getKey() + "=" + entry.getValue())
-                .map(FilterOptions::normalize)
+                .map(DebugFilterOptions::normalize)
                 .allMatch(headerString::contains);
     }
 
@@ -128,7 +128,7 @@ public final class FilterOptions {
     private static boolean hasUnkwown(Document doc) {
         return hasUnkwown(doc.getHeader())
                 || doc.getCompression().isUnknown()
-                || doc.getColAttrList().stream().anyMatch(FilterOptions::hasUnkwown);
+                || doc.getColAttrList().stream().anyMatch(DebugFilterOptions::hasUnkwown);
     }
 
     private static boolean hasUnkwown(ColAttr colAttr) {
