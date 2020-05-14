@@ -69,6 +69,13 @@ public final class RowFormatterOptions {
     private String numberPattern;
 
     @CommandLine.Option(
+            names = {"--no-grouping"},
+            description = "Ignore number grouping.",
+            defaultValue = "false"
+    )
+    private boolean ignoreNumberGrouping;
+
+    @CommandLine.Option(
             names = {"-X", "--null-value"},
             paramLabel = "<value>",
             description = "Text used to replace null values.",
@@ -84,6 +91,7 @@ public final class RowFormatterOptions {
                 .timePattern(timePattern)
                 .dateTimePattern(dateTimePattern)
                 .numberPattern(numberPattern)
+                .ignoreNumberGrouping(ignoreNumberGrouping)
                 .nullValue(nullValue)
                 .build();
     }

@@ -54,6 +54,8 @@ public class SasRowFormat {
     @lombok.NonNull
     String numberPattern;
 
+    boolean ignoreNumberGrouping;
+
     @lombok.NonNull
     String nullValue;
 
@@ -64,6 +66,7 @@ public class SasRowFormat {
                 .timePattern("HH:mm:ss")
                 .dateTimePattern("yyyy-MM-dd HH:mm:ss")
                 .numberPattern("")
+                .ignoreNumberGrouping(false)
                 .nullValue("");
     }
 
@@ -80,7 +83,11 @@ public class SasRowFormat {
     }
 
     public NumberFormat newNumberFormat() {
-        return new DecimalFormat(numberPattern, new DecimalFormatSymbols(locale));
+        DecimalFormat result = new DecimalFormat(numberPattern, new DecimalFormatSymbols(locale));
+        if (ignoreNumberGrouping) {
+            result.setGroupingUsed(false);
+        }
+        return result;
     }
 
     public SasRow.Mapper<String> asMapper(SasColumn column) {
