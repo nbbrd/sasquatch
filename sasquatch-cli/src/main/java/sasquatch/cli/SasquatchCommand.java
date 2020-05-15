@@ -17,8 +17,9 @@
 package sasquatch.cli;
 
 import internal.cli.BaseCommand;
-import nbbrd.console.picocli.ManifestVersionProvider;
+import nbbrd.console.picocli.ManifestHelper;
 import org.fusesource.jansi.AnsiConsole;
+import picocli.AutoComplete;
 import picocli.CommandLine;
 
 import java.util.logging.Level;
@@ -30,11 +31,12 @@ import java.util.logging.Logger;
 @CommandLine.Command(
         name = "sasquatch",
         description = "Reader of SAS datasets.",
-        versionProvider = ManifestVersionProvider.class,
+        versionProvider = SasquatchCommand.ManifestVersionProvider.class,
         subcommands = {
                 CsvCommand.class,
                 SqlCommand.class,
-                DebugCommand.class
+                DebugCommand.class,
+                AutoComplete.GenerateCompletion.class
         }
 )
 public final class SasquatchCommand extends BaseCommand {
@@ -60,5 +62,15 @@ public final class SasquatchCommand extends BaseCommand {
     @Override
     protected void exec() throws Exception {
         CommandLine.usage(new SasquatchCommand(), System.out);
+    }
+
+    public static final class ManifestVersionProvider implements CommandLine.IVersionProvider {
+
+        @Override
+        public String[] getVersion() throws Exception {
+            return ManifestHelper.getByTitle("sasquatch-cli")
+                    .map(ManifestHelper::getVersion)
+                    .orElseGet(() -> new String[0]);
+        }
     }
 }

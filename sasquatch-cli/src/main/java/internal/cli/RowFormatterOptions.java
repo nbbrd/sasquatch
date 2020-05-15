@@ -30,14 +30,14 @@ public final class RowFormatterOptions {
     @CommandLine.Option(
             names = {"-L", "--locale"},
             paramLabel = "<locale>",
-            description = "Locale used to format dates and numbers.",
+            description = "Locale used to format dates, times and numbers.",
             converter = LocaleConverter.class,
             defaultValue = ""
     )
     private Locale locale;
 
     @CommandLine.Option(
-            names = {"-D", "--date-pattern"},
+            names = {"-D", "--date"},
             paramLabel = "<pattern>",
             description = "Pattern used to format dates.",
             defaultValue = "yyyy-MM-dd"
@@ -45,7 +45,7 @@ public final class RowFormatterOptions {
     private String datePattern;
 
     @CommandLine.Option(
-            names = {"-T", "--time-pattern"},
+            names = {"-T", "--time"},
             paramLabel = "<pattern>",
             description = "Pattern used to format times.",
             defaultValue = "HH:mm:ss"
@@ -53,7 +53,7 @@ public final class RowFormatterOptions {
     private String timePattern;
 
     @CommandLine.Option(
-            names = {"-S", "--datetime-pattern"},
+            names = {"-S", "--datetime"},
             paramLabel = "<pattern>",
             description = "Pattern used to format dates and times.",
             defaultValue = "yyyy-MM-dd HH:mm:ss"
@@ -61,7 +61,7 @@ public final class RowFormatterOptions {
     private String dateTimePattern;
 
     @CommandLine.Option(
-            names = {"-N", "--number-pattern"},
+            names = {"-N", "--number"},
             paramLabel = "<pattern>",
             description = "Pattern used to format numbers.",
             defaultValue = ""
@@ -76,12 +76,12 @@ public final class RowFormatterOptions {
     private boolean ignoreNumberGrouping;
 
     @CommandLine.Option(
-            names = {"-X", "--null-value"},
-            paramLabel = "<value>",
-            description = "Text used to replace null values.",
+            names = {"-M", "--missing"},
+            paramLabel = "<text>",
+            description = "Text used to replace missing values.",
             defaultValue = ""
     )
-    private String nullValue;
+    private String missingValue;
 
     public SasRowFormat toRowFormat() {
         return SasRowFormat
@@ -92,7 +92,7 @@ public final class RowFormatterOptions {
                 .dateTimePattern(dateTimePattern)
                 .numberPattern(numberPattern)
                 .ignoreNumberGrouping(ignoreNumberGrouping)
-                .nullValue(nullValue)
+                .missingValue(missingValue)
                 .build();
     }
 }

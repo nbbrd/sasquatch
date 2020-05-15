@@ -44,7 +44,7 @@ public final class CsvCommand extends SasReaderCommand {
 
     @CommandLine.Parameters(
             paramLabel = "<file>",
-            description = "Input file"
+            description = "Input file."
     )
     private Path input;
 
@@ -59,7 +59,7 @@ public final class CsvCommand extends SasReaderCommand {
     @CommandLine.ArgGroup(validate = false, heading = "%nCSV options:%n")
     private CsvOutputOptions output = new CsvOutputOptions();
 
-    @CommandLine.ArgGroup(validate = false, heading = "%nText format:%n")
+    @CommandLine.ArgGroup(validate = false, heading = "%nRow format:%n")
     private RowFormatterOptions formatter = new RowFormatterOptions();
 
     @Override

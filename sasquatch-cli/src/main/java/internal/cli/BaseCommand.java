@@ -34,7 +34,7 @@ import java.util.concurrent.Callable;
         commandListHeading = "%nCommands:%n",
         headerHeading = "%n",
         mixinStandardHelpOptions = true,
-        showDefaultValues = true
+        showDefaultValues = false
 )
 public abstract class BaseCommand implements Callable<Void> {
 

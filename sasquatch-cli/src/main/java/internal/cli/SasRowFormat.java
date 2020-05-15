@@ -57,7 +57,7 @@ public class SasRowFormat {
     boolean ignoreNumberGrouping;
 
     @lombok.NonNull
-    String nullValue;
+    String missingValue;
 
     public static Builder builder() {
         return new Builder()
@@ -67,7 +67,7 @@ public class SasRowFormat {
                 .dateTimePattern("yyyy-MM-dd HH:mm:ss")
                 .numberPattern("")
                 .ignoreNumberGrouping(false)
-                .nullValue("");
+                .missingValue("");
     }
 
     public DateTimeFormatter newDateFormatter() {
@@ -95,41 +95,41 @@ public class SasRowFormat {
             case CHARACTER: {
                 return row -> {
                     String value = row.getString(column.getOrder());
-                    return value != null ? value : getNullValue();
+                    return value != null ? value : getMissingValue();
                 };
             }
             case NUMERIC: {
                 NumberFormat f = newNumberFormat();
                 return row -> {
                     double value = row.getNumber(column.getOrder());
-                    return !Double.isNaN(value) ? f.format(value) : getNullValue();
+                    return !Double.isNaN(value) ? f.format(value) : getMissingValue();
                 };
             }
             case DATE: {
                 DateTimeFormatter f = newDateFormatter();
                 return row -> {
                     LocalDate value = row.getDate(column.getOrder());
-                    return value != null ? f.format(value) : getNullValue();
+                    return value != null ? f.format(value) : getMissingValue();
                 };
             }
             case DATETIME: {
                 DateTimeFormatter f = newDateTimeFormatter();
                 return row -> {
                     LocalDateTime value = row.getDateTime(column.getOrder());
-                    return value != null ? f.format(value) : getNullValue();
+                    return value != null ? f.format(value) : getMissingValue();
                 };
             }
             case TIME: {
                 DateTimeFormatter f = newTimeFormatter();
                 return row -> {
                     LocalTime value = row.getTime(column.getOrder());
-                    return value != null ? f.format(value) : getNullValue();
+                    return value != null ? f.format(value) : getMissingValue();
                 };
             }
             default:
                 return row -> {
                     Object value = row.getValue(column.getOrder());
-                    return value != null ? value.toString() : getNullValue();
+                    return value != null ? value.toString() : getMissingValue();
                 };
         }
     }
