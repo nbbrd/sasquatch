@@ -19,7 +19,6 @@ package sasquatch.cli;
 import internal.cli.BaseCommand;
 import nbbrd.console.picocli.ManifestHelper;
 import org.fusesource.jansi.AnsiConsole;
-import picocli.AutoComplete;
 import picocli.CommandLine;
 
 import java.util.logging.Level;
@@ -36,7 +35,8 @@ import java.util.logging.Logger;
                 CsvCommand.class,
                 SqlCommand.class,
                 DebugCommand.class,
-                AutoComplete.GenerateCompletion.class
+                SetupCommand.class,
+                CommandLine.HelpCommand.class
         }
 )
 public final class SasquatchCommand extends BaseCommand {
