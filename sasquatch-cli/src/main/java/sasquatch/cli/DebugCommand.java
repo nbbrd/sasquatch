@@ -17,6 +17,7 @@
 package sasquatch.cli;
 
 import internal.cli.BaseCommand;
+import nbbrd.console.picocli.PrintContext;
 import picocli.CommandLine;
 
 /**
@@ -30,7 +31,8 @@ import picocli.CommandLine;
                 DebugHeaderCommand.class,
                 DebugDocumentCommand.class,
                 DebugFileCommand.class,
-                DebugCheckCommand.class
+                DebugCheckCommand.class,
+                PrintContext.class
         }
 )
 @SuppressWarnings("FieldMayBeFinal")
