@@ -17,16 +17,15 @@
 package internal.cli;
 
 import internal.bytes.PValue;
-import internal.picocli.yaml.YamlOutputOptions;
 import internal.ri.base.Encoding;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.data.ColText;
 import internal.ri.data.StringRef;
+import nbbrd.console.picocli.yaml.YamlOutput;
+import nbbrd.console.picocli.yaml.YamlOutputOptions;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.BeanAccess;
-import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.introspector.PropertyUtils;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
@@ -34,9 +33,11 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * @author Philippe Charles
@@ -69,20 +70,9 @@ public class DebugOutputOptions extends YamlOutputOptions {
                 this.representers.put(ColText.class, data -> representMapping(Tag.MAP, asMapping((ColText) data), DumperOptions.FlowStyle.AUTO));
             }
         };
-
         result.addClassTag(rootType, Tag.MAP);
-
-        result.setPropertyUtils(new PropertyUtils() {
-            @Override
-            protected Set<Property> createPropertySet(Class<? extends Object> type, BeanAccess bAccess) {
-                return getPropertiesMap(type, BeanAccess.FIELD)
-                        .values()
-                        .stream()
-                        .filter(property -> property.isReadable() && (isAllowReadOnlyProperties() || property.isWritable()))
-                        .collect(Collectors.toCollection(LinkedHashSet::new));
-            }
-        });
-
+        result.setPropertyUtils(YamlOutput.newLinkedPropertyUtils());
+        result.getPropertyUtils().setBeanAccess(BeanAccess.FIELD);
         return result;
     }
 
