@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 @CommandLine.Command(
         name = "sasquatch",
         description = "Reader of SAS datasets.",
-        versionProvider = SasquatchCommand.ManifestVersionProvider.class,
+        versionProvider = MainCommand.ManifestVersionProvider.class,
         subcommands = {
                 CsvCommand.class,
                 SqlCommand.class,
@@ -39,17 +39,17 @@ import java.util.logging.Logger;
                 CommandLine.HelpCommand.class
         }
 )
-public final class SasquatchCommand extends BaseCommand {
+public final class MainCommand extends BaseCommand {
 
     public static void main(String[] args) {
         int exitCode = 0;
         AnsiConsole.systemInstall();
         try {
-            CommandLine cli = new CommandLine(new SasquatchCommand());
+            CommandLine cli = new CommandLine(new MainCommand());
             cli.setCaseInsensitiveEnumValuesAllowed(true);
             exitCode = cli.execute(args);
         } catch (CommandLine.ExecutionException ex) {
-            Logger.getLogger(SasquatchCommand.class.getName()).log(Level.SEVERE, "While executing command", ex);
+            Logger.getLogger(MainCommand.class.getName()).log(Level.SEVERE, "While executing command", ex);
             System.err.println(ex.getCause().getMessage());
         } finally {
             AnsiConsole.systemUninstall();
@@ -61,7 +61,7 @@ public final class SasquatchCommand extends BaseCommand {
 
     @Override
     protected void exec() throws Exception {
-        CommandLine.usage(new SasquatchCommand(), System.out);
+        CommandLine.usage(new MainCommand(), System.out);
     }
 
     public static final class ManifestVersionProvider implements CommandLine.IVersionProvider {

@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <project.x.mainClass>sasquatch.cli.SasquatchCommand</project.x.mainClass>
+        <project.x.mainClass>sasquatch.cli.MainCommand</project.x.mainClass>
         <project.x.fileName>sasquatch</project.x.fileName>
         <project.x.binaries>${project.basedir}/../target/binaries</project.x.binaries>
         <project.x.headerType>console</project.x.headerType>

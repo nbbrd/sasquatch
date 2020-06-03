@@ -40,6 +40,6 @@ public final class DebugCommand extends BaseCommand {
 
     @Override
     protected void exec() throws Exception {
-        CommandLine.usage(new SasquatchCommand(), System.out);
+        CommandLine.usage(new DebugCommand(), System.out);
     }
 }
