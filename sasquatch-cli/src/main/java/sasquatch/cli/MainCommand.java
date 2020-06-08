@@ -17,6 +17,8 @@
 package sasquatch.cli;
 
 import internal.cli.BaseCommand;
+import nbbrd.console.picocli.ConfigHelper;
+import nbbrd.console.picocli.LoggerHelper;
 import nbbrd.console.picocli.ManifestHelper;
 import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
@@ -28,7 +30,7 @@ import java.util.logging.Logger;
  * @author Philippe Charles
  */
 @CommandLine.Command(
-        name = "sasquatch",
+        name = MainCommand.NAME,
         description = "Reader of SAS datasets.",
         versionProvider = MainCommand.ManifestVersionProvider.class,
         subcommands = {
@@ -41,7 +43,11 @@ import java.util.logging.Logger;
 )
 public final class MainCommand extends BaseCommand {
 
+    public static final String NAME = "sasquatch";
+
     public static void main(String[] args) {
+        ConfigHelper.of(MainCommand.NAME).loadAll(System.getProperties());
+        LoggerHelper.disableDefaultConsoleLogger();
         int exitCode = 0;
         AnsiConsole.systemInstall();
         try {
