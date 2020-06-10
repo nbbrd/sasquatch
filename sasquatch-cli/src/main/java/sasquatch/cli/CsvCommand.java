@@ -63,7 +63,7 @@ public final class CsvCommand extends SasReaderCommand {
     private RowFormatterOptions formatter = new RowFormatterOptions();
 
     @Override
-    protected void exec() throws Exception {
+    public Void call() throws Exception {
         try (Csv.Writer writer = output.newCsvWriter(this::getStdOutEncoding)) {
             switch (dataType) {
                 case HEADER:
@@ -77,6 +77,7 @@ public final class CsvCommand extends SasReaderCommand {
                     break;
             }
         }
+        return null;
     }
 
     private void exportHeader(Csv.Writer writer) throws IOException {

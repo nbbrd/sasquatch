@@ -16,10 +16,11 @@ import picocli.CommandLine;
 public final class SetupCommand extends BaseCommand {
 
     @CommandLine.Spec
-    CommandLine.Model.CommandSpec spec;
+    private CommandLine.Model.CommandSpec spec;
 
     @Override
-    protected void exec() throws Exception {
+    public Void call() throws Exception {
         spec.commandLine().usage(System.out);
+        return null;
     }
 }

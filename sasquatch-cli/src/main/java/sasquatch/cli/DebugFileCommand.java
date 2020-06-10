@@ -68,7 +68,7 @@ public final class DebugFileCommand extends BaseCommand {
     private List<SubHeaderFormat> skipFormats = new ArrayList<>();
 
     @Override
-    protected void exec() throws Exception {
+    public Void call() throws Exception {
         if (input.isSingleFile()) {
             output.dump(FileReport.class, createReport(input.getSingleFile()), this::getStdOutEncoding);
         } else {
@@ -82,6 +82,7 @@ public final class DebugFileCommand extends BaseCommand {
                     .collect(Collectors.toList());
             output.dumpAll(FileReport.class, items, this::getStdOutEncoding);
         }
+        return null;
     }
 
     private void log(Exception ex, Path file) {

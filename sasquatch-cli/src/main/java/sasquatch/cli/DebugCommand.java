@@ -35,11 +35,14 @@ import picocli.CommandLine;
                 PrintContext.class
         }
 )
-@SuppressWarnings("FieldMayBeFinal")
 public final class DebugCommand extends BaseCommand {
 
+    @CommandLine.Spec
+    private CommandLine.Model.CommandSpec spec;
+
     @Override
-    protected void exec() throws Exception {
-        CommandLine.usage(new DebugCommand(), System.out);
+    public Void call() throws Exception {
+        spec.commandLine().usage(System.out);
+        return null;
     }
 }

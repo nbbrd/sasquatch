@@ -38,14 +38,6 @@ import java.util.concurrent.Callable;
 )
 public abstract class BaseCommand implements Callable<Void> {
 
-    @Override
-    final public Void call() throws Exception {
-        exec();
-        return null;
-    }
-
-    abstract protected void exec() throws Exception;
-
     public Optional<Charset> getStdOutEncoding() {
         return ConsoleProperties.ofServiceLoader().getStdOutEncoding();
     }

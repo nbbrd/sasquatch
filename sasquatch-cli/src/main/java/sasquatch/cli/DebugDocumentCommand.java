@@ -51,7 +51,7 @@ public final class DebugDocumentCommand extends BaseCommand {
     private DebugOutputOptions output = new DebugOutputOptions();
 
     @Override
-    protected void exec() throws Exception {
+    public Void call() throws Exception {
         if (input.isSingleFile()) {
             output.dump(DocumentReport.class, createReport(input.getSingleFile()), this::getStdOutEncoding);
         } else {
@@ -65,6 +65,7 @@ public final class DebugDocumentCommand extends BaseCommand {
                     .collect(Collectors.toList());
             output.dumpAll(DocumentReport.class, items, this::getStdOutEncoding);
         }
+        return null;
     }
 
     private void log(Exception ex, Path file) {

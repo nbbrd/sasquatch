@@ -65,9 +65,13 @@ public final class MainCommand extends BaseCommand {
         }
     }
 
+    @CommandLine.Spec
+    private CommandLine.Model.CommandSpec spec;
+
     @Override
-    protected void exec() throws Exception {
-        CommandLine.usage(new MainCommand(), System.out);
+    public Void call() throws Exception {
+        spec.commandLine().usage(System.out);
+        return null;
     }
 
     public static final class ManifestVersionProvider implements CommandLine.IVersionProvider {

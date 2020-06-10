@@ -48,10 +48,9 @@ public final class SqlCommand extends SasReaderCommand {
     private SqlOutputOptions output = new SqlOutputOptions();
 
     @Override
-    protected void exec() throws Exception {
-        Sasquatch sas = getSasquatch();
-
+    public Void call() throws Exception {
         try (SqlWriter sql = output.newSqlWriter(this::getStdOutEncoding)) {
+            Sasquatch sas = getSasquatch();
             if (input.isSingleFile()) {
                 dump(sas, input.getSingleFile(), sql, SasRowFormat.DEFAULT);
             } else {
@@ -59,6 +58,7 @@ public final class SqlCommand extends SasReaderCommand {
                         .forEach(input.asConsumer(file -> dump(sas, file, sql, SasRowFormat.DEFAULT), this::log));
             }
         }
+        return null;
     }
 
     private void log(Exception ex, Path file) {
