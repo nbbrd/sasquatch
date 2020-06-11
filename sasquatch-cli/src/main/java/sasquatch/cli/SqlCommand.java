@@ -52,13 +52,17 @@ public final class SqlCommand extends SasReaderCommand {
         try (SqlWriter sql = output.newSqlWriter(this::getStdOutEncoding)) {
             Sasquatch sas = getSasquatch();
             if (input.isSingleFile()) {
-                dump(sas, input.getSingleFile(), sql, SasRowFormat.DEFAULT);
+                dump(sas, input.getSingleFile(), sql, getRowFormat());
             } else {
                 input.getAllFiles(new SasFilenameFilter()::accept)
-                        .forEach(input.asConsumer(file -> dump(sas, file, sql, SasRowFormat.DEFAULT), this::log));
+                        .forEach(input.asConsumer(file -> dump(sas, file, sql, getRowFormat()), this::log));
             }
         }
         return null;
+    }
+
+    private SasRowFormat getRowFormat() {
+        return SasRowFormat.DEFAULT.toBuilder().ignoreNumberGrouping(true).build();
     }
 
     private void log(Exception ex, Path file) {
