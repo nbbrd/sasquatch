@@ -20,8 +20,8 @@ import internal.cli.BaseCommand;
 import nbbrd.console.picocli.ConfigHelper;
 import nbbrd.console.picocli.LoggerHelper;
 import nbbrd.console.picocli.ManifestHelper;
-import org.fusesource.jansi.AnsiConsole;
 import picocli.CommandLine;
+import picocli.jansi.graalvm.AnsiConsole;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,21 +48,17 @@ public final class MainCommand extends BaseCommand {
     public static void main(String[] args) {
         ConfigHelper.of(MainCommand.NAME).loadAll(System.getProperties());
         LoggerHelper.disableDefaultConsoleLogger();
+
         int exitCode = 0;
-        AnsiConsole.systemInstall();
-        try {
+        try (AnsiConsole ansi = AnsiConsole.windowsInstall()) {
             CommandLine cli = new CommandLine(new MainCommand());
             cli.setCaseInsensitiveEnumValuesAllowed(true);
             exitCode = cli.execute(args);
         } catch (CommandLine.ExecutionException ex) {
             Logger.getLogger(MainCommand.class.getName()).log(Level.SEVERE, "While executing command", ex);
             System.err.println(ex.getCause().getMessage());
-        } finally {
-            AnsiConsole.systemUninstall();
         }
-        if (exitCode != 0) {
-            System.exit(exitCode);
-        }
+        System.exit(exitCode);
     }
 
     @CommandLine.Spec
