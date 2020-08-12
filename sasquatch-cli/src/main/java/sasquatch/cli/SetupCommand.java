@@ -2,14 +2,14 @@ package sasquatch.cli;
 
 import internal.cli.BaseCommand;
 import nbbrd.console.picocli.GenerateLauncher;
-import nbbrd.console.picocli.GenerateRootCompletion;
+import picocli.AutoComplete;
 import picocli.CommandLine;
 
 @CommandLine.Command(
         name = "setup",
-        description = "Setup ${PARENT-COMMAND-NAME}.",
+        description = "Setup ${ROOT-COMMAND-NAME}.",
         subcommands = {
-                GenerateRootCompletion.class,
+                AutoComplete.GenerateCompletion.class,
                 GenerateLauncher.class
         }
 )
