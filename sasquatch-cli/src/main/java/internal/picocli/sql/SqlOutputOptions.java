@@ -20,9 +20,6 @@ package internal.picocli.sql;
 import nbbrd.console.picocli.text.TextOutputOptions;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * @author Philippe Charles
@@ -30,7 +27,7 @@ import java.util.function.Supplier;
 @lombok.Data
 public class SqlOutputOptions extends TextOutputOptions {
 
-    public SqlWriter newSqlWriter(Supplier<Optional<Charset>> stdOutEncoding) throws IOException {
-        return new SqlWriter(newCharWriter(stdOutEncoding));
+    public SqlWriter newSqlWriter() throws IOException {
+        return new SqlWriter(newCharWriter());
     }
 }

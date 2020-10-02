@@ -49,7 +49,7 @@ public final class SqlCommand extends SasReaderCommand {
 
     @Override
     public Void call() throws Exception {
-        try (SqlWriter sql = output.newSqlWriter(this::getStdOutEncoding)) {
+        try (SqlWriter sql = output.newSqlWriter()) {
             Sasquatch sas = getSasquatch();
             if (input.isSingleFile()) {
                 dump(sas, input.getSingleFile(), sql, getRowFormat());

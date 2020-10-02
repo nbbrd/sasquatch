@@ -16,11 +16,8 @@
  */
 package internal.cli;
 
-import nbbrd.console.properties.ConsoleProperties;
 import picocli.CommandLine;
 
-import java.nio.charset.Charset;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -38,7 +35,4 @@ import java.util.concurrent.Callable;
 )
 public abstract class BaseCommand implements Callable<Void> {
 
-    public Optional<Charset> getStdOutEncoding() {
-        return ConsoleProperties.ofServiceLoader().getStdOutEncoding();
-    }
 }

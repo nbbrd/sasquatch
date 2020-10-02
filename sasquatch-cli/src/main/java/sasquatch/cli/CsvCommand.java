@@ -64,7 +64,7 @@ public final class CsvCommand extends SasReaderCommand {
 
     @Override
     public Void call() throws Exception {
-        try (Csv.Writer writer = output.newCsvWriter(this::getStdOutEncoding)) {
+        try (Csv.Writer writer = output.newCsvWriter()) {
             switch (dataType) {
                 case HEADER:
                     exportHeader(writer);
