@@ -70,7 +70,7 @@ public final class DebugFileCommand extends BaseCommand {
     @Override
     public Void call() throws Exception {
         if (input.isSingleFile()) {
-            output.dump(FileReport.class, createReport(input.getSingleFile()), this::getStdOutEncoding);
+            output.dump(FileReport.class, createReport(input.getSingleFile()));
         } else {
             List<FileReport> items = input.getAllFiles(new SasFilenameFilter()::accept)
                     .stream()
@@ -80,7 +80,7 @@ public final class DebugFileCommand extends BaseCommand {
                     .map(Optional::get)
                     .filter(this::testReport)
                     .collect(Collectors.toList());
-            output.dumpAll(FileReport.class, items, this::getStdOutEncoding);
+            output.dumpAll(FileReport.class, items);
         }
         return null;
     }

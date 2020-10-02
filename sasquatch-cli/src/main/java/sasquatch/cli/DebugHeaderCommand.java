@@ -53,7 +53,7 @@ public final class DebugHeaderCommand extends BaseCommand {
     @Override
     public Void call() throws Exception {
         if (input.isSingleFile()) {
-            output.dump(HeaderReport.class, createReport(input.getSingleFile()), this::getStdOutEncoding);
+            output.dump(HeaderReport.class, createReport(input.getSingleFile()));
         } else {
             List<HeaderReport> items = input.getAllFiles(new SasFilenameFilter()::accept)
                     .stream()
@@ -63,7 +63,7 @@ public final class DebugHeaderCommand extends BaseCommand {
                     .map(Optional::get)
                     .filter(this::testReport)
                     .collect(Collectors.toList());
-            output.dumpAll(HeaderReport.class, items, this::getStdOutEncoding);
+            output.dumpAll(HeaderReport.class, items);
         }
         return null;
     }

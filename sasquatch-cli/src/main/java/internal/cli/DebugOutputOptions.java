@@ -31,13 +31,10 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.IOException;
 import java.nio.ByteOrder;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 /**
  * @author Philippe Charles
@@ -45,12 +42,12 @@ import java.util.function.Supplier;
 @lombok.Data
 public class DebugOutputOptions extends YamlOutputOptions {
 
-    public void dump(Class<?> rootType, Object item, Supplier<Optional<Charset>> stdOutEncoding) throws IOException {
-        dump(toYaml(rootType), item, stdOutEncoding);
+    public void dump(Class<?> rootType, Object item) throws IOException {
+        dump(toYaml(rootType), item);
     }
 
-    public void dumpAll(Class<?> rootType, List<?> items, Supplier<Optional<Charset>> stdOutEncoding) throws IOException {
-        dumpAll(toYaml(rootType), items, stdOutEncoding);
+    public void dumpAll(Class<?> rootType, List<?> items) throws IOException {
+        dumpAll(toYaml(rootType), items);
     }
 
     private static Yaml toYaml(Class<?> rootType) {
