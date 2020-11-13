@@ -83,6 +83,9 @@ public enum LastMetaLocationAssumptions implements SasFileAssumption {
     }
 
     private RowSize getRowSize(SeekableByteChannel file, SasFileStructure structure) throws IOException {
+        if (structure.getPointers().size() < 1) {
+            throw new IOException("Expecting structure pointer size >= 1");
+        }
         return (RowSize) DescriptorType.ROW_SIZE.parse(file, structure.getHeader(), structure.getPointers().get(0));
     }
 
