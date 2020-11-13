@@ -26,10 +26,10 @@ public final class ColumnUtil {
 
     public static SasColumnType getType(Class<?> type, String format) {
         if (Number.class.isAssignableFrom(type)) {
-            if (SasFileConstants.DATE_TIME_FORMAT_STRINGS.contains(format)) {
+            if (DateTimeConstants.DATETIME_FORMAT_STRINGS.containsKey(format)) {
                 return SasColumnType.DATETIME;
             }
-            if (SasFileConstants.DATE_FORMAT_STRINGS.contains(format)) {
+            if (DateTimeConstants.DATE_FORMAT_STRINGS.containsKey(format)) {
                 return SasColumnType.DATE;
             }
             if (format.equals("TIME")) {
