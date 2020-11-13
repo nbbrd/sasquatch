@@ -46,7 +46,7 @@ public class SasquatchReaderTest {
                 new KnownError("Epam", Paths.get("chinese_column_works.sas7bdat"), SasContent.HeadError.class),
                 new KnownError("Epam", Paths.get("all_rand_normal_with_deleted.sas7bdat"), SasContent.BodyError.class),
                 new KnownError("Epam", Paths.get("all_rand_normal_with_deleted2.sas7bdat"), SasContent.BodyError.class),
-                new KnownError("Epam", Paths.get("comp_deleted.sas7bdat"), SasContent.UnexpectedError.class),
+                new KnownError("Epam", Paths.get("comp_deleted.sas7bdat"), SasContent.BodyError.class),
                 new KnownError("Epam", Paths.get("dataPageWithDeleted.sas7bdat"), SasContent.BodyError.class),
                 new KnownError("Kshedden", Paths.get("test16.sas7bdat"), SasContent.BodyError.class),
                 new KnownError("Kshedden", Paths.get("test17.sas7bdat"), SasContent.BodyError.class),
