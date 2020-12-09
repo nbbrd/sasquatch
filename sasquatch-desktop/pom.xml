@@ -14,7 +14,7 @@
     <properties>
         <project.x.mainClass>sasquatch.desktop.SasTableViewer</project.x.mainClass>
         <project.x.fileName>sasquatchw</project.x.fileName>
-        <project.x.binaries>${project.basedir}/../target/binaries</project.x.binaries>
+        <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
         <project.x.headerType>gui</project.x.headerType>
         <project.x.minVersion>8</project.x.minVersion>
     </properties>
@@ -163,6 +163,7 @@
                 <version>1.9</version>
                 <executions>
                     <execution>
+                        <phase>package</phase>
                         <goals>
                             <goal>files</goal>
                         </goals>
