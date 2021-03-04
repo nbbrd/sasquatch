@@ -11,16 +11,32 @@
     <description>A java reader of SAS datasets</description>
     <url>https://github.com/nbbrd/sasquatch</url>
 
-    <organization>
-        <name>National Bank of Belgium</name>
-    </organization>    
-
     <licenses>
         <license>
             <name>European Union Public Licence (EUPL)</name>
             <url>https://joinup.ec.europa.eu/page/eupl-text-11-12</url>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>Philippe Charles</name>
+            <email>philippe.charles@nbb.be</email>
+            <organization>National Bank of Belgium</organization>
+            <organizationUrl>https://www.nbb.be</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/nbbrd/sasquatch.git</connection>
+        <developerConnection>scm:git:ssh://github.com:nbbrd/sasquatch.git</developerConnection>
+        <url>http://github.com/nbbrd/sasquatch/tree/master</url>
+    </scm>
+
+    <!-- Used by launch4j -->
+    <organization>
+        <name>National Bank of Belgium</name>
+    </organization>
 
     <modules>
         <module>sasquatch-api</module>
@@ -85,7 +101,7 @@
             <properties>
                 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
                 <maven.compiler.target>1.8</maven.compiler.target>
-                <maven.compiler.source>1.8</maven.compiler.source>                
+                <maven.compiler.source>1.8</maven.compiler.source>
             </properties>
             <build>
                 <plugins>
@@ -102,7 +118,7 @@
                 </plugins>
             </build>
         </profile>
-    
+
         <!-- Base processors -->
         <profile>
             <id>base-processors</id>
@@ -157,7 +173,7 @@
                 </plugins>
             </build>
         </profile>
-            
+
         <!-- Run Java8 build with JPMS on JDK9+ -->
         <profile>
             <id>java8-with-jpms</id>
@@ -167,7 +183,7 @@
             <properties>
                 <!-- Fix NetBeans bug with test packages -->
                 <maven.compiler.target>9</maven.compiler.target>
-                <maven.compiler.source>9</maven.compiler.source>                
+                <maven.compiler.source>9</maven.compiler.source>
             </properties>
             <build>
                 <plugins>
@@ -223,12 +239,12 @@
                                 </configuration>
                             </execution>
                         </executions>
-                    </plugin>        
+                    </plugin>
                 </plugins>
             </build>
         </profile>
 
-        <!-- Enforce dependency rules -->
+        <!-- Enforce dependency & Maven-central rules -->
         <profile>
             <id>enforce-dependency-rules</id>
             <activation>
@@ -242,9 +258,19 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-enforcer-plugin</artifactId>
                         <version>3.0.0-M3</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.kordamp.maven</groupId>
+                                <artifactId>pomchecker-enforcer-rules</artifactId>
+                                <version>1.1.0</version>
+                            </dependency>
+                        </dependencies>
                         <executions>
                             <execution>
                                 <id>enforce</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
                                 <configuration>
                                     <rules>
                                         <requireMavenVersion>
@@ -254,11 +280,13 @@
                                         <requireReleaseDeps>
                                             <onlyWhenRelease>true</onlyWhenRelease>
                                         </requireReleaseDeps>
+                                        <CheckMavenCentral
+                                                implementation="org.kordamp.maven.enforcer.checker.CheckMavenCentral">
+                                            <release>false</release>
+                                            <strict>false</strict>
+                                        </CheckMavenCentral>
                                     </rules>
                                 </configuration>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
                             </execution>
                         </executions>
                     </plugin>
@@ -310,27 +338,27 @@
                 <plugins>
                     <plugin>
                         <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId> 
-                        <version>0.8.6</version> 
-                        <executions> 
-                            <execution> 
-                                <goals> 
-                                    <goal>prepare-agent</goal> 
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.6</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
                                 </goals>
                             </execution>
-                            <execution> 
-                                <id>report</id> 
-                                <phase>prepare-package</phase> 
-                                <goals> 
-                                    <goal>report</goal> 
-                                </goals> 
+                            <execution>
+                                <id>report</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
-        
+
         <!-- Deploy SNAPSHOTS to jfrog with sources -->
         <profile>
             <id>deploy-snapshots</id>
@@ -397,8 +425,8 @@
             </build>
         </profile>
     </profiles>
-    
-    <repositories> 
+
+    <repositories>
         <repository>
             <id>oss-jfrog-artifactory-releases</id>
             <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
@@ -406,5 +434,5 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-    </repositories> 
+    </repositories>
 </project>
