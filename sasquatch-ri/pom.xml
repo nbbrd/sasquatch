@@ -9,8 +9,11 @@
     
     <artifactId>sasquatch-ri</artifactId>
     <packaging>jar</packaging>
+
+    <name>sasquatch-ri</name>
     <description>A native implementation of sasquatch api</description>
-    
+    <url>https://github.com/nbbrd/sasquatch</url>
+
     <dependencies>
         <!-- compile only -->
         <dependency>

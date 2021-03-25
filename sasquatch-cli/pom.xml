@@ -12,6 +12,10 @@
     <artifactId>sasquatch-cli</artifactId>
     <packaging>jar</packaging>
 
+    <name>sasquatch-cli</name>
+    <description>A java reader of SAS datasets - CLI</description>
+    <url>https://github.com/nbbrd/sasquatch</url>
+
     <properties>
         <project.x.mainClass>sasquatch.cli.MainCommand</project.x.mainClass>
         <project.x.fileName>sasquatch</project.x.fileName>
@@ -116,6 +120,15 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>module-info.class</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>

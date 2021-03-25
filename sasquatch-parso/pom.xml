@@ -9,8 +9,11 @@
     
     <artifactId>sasquatch-parso</artifactId>
     <packaging>jar</packaging>
+
+    <name>sasquatch-parso</name>
     <description>A wrapped implementation of sasquatch api that uses Parso library</description>
-    
+    <url>https://github.com/nbbrd/sasquatch</url>
+
     <dependencies>
         <!-- compile only -->
         <dependency>
