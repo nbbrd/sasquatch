@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>com.github.nbbrd.sasquatch</groupId>
         <artifactId>sasquatch-parent</artifactId>
@@ -10,15 +11,17 @@
 
     <artifactId>sasquatch-desktop</artifactId>
     <packaging>jar</packaging>
-    
+
     <properties>
         <project.x.mainClass>sasquatch.desktop.SasTableViewer</project.x.mainClass>
         <project.x.fileName>sasquatchw</project.x.fileName>
         <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
         <project.x.headerType>gui</project.x.headerType>
         <project.x.minVersion>8</project.x.minVersion>
+
+        <java-desktop-util.version>2.2.5</java-desktop-util.version>
     </properties>
-    
+
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -26,7 +29,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- compile and runtime -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -39,26 +42,28 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>eu.europa.ec.joinup.sat</groupId>
-            <artifactId>nbdemetra-utils</artifactId>
-            <version>2.2.2</version>
+            <groupId>com.github.nbbrd.java-desktop-util</groupId>
+            <artifactId>java-desktop-util-swing</artifactId>
+            <version>${java-desktop-util.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-desktop-util</groupId>
+            <artifactId>java-desktop-util-chart</artifactId>
+            <version>${java-desktop-util.version}</version>
             <exclusions>
-                <exclusion>
-                    <groupId>net.java.dev.jna</groupId>
-                    <artifactId>jna</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>net.java.dev.jna</groupId>
-                    <artifactId>jna-platform</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>org.jfree</groupId>
                     <artifactId>jfreechart</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.github.nbbrd.java-desktop-util</groupId>
+            <artifactId>java-desktop-util-fa</artifactId>
+            <version>${java-desktop-util.version}</version>
+        </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <!-- Generates manifest for executable jar -->
@@ -75,7 +80,7 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <!-- Generates a all-in-one executable jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -91,8 +96,10 @@
                 </executions>
                 <configuration>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
                     </transformers>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>bin</shadedClassifierName>
@@ -100,7 +107,7 @@
                     <outputDirectory>${project.x.binaries}</outputDirectory>
                 </configuration>
             </plugin>
-            
+
             <!-- Parse version into different properties -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -141,11 +148,15 @@
                                 <bundledJreAsFallback>true</bundledJreAsFallback>
                             </jre>
                             <versionInfo>
-                                <fileVersion>${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}</fileVersion>
+                                <fileVersion>
+                                    ${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}
+                                </fileVersion>
                                 <txtFileVersion>${project.version}</txtFileVersion>
                                 <fileDescription>${project.description}</fileDescription>
                                 <copyright>${project.organization.name}</copyright>
-                                <productVersion>${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}</productVersion>
+                                <productVersion>
+                                    ${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}
+                                </productVersion>
                                 <txtProductVersion>${project.version}</txtProductVersion>
                                 <productName>${project.x.fileName}</productName>
                                 <internalName>${project.x.fileName}</internalName>
@@ -155,7 +166,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Generates SHA256 on binaries -->
             <plugin>
                 <groupId>net.nicoulaj.maven.plugins</groupId>
@@ -183,7 +194,7 @@
                     </fileSets>
                     <csvSummary>false</csvSummary>
                 </configuration>
-            </plugin>        
+            </plugin>
 
             <!-- Skip Maven deploy -->
             <plugin>
