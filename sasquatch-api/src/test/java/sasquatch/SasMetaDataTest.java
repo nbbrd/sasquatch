@@ -27,18 +27,18 @@ public class SasMetaDataTest {
 
     @Test
     public void testHashCode() {
-        SasMetaData.Builder b = SasMetaData.builder();
-        assertThat(b.build().hashCode())
-                .isEqualTo(b.build().hashCode())
-                .isNotEqualTo(b.name("hello").build().hashCode());
+        SasMetaData b = SasMetaData.builder().build();
+        assertThat(b.toBuilder().build().hashCode())
+                .isEqualTo(b.toBuilder().build().hashCode())
+                .isNotEqualTo(b.toBuilder().name("hello").build().hashCode());
     }
 
     @Test
     public void testEquals() {
-        SasMetaData.Builder b = SasMetaData.builder();
-        assertThat(b.build())
-                .isNotSameAs(b.build())
-                .isEqualTo(b.build())
-                .isNotEqualTo(b.name("hello").build());
+        SasMetaData b = SasMetaData.builder().build();
+        assertThat(b)
+                .isNotSameAs(b.toBuilder().build())
+                .isEqualTo(b.toBuilder().build())
+                .isNotEqualTo(b.toBuilder().name("hello").build());
     }
 }

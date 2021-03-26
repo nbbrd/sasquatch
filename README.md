@@ -86,7 +86,7 @@ At least one implementation must be available at runtime (on classpath or module
 Sasquatch supports the following implementations:
 
 | artifactId | description | support |
-| --- | --- | :-: |
+| --- | --- | :---: |
 | `sasquatch-ri` | native reference implementation | advanced |
 | `sasquatch-parso` | wrapper around parso library | advanced |
 | `sasquatch-sassy` | wrapper around sassy library | basic |
@@ -95,7 +95,7 @@ Sasquatch supports the following implementations:
 Feature matrix:
 
 | | `ri` | `parso` | `sassy` | `biostatmatt` |
-| --: | :-: | :-: | :-: | :-: |
+| ---: | :---: | :---: | :---: | :---: |
 | `BIG_ENDIAN_32` | x | x | - | - |
 | `LITTLE_ENDIAN_32` | x | x | x | x |
 | `BIG_ENDIAN_64` | x | x | - | - |
@@ -117,25 +117,17 @@ Feature matrix:
 ```xml
 <dependencies>
   <dependency>
-    <groupId>be.nbb.rd</groupId>
+    <groupId>com.github.nbbrd.sasquatch</groupId>
     <artifactId>sasquatch-api</artifactId>
     <version>LATEST_VERSION</version>
   </dependency>
   <dependency>
-    <groupId>be.nbb.rd</groupId>
+    <groupId>com.github.nbbrd.sasquatch</groupId>
     <artifactId>sasquatch-ri</artifactId>
     <version>LATEST_VERSION</version>
     <scope>runtime</scope>
   </dependency>
 </dependencies>
-
-<repositories>
-  <repository>
-    <id>oss-jfrog-artifactory-releases</id>
-    <url>https://oss.jfrog.org/artifactory/oss-release-local</url>
-    <snapshots><enabled>false</enabled></snapshots>
-  </repository>
-</repositories>
 ```
 
 ## Command-line tool

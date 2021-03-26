@@ -16,9 +16,10 @@
  */
 package sasquatch;
 
+import org.checkerframework.checker.index.qual.NonNegative;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import org.checkerframework.checker.index.qual.NonNegative;
 
 /**
  * The metadata of a SAS dataset.
@@ -37,7 +38,8 @@ public class SasMetaData {
      * @return a non-null name
      */
     @lombok.NonNull
-    private String name;
+    @lombok.Builder.Default
+    private String name = "";
 
     /**
      * The dataset's label.<br>Note that this label might be empty.
@@ -45,7 +47,8 @@ public class SasMetaData {
      * @return a non-null label
      */
     @lombok.NonNull
-    private String label;
+    @lombok.Builder.Default
+    private String label = "";
 
     /**
      * The dataset's creation time.
@@ -53,7 +56,8 @@ public class SasMetaData {
      * @return a non-null creation time
      */
     @lombok.NonNull
-    private LocalDateTime creationTime;
+    @lombok.Builder.Default
+    private LocalDateTime creationTime = LocalDateTime.now();
 
     /**
      * The dataset's last modification time.
@@ -61,7 +65,8 @@ public class SasMetaData {
      * @return a non-null last modification time
      */
     @lombok.NonNull
-    private LocalDateTime lastModificationTime;
+    @lombok.Builder.Default
+    private LocalDateTime lastModificationTime = LocalDateTime.now();
 
     /**
      * The SAS release used to create the dataset.
@@ -69,7 +74,8 @@ public class SasMetaData {
      * @return a non-null SAS release
      */
     @lombok.NonNull
-    private String release;
+    @lombok.Builder.Default
+    private String release = "";
 
     /**
      * The SAS server type used to create the dataset.
@@ -77,7 +83,8 @@ public class SasMetaData {
      * @return a non-null host
      */
     @lombok.NonNull
-    private String host;
+    @lombok.Builder.Default
+    private String host = "";
 
     /**
      * Returns the total number of rows.
@@ -85,7 +92,8 @@ public class SasMetaData {
      * @return a non-negative count
      */
     @NonNegative
-    private int rowCount;
+    @lombok.Builder.Default
+    private int rowCount = 0;
 
     /**
      * The list of columns in the dataset.
@@ -95,16 +103,4 @@ public class SasMetaData {
     @lombok.NonNull
     @lombok.Singular
     private List<SasColumn> columns;
-
-    // Fix NetBeans bug with @lombok.Builder.Default
-    public static Builder builder() {
-        return new Builder()
-                .name("")
-                .label("")
-                .creationTime(LocalDateTime.now())
-                .lastModificationTime(LocalDateTime.now())
-                .release("")
-                .host("")
-                .rowCount(0);
-    }
 }
