@@ -1,10 +1,2 @@
-/sasquatch-api/target/
-/sasquatch-demo/target/
-/sasquatch-parso/target/
-/sasquatch-ri/target/
-/sasquatch-sassy/target/
-/sasquatch-tck/target/
-/sasquatch-biostatmatt/target/
-/sasquatch-desktop/target/
-/sasquatch-cli/target/
-/target/
+target/
+/binaries/

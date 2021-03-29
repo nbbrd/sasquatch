@@ -1,20 +1,27 @@
 /*
  * Copyright 2017 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.samples;
+
+import nbbrd.picocsv.Csv;
+import sasquatch.SasColumn;
+import sasquatch.SasForwardCursor;
+import sasquatch.SasMetaData;
+import sasquatch.SasRow;
+import sasquatch.spi.SasReader;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -25,15 +32,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import nbbrd.picocsv.Csv;
-import sasquatch.SasColumn;
-import sasquatch.SasForwardCursor;
-import sasquatch.SasMetaData;
-import sasquatch.SasRow;
-import sasquatch.spi.SasReader;
 
 /**
- *
  * @author Philippe Charles
  */
 public abstract class CsvContent implements SasContent {
@@ -62,8 +62,8 @@ public abstract class CsvContent implements SasContent {
         return Csv.Format.RFC4180;
     }
 
-    protected Csv.Parsing getParsing(Path csvFile) {
-        return Csv.Parsing.LENIENT;
+    protected Csv.ReaderOptions getOptions(Path csvFile) {
+        return Csv.ReaderOptions.builder().lenientSeparator(true).build();
     }
 
     private FileError compareToCsv(SasReader reader, Path sasFile) {
@@ -79,7 +79,7 @@ public abstract class CsvContent implements SasContent {
     }
 
     private FileError compareToCsv(SasReader reader, Path sasFile, Path csvFile) throws IOException {
-        try (Csv.Reader csv = Csv.Reader.of(csvFile, getCharset(csvFile), getFormat(csvFile), getParsing(csvFile))) {
+        try (Csv.Reader csv = Csv.Reader.of(getFormat(csvFile), getOptions(csvFile), Files.newBufferedReader(csvFile, getCharset(csvFile)), Csv.DEFAULT_CHAR_BUFFER_SIZE)) {
             try (SasForwardCursor sas = reader.readForward(sasFile)) {
                 SasMetaData meta = sas.getMetaData();
 

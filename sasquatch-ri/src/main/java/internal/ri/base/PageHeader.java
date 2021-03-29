@@ -38,6 +38,8 @@ public final class PageHeader {
     @NonNegative
     private int index;
 
+    private short deletedOffset;
+
     /**
      * Page type
      */
@@ -64,12 +66,13 @@ public final class PageHeader {
 
     @NonNull
     public static PageHeader parse(@NonNull BytesReader pageBytes, boolean u64, int index) {
-        short type = pageBytes.getInt16(SEQ.getOffset(u64, 2));
-        short dataBlockCount = pageBytes.getInt16(SEQ.getOffset(u64, 3));
-        short subHeaderCount = pageBytes.getInt16(SEQ.getOffset(u64, 4));
-        int subHeaderOffset = pageBytes.getUInt16(SEQ.getOffset(u64, 5));
+        short deletedOffset = pageBytes.getInt16(SEQ.getOffset(u64, 2));
+        short type = pageBytes.getInt16(SEQ.getOffset(u64, 3));
+        short dataBlockCount = pageBytes.getInt16(SEQ.getOffset(u64, 4));
+        short subHeaderCount = pageBytes.getInt16(SEQ.getOffset(u64, 5));
+        int subHeaderOffset = pageBytes.getUInt16(SEQ.getOffset(u64, 6));
 
-        return new PageHeader(index, PageType.tryParse(type), dataBlockCount, subHeaderCount, subHeaderOffset);
+        return new PageHeader(index, deletedOffset, PageType.tryParse(type), dataBlockCount, subHeaderCount, subHeaderOffset);
     }
 
     public static boolean canAlign(
@@ -88,7 +91,8 @@ public final class PageHeader {
     public static final Seq SEQ = Seq
             .builder()
             .and("signature", 4)
-            .and("?", 12, 28)
+            .and("?", 8, 20)
+            .and("deletedOffset", 4, 8)
             .and("type", 2)
             .and("dataBlockCount", 2)
             .and("subHeaderCount", 2)

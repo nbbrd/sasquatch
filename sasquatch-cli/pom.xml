@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>be.nbb.rd</groupId>
+        <groupId>com.github.nbbrd.sasquatch</groupId>
         <artifactId>sasquatch-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>sasquatch-cli</artifactId>
     <packaging>jar</packaging>
 
+    <name>sasquatch-cli</name>
+    <description>A java reader of SAS datasets - CLI</description>
+    <url>https://github.com/nbbrd/sasquatch</url>
+
     <properties>
-        <project.x.mainClass>sasquatch.cli.SasquatchCommand</project.x.mainClass>
+        <project.x.mainClass>sasquatch.cli.MainCommand</project.x.mainClass>
         <project.x.fileName>sasquatch</project.x.fileName>
-        <project.x.binaries>${project.basedir}/../target/binaries</project.x.binaries>
-        <project.x.headerType>console</project.x.headerType>
-        <project.x.minVersion>8</project.x.minVersion>
+        <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
     </properties>
-    
+
     <dependencies>
         <!-- compile only -->
         <dependency>
@@ -26,7 +29,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- compile and runtime -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -41,34 +44,34 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.2.0</version>
+            <version>4.6.1</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
-            <artifactId>picocsv</artifactId>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-jansi-graalvm</artifactId>
             <version>1.2.0</version>
         </dependency>
         <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>1.17.1</version>
+            <groupId>com.github.nbbrd.picocsv</groupId>
+            <artifactId>picocsv</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>1.26</version>            
+            <version>1.28</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-base</artifactId>
-            <version>0.0.6</version>
+            <version>0.0.12</version>
         </dependency>
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-console-properties</groupId>
             <artifactId>java-console-properties</artifactId>
-            <version>1.0.0</version>
+            <version>1.3.2</version>
         </dependency>
-        
+
         <!-- Runtime only -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -83,7 +86,7 @@
             <scope>runtime</scope>
         </dependency>
     </dependencies>
-    
+
     <build>
         <plugins>
             <!-- Generates manifest for executable jar -->
@@ -100,12 +103,12 @@
                     </archive>
                 </configuration>
             </plugin>
-            
+
             <!-- Generates a all-in-one executable jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.3</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -115,67 +118,72 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>module-info.class</exclude>
+                                <exclude>META-INF/MANIFEST.MF</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                     <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                        <transformer
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
                     </transformers>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>bin</shadedClassifierName>
-                    <shadedArtifactId>${project.x.fileName}</shadedArtifactId>
-                    <outputDirectory>${project.x.binaries}</outputDirectory>
                 </configuration>
             </plugin>
-            
-            <!-- Parse version into different properties -->
+
+            <!-- Copies files to binaries -->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <phase>validate</phase>
+                        <phase>install</phase>
                         <goals>
-                            <goal>parse-version</goal>
+                            <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <propertyPrefix>project.x</propertyPrefix>
+                            <outputDirectory>${project.x.binaries}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>*-bin.jar</include>
+                                        <include>*-bin.jar.asc</include>
+                                    </includes>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
-            <!-- Generates a Windows exe -->
+            <!-- Renames binaries -->
             <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>1.7.25</version>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
-                            <goal>launch4j</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <headerType>${project.x.headerType}</headerType>
-                            <outfile>${project.x.binaries}/${project.x.fileName}-${project.version}.exe</outfile>
-                            <jar>${project.x.binaries}/${project.x.fileName}-${project.version}-bin.jar</jar>
-                            <downloadUrl>https://adoptopenjdk.net/</downloadUrl>
-                            <jre>
-                                <minVersion>${project.x.minVersion}</minVersion>
-                                <path>%JAVA_HOME%</path>
-                                <bundledJreAsFallback>true</bundledJreAsFallback>
-                            </jre>
-                            <versionInfo>
-                                <fileVersion>${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}</fileVersion>
-                                <txtFileVersion>${project.version}</txtFileVersion>
-                                <fileDescription>${project.description}</fileDescription>
-                                <copyright>${project.organization.name}</copyright>
-                                <productVersion>${project.x.majorVersion}.${project.x.minorVersion}.${project.x.incrementalVersion}.${project.x.buildNumber}</productVersion>
-                                <txtProductVersion>${project.version}</txtProductVersion>
-                                <productName>${project.x.fileName}</productName>
-                                <internalName>${project.x.fileName}</internalName>
-                                <originalFilename>${project.x.fileName}.exe</originalFilename>
-                            </versionInfo>
+                            <target>
+                                <move todir="${project.x.binaries}">
+                                    <fileset dir="${project.x.binaries}">
+                                        <include name="**/${project.artifactId}-*"/>
+                                    </fileset>
+                                    <mapper type="glob" from="${project.artifactId}-*" to="${project.x.fileName}-*"/>
+                                </move>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -185,9 +193,10 @@
             <plugin>
                 <groupId>net.nicoulaj.maven.plugins</groupId>
                 <artifactId>checksum-maven-plugin</artifactId>
-                <version>1.8</version>
+                <version>1.9</version>
                 <executions>
                     <execution>
+                        <phase>install</phase>
                         <goals>
                             <goal>files</goal>
                         </goals>
@@ -202,12 +211,23 @@
                             <directory>${project.x.binaries}</directory>
                             <excludes>
                                 <exclude>*.sha256</exclude>
+                                <exclude>*.asc</exclude>
                             </excludes>
                         </fileSet>
                     </fileSets>
                     <csvSummary>false</csvSummary>
                 </configuration>
-            </plugin>        
+            </plugin>
+
+            <!-- Skip Maven deploy -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

@@ -2,19 +2,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>be.nbb.rd</groupId>
+        <groupId>com.github.nbbrd.sasquatch</groupId>
         <artifactId>sasquatch-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     
     <artifactId>sasquatch-sassy</artifactId>
     <packaging>jar</packaging>
+
+    <name>sasquatch-sassy</name>
     <description>A wrapped implementation of sasquatch api that uses SassyReader library</description>
+    <url>https://github.com/nbbrd/sasquatch</url>
 
     <dependencies>
         <!-- compile only -->
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>

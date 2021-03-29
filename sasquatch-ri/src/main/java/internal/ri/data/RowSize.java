@@ -51,6 +51,12 @@ public final class RowSize implements SubHeader {
     private int count;
 
     /**
+     * Deleted row count
+     */
+    @NonNegative
+    private int deletedCount;
+
+    /**
      * Max row count on mix page
      */
     @NonNegative
@@ -97,6 +103,7 @@ public final class RowSize implements SubHeader {
                 pointer.getLocation(),
                 Seq.parseU4U8(bytes, SEQ.getOffset(u64, 5), u64),
                 Seq.parseU4U8(bytes, SEQ.getOffset(u64, 6), u64),
+                Seq.parseU4U8(bytes, SEQ.getOffset(u64, 7), u64),
                 Seq.parseU4U8(bytes, SEQ.getOffset(u64, 15), u64),
                 SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 21), u64),
                 SubHeaderLocation.parse(bytes, SEQ.getOffset(u64, 22), u64),
@@ -129,7 +136,7 @@ public final class RowSize implements SubHeader {
             .and("?", Seq.U4U8)
             .and("rowLength", Seq.U4U8) //#5
             .and("rowCount", Seq.U4U8) //#6
-            .and("?", Seq.U4U8)
+            .and("deletedRowCount", Seq.U4U8) //#7
             .and("?", Seq.U4U8)
             .and("ncfl1", Seq.U4U8)
             .and("ncfl2", Seq.U4U8)

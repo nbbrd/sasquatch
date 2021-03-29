@@ -107,6 +107,12 @@ final class CompressedForwardingCursor extends ForwardingCursor {
     }
 
     @Override
+    protected boolean isDeleted() throws IOException {
+        // TODO
+        return false;
+    }
+
+    @Override
     public BytesReader getBytes() throws IOException {
         if (!rowLoaded) {
             if (isCurrentRowNotCompressed()) {

@@ -101,6 +101,12 @@ final class PackedBinaryForwardingCursor extends ForwardingCursor {
         index++;
     }
 
+    @Override
+    protected boolean isDeleted() throws IOException {
+        // TODO
+        return false;
+    }
+
     private void setBaseAndRemaining() throws IOException {
         switch (currentPage.getType().get()) {
             case MIX:

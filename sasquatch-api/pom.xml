@@ -2,19 +2,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>be.nbb.rd</groupId>
+        <groupId>com.github.nbbrd.sasquatch</groupId>
         <artifactId>sasquatch-parent</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>sasquatch-api</artifactId>
     <packaging>jar</packaging>
-    <description>A pure-java reader of SAS datasets</description>
+
+    <name>sasquatch-api</name>
+    <description>A java reader of SAS datasets - API</description>
+    <url>https://github.com/nbbrd/sasquatch</url>
 
     <dependencies>
         <!-- compile only -->
         <dependency>
-            <groupId>be.nbb.rd</groupId>
+            <groupId>com.github.nbbrd.java-service-util</groupId>
             <artifactId>java-service-processor</artifactId>
             <scope>provided</scope>
         </dependency>

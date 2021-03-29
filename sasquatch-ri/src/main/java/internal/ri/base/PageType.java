@@ -39,6 +39,7 @@ public enum PageType {
     public static PValue<PageType, Short> tryParse(short value) {
         switch (value) {
             case 0:      //0b00000000_00000000
+            case 128:    //0b00000000_10000000
                 return PValue.known(META);
             case 256:    //0b00000001_00000000
             case 384:    //0b00000001_10000000
