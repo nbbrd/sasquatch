@@ -143,7 +143,7 @@ public final class EpamContent extends CsvContent {
         private final Format format;
 
         public PercentFormatter(SasColumnFormat columnFormat) {
-            this.format = getPercentFormatProcessor(columnFormat, Locale.UK);
+            this.format = getPercentFormatProcessor(columnFormat, LOCALE);
         }
 
         @Override
@@ -187,35 +187,34 @@ public final class EpamContent extends CsvContent {
         }
     }
 
+    private static final ZoneId ZONE_ID = ZoneId.of("Europe/London");
+    private static final Locale LOCALE = Locale.US;
+
     private static class DateFormatter implements Function<LocalDate, String> {
 
         private final Format format;
-        private final ZoneId zoneId;
 
         public DateFormatter(String columnFormat) {
-            this.format = getDateFormatProcessor(columnFormat, Locale.UK);
-            this.zoneId = ZoneId.of(Locale.UK.getCountry());
+            this.format = getDateFormatProcessor(columnFormat, LOCALE);
         }
 
         @Override
         public String apply(LocalDate t) {
-            return t != null ? format.format(Date.from(t.atStartOfDay().atZone(zoneId).toInstant())) : "";
+            return t != null ? format.format(Date.from(t.atStartOfDay().atZone(ZONE_ID).toInstant())) : "";
         }
     }
 
     private static class DateTimeFormatter implements Function<LocalDateTime, String> {
 
         private final Format format;
-        private final ZoneId zoneId;
 
         public DateTimeFormatter(String columnFormat) {
-            this.format = getDateFormatProcessor(columnFormat, Locale.UK);
-            this.zoneId = ZoneId.of(Locale.UK.getCountry());
+            this.format = getDateFormatProcessor(columnFormat, LOCALE);
         }
 
         @Override
         public String apply(LocalDateTime t) {
-            return t != null ? fixLowercaseUK(format.format(Date.from(t.atZone(zoneId).toInstant()))) : "";
+            return t != null ? fixLowercaseUK(format.format(Date.from(t.atZone(ZONE_ID).toInstant()))) : "";
         }
 
         //SimpleDateFormat outputs AM and PM as lower case
@@ -234,7 +233,7 @@ public final class EpamContent extends CsvContent {
 
         }
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, locale);
-        dateFormat.setTimeZone(TimeZone.getTimeZone(ZoneId.of(Locale.UK.getCountry())));
+        dateFormat.setTimeZone(TimeZone.getTimeZone(ZONE_ID));
         return dateFormat;
     }
 
