@@ -28,7 +28,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
  * https://documentation.sas.com/?docsetId=leforinforref&docsetTarget=n134ahpcz8murvn1x7went6p2czo.htm&docsetVersion=9.4&locale=en
  */
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+@lombok.Builder(toBuilder = true)
 public class SasColumnFormat {
 
     /**

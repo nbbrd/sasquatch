@@ -32,7 +32,7 @@ import sasquatch.spi.SasReader;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class FakeSasReader implements SasReader {
 
     @lombok.Getter

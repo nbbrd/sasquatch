@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder", toBuilder = true)
+@lombok.Builder(toBuilder = true)
 public class SasRowFormat {
 
     public static final SasRowFormat DEFAULT = SasRowFormat.builder().build();

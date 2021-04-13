@@ -34,7 +34,7 @@ import java.util.List;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public class SasFileStructure {
 
     @lombok.NonNull

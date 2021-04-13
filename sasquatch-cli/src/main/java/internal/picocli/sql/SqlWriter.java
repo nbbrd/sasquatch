@@ -29,7 +29,7 @@ import java.util.List;
 public final class SqlWriter implements Closeable {
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Table {
 
         String name;
@@ -38,7 +38,7 @@ public final class SqlWriter implements Closeable {
     }
 
     @lombok.Value
-    @lombok.Builder(builderClassName = "Builder")
+    @lombok.Builder
     public static class Column {
 
         String name;

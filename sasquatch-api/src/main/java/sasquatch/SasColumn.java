@@ -25,7 +25,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
  * @apiNote This class is immutable.
  */
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+@lombok.Builder(toBuilder = true)
 public class SasColumn {
 
     /**

@@ -29,7 +29,7 @@ import org.checkerframework.checker.index.qual.NonNegative;
  *
  * @author Philippe Charles
  */
-@lombok.Builder(builderClassName = "Builder")
+@lombok.Builder
 public final class BytesPrinter {
 
     @NonNegative
