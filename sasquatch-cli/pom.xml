@@ -80,6 +80,14 @@
                     <groupId>info.picocli</groupId>
                     <artifactId>picocli</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.nbbrd.java-io-util</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.nbbrd.java-design-util</groupId>
+                    <artifactId>java-design-processor</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
