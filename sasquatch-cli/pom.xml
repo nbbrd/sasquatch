@@ -69,7 +69,6 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-base</artifactId>
-            <version>0.0.18</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-console-properties</groupId>

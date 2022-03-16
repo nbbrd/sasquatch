@@ -47,6 +47,15 @@
                 <version>3.21.3</version>
             </dependency>
 
+            <!-- dependencies  -->
+            <dependency>
+                <groupId>com.github.nbbrd.java-io-util</groupId>
+                <artifactId>java-io-bom</artifactId>
+                <version>0.0.18</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- test libraries -->
             <dependency>
                 <groupId>junit</groupId>
