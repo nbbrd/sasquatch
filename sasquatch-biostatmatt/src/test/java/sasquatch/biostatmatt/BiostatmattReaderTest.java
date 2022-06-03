@@ -16,7 +16,7 @@
  */
 package sasquatch.biostatmatt;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import sasquatch.tck.SasReaderAssert;
 
 /**

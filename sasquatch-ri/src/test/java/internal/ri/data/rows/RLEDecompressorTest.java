@@ -20,7 +20,7 @@ import internal.bytes.Bytes;
 import java.math.BigInteger;
 import java.nio.ByteOrder;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  *
