@@ -1,2 +1,3 @@
 target/
 /binaries/
+dependency-reduced-pom.xml
