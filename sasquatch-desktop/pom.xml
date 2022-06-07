@@ -21,7 +21,7 @@
         <project.x.fileName>sasquatchw</project.x.fileName>
         <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
 
-        <java-desktop-util.version>2.2.5</java-desktop-util.version>
+        <java-desktop-util.version>2.2.6</java-desktop-util.version>
     </properties>
 
     <dependencies>
