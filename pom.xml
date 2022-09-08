@@ -140,6 +140,7 @@
         <module>sasquatch-ri</module>
         <module>sasquatch-tck</module>
         <module>sasquatch-biostatmatt</module>
+        <module>sasquatch-bom</module>
     </modules>
 
     <profiles>
