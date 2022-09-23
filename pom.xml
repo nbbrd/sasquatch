@@ -118,6 +118,11 @@
                 </plugin>
                 <!-- Other plugins -->
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
                     <groupId>com.github.nbbrd.heylogs</groupId>
                     <artifactId>heylogs-maven-plugin</artifactId>
                     <version>0.2.0</version>
@@ -158,24 +163,12 @@
         <module>sasquatch-ri</module>
         <module>sasquatch-tck</module>
         <module>sasquatch-biostatmatt</module>
+        <module>sasquatch-desktop</module>
+        <module>sasquatch-cli</module>
         <module>sasquatch-bom</module>
     </modules>
 
     <profiles>
-        <!-- Non-deployable modules -->
-        <profile>
-            <id>non-deployable-modules</id>
-            <activation>
-                <property>
-                    <name>!nonDeployableModules</name>
-                </property>
-            </activation>
-            <modules>
-                <module>sasquatch-desktop</module>
-                <module>sasquatch-cli</module>
-            </modules>
-        </profile>
-
         <!-- Base Java8 build -->
         <profile>
             <id>base-java8</id>

@@ -49,6 +49,16 @@
                 <groupId>${project.groupId}</groupId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <artifactId>sasquatch-cli</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <artifactId>sasquatch-desktop</artifactId>
+                <groupId>${project.groupId}</groupId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
