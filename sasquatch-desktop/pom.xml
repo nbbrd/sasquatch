@@ -17,10 +17,6 @@
     <url>https://github.com/nbbrd/sasquatch</url>
 
     <properties>
-        <project.x.mainClass>sasquatch.desktop.SasTableViewer</project.x.mainClass>
-        <project.x.fileName>sasquatchw</project.x.fileName>
-        <project.x.binaries>${project.basedir}/../binaries</project.x.binaries>
-
         <java-desktop-util.version>2.2.6</java-desktop-util.version>
     </properties>
 
@@ -73,21 +69,6 @@
 
     <build>
         <plugins>
-            <!-- Generates manifest for executable jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                            <mainClass>${project.x.mainClass}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
             <!-- Generates a all-in-one executable jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -114,92 +95,13 @@
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                         <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>sasquatch.desktop.SasTableViewer</mainClass>
+                        </transformer>
                     </transformers>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>bin</shadedClassifierName>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
-                </configuration>
-            </plugin>
-
-            <!-- Copies files to binaries -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.x.binaries}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}</directory>
-                                    <includes>
-                                        <include>*-bin.jar</include>
-                                        <include>*-bin.jar.asc</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Renames binaries -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <move todir="${project.x.binaries}">
-                                    <fileset dir="${project.x.binaries}">
-                                        <include name="**/${project.artifactId}-*"/>
-                                    </fileset>
-                                    <mapper type="glob" from="${project.artifactId}-*" to="${project.x.fileName}-*"/>
-                                </move>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Generates SHA256 on binaries -->
-            <plugin>
-                <groupId>net.nicoulaj.maven.plugins</groupId>
-                <artifactId>checksum-maven-plugin</artifactId>
-                <version>1.11</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>files</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <algorithms>
-                        <algorithm>SHA-256</algorithm>
-                    </algorithms>
-                    <fileSets>
-                        <fileSet>
-                            <directory>${project.x.binaries}</directory>
-                            <excludes>
-                                <exclude>*.sha256</exclude>
-                                <exclude>*.asc</exclude>
-                            </excludes>
-                        </fileSet>
-                    </fileSets>
-                    <csvSummary>false</csvSummary>
                 </configuration>
             </plugin>
         </plugins>

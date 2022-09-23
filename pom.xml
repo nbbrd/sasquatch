@@ -10,6 +10,7 @@
     <name>sasquatch</name>
     <description>A java reader of SAS datasets</description>
     <url>https://github.com/nbbrd/sasquatch</url>
+    <inceptionYear>2020</inceptionYear>
 
     <licenses>
         <license>
@@ -141,17 +142,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- Clean binaries directory -->
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.basedir}/binaries</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
             </plugin>
         </plugins>
     </build>

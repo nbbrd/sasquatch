@@ -84,4 +84,110 @@
             </plugin>
         </plugins>
     </build>
+
+
+    <profiles>
+        <!-- Release assets -->
+        <profile>
+            <id>full-release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jreleaser</groupId>
+                        <artifactId>jreleaser-maven-plugin</artifactId>
+                        <version>1.2.0</version>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>full-release</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <jreleaser>
+                                <release>
+                                    <github>
+                                        <skipTag>true</skipTag>
+                                        <draft>true</draft>
+                                        <!-- Fix default value -->
+                                        <branch>master</branch>
+                                        <changelog>
+                                            <external>${project.parent.basedir}/CHANGELOG.md</external>
+                                        </changelog>
+                                    </github>
+                                </release>
+                                <checksum>
+                                    <individual>true</individual>
+                                </checksum>
+                                <signing>
+                                    <active>ALWAYS</active>
+                                    <!-- Fix default value -->
+                                    <armored>true</armored>
+                                </signing>
+                                <distributions>
+                                    <!-- Name is here ! -->
+                                    <sasquatch>
+                                        <type>SINGLE_JAR</type>
+                                        <artifacts>
+                                            <artifact>
+                                                <path>
+                                                    ${project.parent.basedir}/sasquatch-cli/target/sasquatch-cli-${project.version}-bin.jar
+                                                </path>
+                                            </artifact>
+                                        </artifacts>
+                                        <java>
+                                            <mainClass>sasquatch.cli.MainCommand</mainClass>
+                                            <artifactId>sasquatch-cli</artifactId>
+                                            <version>8</version>
+                                        </java>
+                                        <scoop>
+                                            <active>RELEASE</active>
+                                        </scoop>
+                                        <brew>
+                                            <active>RELEASE</active>
+                                            <extraProperties>
+                                                <skipJava>true</skipJava>
+                                            </extraProperties>
+                                        </brew>
+                                        <jbang>
+                                            <active>RELEASE</active>
+                                        </jbang>
+                                    </sasquatch>
+                                    <!-- Name is here ! -->
+                                    <sasquatchw>
+                                        <type>SINGLE_JAR</type>
+                                        <artifacts>
+                                            <artifact>
+                                                <path>
+                                                    ${project.parent.basedir}/sasquatch-desktop/target/sasquatch-desktop-${project.version}-bin.jar
+                                                </path>
+                                            </artifact>
+                                        </artifacts>
+                                        <java>
+                                            <mainClass>sasquatch.desktop.SasTableViewer</mainClass>
+                                            <artifactId>sasquatch-desktop</artifactId>
+                                            <version>8</version>
+                                        </java>
+                                        <scoop>
+                                            <active>RELEASE</active>
+                                        </scoop>
+                                        <brew>
+                                            <active>RELEASE</active>
+                                            <extraProperties>
+                                                <skipJava>true</skipJava>
+                                            </extraProperties>
+                                        </brew>
+                                        <jbang>
+                                            <active>RELEASE</active>
+                                        </jbang>
+                                    </sasquatchw>
+                                </distributions>
+                            </jreleaser>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
