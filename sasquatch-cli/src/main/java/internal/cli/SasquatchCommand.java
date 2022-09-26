@@ -29,7 +29,7 @@ import java.util.Iterator;
  * @author Philippe Charles
  */
 @lombok.extern.java.Log
-public abstract class SasReaderCommand extends BaseCommand {
+public abstract class SasquatchCommand extends BaseCommand {
 
     @CommandLine.Option(
             names = {"--engine"},
