@@ -14,6 +14,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Change look&feel to FlatLightLaf [#178](https://github.com/nbbrd/sasquatch/issues/178)
+
 ### Fixed
 
 ## [1.0.1] - 2021-03-29
