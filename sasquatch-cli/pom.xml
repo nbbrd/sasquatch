@@ -67,6 +67,12 @@
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
             <artifactId>java-io-picocsv</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.nbbrd.picocsv</groupId>
+                    <artifactId>picocsv</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-console-properties</groupId>
