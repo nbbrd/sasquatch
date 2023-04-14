@@ -19,6 +19,8 @@ package internal.ri.data.rows;
 import internal.bytes.Bytes;
 import java.math.BigInteger;
 import java.nio.ByteOrder;
+import java.util.Locale;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +51,7 @@ public class RLEDecompressorTest {
 
     private static String encode(byte[] bytes) {
         BigInteger bigInteger = new BigInteger(1, bytes);
-        return String.format("%0" + (bytes.length << 1) + "x", bigInteger);
+        return String.format(Locale.ROOT, "%0" + (bytes.length << 1) + "x", bigInteger);
     }
 
     private static byte[] decode(String hexString) {

@@ -22,6 +22,8 @@ import java.nio.ByteOrder;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
+
 import static java.nio.file.StandardOpenOption.READ;
 import org.checkerframework.checker.index.qual.NonNegative;
 
@@ -59,7 +61,7 @@ public final class BytesPrinter {
         }
         int groupIndex = 0;
         for (int i = 0; i < length; i++) {
-            stream.print(String.format("%02X ", bytes.getByte(index + i)));
+            stream.print(String.format(Locale.ROOT, "%02X ", bytes.getByte(index + i)));
 
             int groupSize = stackSizes[groupIndex % groupSizes.length];
 

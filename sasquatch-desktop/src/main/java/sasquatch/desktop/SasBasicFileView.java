@@ -138,7 +138,7 @@ final class SasBasicFileView extends JPanel {
     private static class HeaderModel extends DefaultTableModel {
 
         public HeaderModel(SasMetaData header) {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.ROOT);
             setDataVector(new Object[][]{
                 {"Dataset name", header.getName()},
                 {"Dataset label", header.getLabel()},

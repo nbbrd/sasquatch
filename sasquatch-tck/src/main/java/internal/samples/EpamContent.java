@@ -1,6 +1,7 @@
 package internal.samples;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -126,7 +127,7 @@ public final class EpamContent extends CsvContent {
             if (valueToPrint.length() > ROUNDING_LENGTH) {
                 int lengthBeforeDot = (int) Math.ceil(Math.log10(Math.abs(value)));
                 BigDecimal bigDecimal = new BigDecimal(value);
-                bigDecimal = bigDecimal.setScale(ACCURACY - lengthBeforeDot, BigDecimal.ROUND_HALF_UP);
+                bigDecimal = bigDecimal.setScale(ACCURACY - lengthBeforeDot, RoundingMode.HALF_UP);
                 valueToPrint = String.valueOf(bigDecimal.doubleValue());
             }
             valueToPrint = trimZerosFromEnd(valueToPrint);
@@ -178,11 +179,11 @@ public final class EpamContent extends CsvContent {
 
         private static String convertTimeElementToString(Long secondsFromMidnight) {
 
-            return String.format(HOURS_OUTPUT_FORMAT, secondsFromMidnight / SECONDS_IN_MINUTE / MINUTES_IN_HOUR)
+            return String.format(Locale.ROOT, HOURS_OUTPUT_FORMAT, secondsFromMidnight / SECONDS_IN_MINUTE / MINUTES_IN_HOUR)
                     + TIME_DELIMETER
-                    + String.format(MINUTES_OUTPUT_FORMAT, secondsFromMidnight / SECONDS_IN_MINUTE % MINUTES_IN_HOUR)
+                    + String.format(Locale.ROOT, MINUTES_OUTPUT_FORMAT, secondsFromMidnight / SECONDS_IN_MINUTE % MINUTES_IN_HOUR)
                     + TIME_DELIMETER
-                    + String.format(SECONDS_OUTPUT_FORMAT, secondsFromMidnight % SECONDS_IN_MINUTE);
+                    + String.format(Locale.ROOT, SECONDS_OUTPUT_FORMAT, secondsFromMidnight % SECONDS_IN_MINUTE);
 
         }
     }
