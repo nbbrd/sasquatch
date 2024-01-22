@@ -34,7 +34,6 @@
         <url>http://github.com/nbbrd/sasquatch/tree/master</url>
     </scm>
 
-    <!-- Used by launch4j -->
     <organization>
         <name>National Bank of Belgium</name>
     </organization>
