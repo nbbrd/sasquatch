@@ -1,6 +1,7 @@
 # Sasquatch - SAS dataset library for Java
 
 [![Download](https://img.shields.io/github/release/nbbrd/sasquatch.svg)](https://github.com/nbbrd/sasquatch/releases/latest)
+[![Changes](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnbbrd%2Fsasquatch%2Fbadges%2Funreleased-changes.json)](https://github.com/nbbrd/sasquatch/blob/develop/CHANGELOG.md)
 
 This [Java library](#java-library) provides a reader for SAS datasets.  
 It also provides a [command-line tool](#command-line-tool) and a [desktop application](#desktop-application).
