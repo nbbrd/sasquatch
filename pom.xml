@@ -4,7 +4,7 @@
 
     <groupId>com.github.nbbrd.sasquatch</groupId>
     <artifactId>sasquatch-parent</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>sasquatch</name>
@@ -37,7 +37,7 @@
     <properties>
         <!-- Java 8+ config -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputTimestamp>2024-09-03T09:44:24Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2024-09-03T09:44:51Z</project.build.outputTimestamp>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
 
