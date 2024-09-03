@@ -11,12 +11,17 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Add Maven BOM
 - Add CLI and Desktop projects to Maven Central
+- Add distribution to Scoop (Windows)
+- Add distribution to Homebrew (macOS & Linux)
+- Add distribution to JBang Catalog
 
 ### Changed
 
 - Change look&feel to FlatLightLaf [#178](https://github.com/nbbrd/sasquatch/issues/178)
 
 ### Fixed
+
+- Fix potential bugs related to system settings
 
 ## [1.0.1] - 2021-03-29
 
