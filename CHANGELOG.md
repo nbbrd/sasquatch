@@ -7,6 +7,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.1.0] - 2024-09-03
+
 ### Added
 
 - Add Maven BOM
@@ -36,6 +38,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Initial release
 
-[Unreleased]: https://github.com/nbbrd/sasquatch/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/nbbrd/sasquatch/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/nbbrd/sasquatch/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/nbbrd/sasquatch/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/nbbrd/sasquatch/releases/tag/v1.0.0
