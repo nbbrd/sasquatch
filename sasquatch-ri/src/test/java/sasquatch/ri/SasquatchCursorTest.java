@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.READ;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import static sasquatch.samples.SasResources.PPHAM27;
 
 /**
@@ -33,19 +33,19 @@ public class SasquatchCursorTest {
     @Test
     public void testReadWhenCountLowerThanFirstPageCount() throws IOException {
         Object[][] data = readAll(PPHAM27.getRoot().resolve("agents.sas7bdat"));
-        assertEquals(null, (String) data[0][0]);
-        assertEquals("Auckland, New Zealand", (String) data[0][1]);
-        assertEquals("Missouri", (String) data[9][0]);
-        assertEquals("Kansas City, USA", (String) data[9][1]);
+        Assertions.assertEquals(null, (String) data[0][0]);
+        Assertions.assertEquals("Auckland, New Zealand", (String) data[0][1]);
+        Assertions.assertEquals("Missouri", (String) data[9][0]);
+        Assertions.assertEquals("Kansas City, USA", (String) data[9][1]);
     }
 
     @Test
     public void testReadLotsOfPages() throws IOException {
         Object[][] data = readAll(PPHAM27.getRoot().resolve("drugtest.sas7bdat"));
-        assertEquals(2d, (Double) data[0][0], 0);
-        assertEquals(0d, (Double) data[0][12], 0);
-        assertEquals(2d, (Double) data[9096][0], 0);
-        assertEquals(1d, (Double) data[9096][12], 0);
+        Assertions.assertEquals(2d, (Double) data[0][0], 0);
+        Assertions.assertEquals(0d, (Double) data[0][12], 0);
+        Assertions.assertEquals(2d, (Double) data[9096][0], 0);
+        Assertions.assertEquals(1d, (Double) data[9096][12], 0);
     }
 
     static SasquatchCursor of(Path file) throws IOException {

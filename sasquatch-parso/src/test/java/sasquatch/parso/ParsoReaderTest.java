@@ -17,7 +17,7 @@
 package sasquatch.parso;
 
 import java.io.IOException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import sasquatch.samples.SasContentLoader;
 import sasquatch.spi.SasReader;
 import sasquatch.tck.SasReaderAssert;

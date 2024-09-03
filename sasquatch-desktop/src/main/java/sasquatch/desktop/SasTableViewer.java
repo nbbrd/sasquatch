@@ -16,6 +16,7 @@
  */
 package sasquatch.desktop;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import ec.util.various.swing.BasicFileViewer;
 import ec.util.various.swing.BasicSwingLauncher;
 import ec.util.various.swing.FontAwesome;
@@ -24,16 +25,25 @@ import java.awt.Component;
 import java.awt.Image;
 import java.io.File;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Philippe Charles
  */
+@lombok.experimental.UtilityClass
 public final class SasTableViewer {
 
     public static void main(String[] args) {
+
+        disableDefaultConsoleLogger();
+        FlatLightLaf.setup();
+
         new BasicSwingLauncher()
+                .lookAndFeel(FlatLightLaf.class.getName())
                 .title("SAS Table Viewer")
                 .icons(SasTableViewer::icons)
                 .content(() -> content(getFile(args)))
@@ -54,5 +64,16 @@ public final class SasTableViewer {
         main.setFileHandler(new SasBasicFileHandler());
         main.setFile(file);
         return main;
+    }
+
+    private void disableDefaultConsoleLogger() {
+        if (System.getProperty("java.util.logging.config.file") == null) {
+            Logger global = Logger.getLogger("");
+            for (Handler o : global.getHandlers()) {
+                if (o instanceof ConsoleHandler) {
+                    global.removeHandler(o);
+                }
+            }
+        }
     }
 }

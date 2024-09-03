@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.List;
 import nbbrd.service.Quantifier;
 import nbbrd.service.ServiceDefinition;
+import nbbrd.service.ServiceId;
 import sasquatch.spi.SasReader;
 
 /**
@@ -29,6 +30,7 @@ import sasquatch.spi.SasReader;
 @ServiceDefinition(singleton = true, quantifier = Quantifier.MULTIPLE)
 public interface SasContent {
 
+    @ServiceId
     String getName();
 
     List<FileError> parse(SasReader reader);

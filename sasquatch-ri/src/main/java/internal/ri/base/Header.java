@@ -28,6 +28,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.READ;
 import java.time.LocalDateTime;
+import java.util.Locale;
+
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import sasquatch.util.SasFileTypeDetector;
@@ -215,7 +217,7 @@ public final class Header {
             case 0x01:
                 return ByteOrder.LITTLE_ENDIAN;
             default:
-                throw new IOException(String.format("Unknown endianness: %02X ", value));
+                throw new IOException(String.format(Locale.ROOT, "Unknown endianness: %02X ", value));
         }
     }
 

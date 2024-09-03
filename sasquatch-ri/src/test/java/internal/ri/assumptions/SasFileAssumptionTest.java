@@ -18,7 +18,7 @@ package internal.ri.assumptions;
 
 import internal.ri.assumptions.impl.PageAssumptions;
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import sasquatch.samples.SasResources;
 
 import java.io.IOException;

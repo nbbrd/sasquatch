@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static sasquatch.samples.SasResources.BIG_32;
 import static sasquatch.samples.SasResources.BIG_64;
 import static sasquatch.samples.SasResources.LITTLE_32;

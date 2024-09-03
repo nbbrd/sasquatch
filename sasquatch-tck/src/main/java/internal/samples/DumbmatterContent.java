@@ -19,6 +19,7 @@ package internal.samples;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -96,25 +97,24 @@ public final class DumbmatterContent extends CsvContent {
         throw new RuntimeException("Unknown type");
     }
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy");
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy", Locale.ROOT);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy HH:mm:ss", Locale.ROOT);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ISO_LOCAL_TIME;
 
     enum StatTransfer13NumberFormat implements DoubleFunction<String> {
         INSTANCE;
 
-        private final DecimalFormat f1;
+        private final NumberFormat f1;
         private final DecimalFormat f2;
 
         private StatTransfer13NumberFormat() {
-            this.f1 = new DecimalFormat();
-            f1.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+            this.f1 = NumberFormat.getNumberInstance(Locale.ROOT);
             f1.setMaximumFractionDigits(15);
             f1.setGroupingUsed(false);
-            this.f2 = new DecimalFormat("0.0E00");
+
             DecimalFormatSymbols f2Symbols = new DecimalFormatSymbols(Locale.ROOT);
             f2Symbols.setExponentSeparator("e");
-            f2.setDecimalFormatSymbols(f2Symbols);
+            this.f2 = new DecimalFormat("0.0E00", f2Symbols);
             f2.setMaximumFractionDigits(15);
         }
 
@@ -128,7 +128,7 @@ public final class DumbmatterContent extends CsvContent {
                     : apply(f1, value);
         }
 
-        static String apply(DecimalFormat f, double value) {
+        static String apply(NumberFormat f, double value) {
             f.setMaximumFractionDigits(16);
             String tmp = f.format(value);
             int shift = getDigitShift(tmp);

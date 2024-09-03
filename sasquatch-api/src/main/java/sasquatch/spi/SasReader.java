@@ -17,14 +17,12 @@
 package sasquatch.spi;
 
 import internal.sasquatch.spi.FailsafeReader;
+import nbbrd.service.*;
 import sasquatch.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
-import nbbrd.service.Quantifier;
-import nbbrd.service.ServiceDefinition;
-import nbbrd.service.ServiceFilter;
-import nbbrd.service.ServiceSorter;
+
 import org.checkerframework.checker.index.qual.NonNegative;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -47,6 +45,7 @@ public interface SasReader {
      *
      * @return a non-null not-empty name
      */
+    @ServiceId
     @NonNull
     String getName();
 

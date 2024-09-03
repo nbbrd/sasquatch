@@ -1,31 +1,33 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.biostatmatt;
 
+import org.junit.jupiter.api.Test;
 import sasquatch.biostatmatt.RUtils.RawRVector;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.util.Iterator;
-import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIndexOutOfBoundsException;
 
 /**
- *
  * @author Philippe Charles
  */
 public class RawRVectorTest {
@@ -65,14 +67,16 @@ public class RawRVectorTest {
         assertEquals2(B2, vector.get(2));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testGetWithLowerBounds() {
-        wrap(B1, B2).get(0);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(B1, B2).get(0));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testGetWithUpperBounds() {
-        wrap(B1, B2).get(3);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(B1, B2).get(3));
     }
 
     @Test
@@ -84,14 +88,16 @@ public class RawRVectorTest {
         assertState(vector);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetWithLowerBounds() {
-        wrap(B1, B2).set(0, B3);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(B1, B2).set(0, B3));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetWithUpperBounds() {
-        wrap(B1, B2).set(3, B3);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(B1, B2).set(3, B3));
     }
 
     @Test
@@ -139,14 +145,16 @@ public class RawRVectorTest {
         assertState(source, r1, r2, r3);
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSubWithLowerBounds() {
-        wrap(B1, B2).sub(0, 1);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(B1, B2).sub(0, 1));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSubWithUpperBounds() {
-        wrap(B1, B2).sub(3, 1);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(B1, B2).sub(3, 1));
     }
 
     @Test

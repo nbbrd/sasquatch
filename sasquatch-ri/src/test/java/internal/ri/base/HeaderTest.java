@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static sasquatch.samples.SasResources.BIG_32;
 import static sasquatch.samples.SasResources.BIG_64;
 import static sasquatch.samples.SasResources.LITTLE_32;

@@ -1,43 +1,40 @@
 /*
  * Copyright 2016 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.biostatmatt;
 
-import static sasquatch.biostatmatt.RUtils.DataType.CHARACTER;
-import static sasquatch.biostatmatt.RUtils.DataType.NUMERIC;
+import org.junit.jupiter.api.Test;
 import sasquatch.biostatmatt.RUtils.RFrame;
 import sasquatch.biostatmatt.RUtils.RList;
 import sasquatch.biostatmatt.Sas7bdat.Column;
 import sasquatch.biostatmatt.Sas7bdat.MissingHeader;
 import sasquatch.biostatmatt.Sas7bdat.RowsInfo;
+
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.AbstractList;
 import java.util.List;
-import static org.assertj.core.api.Assertions.atIndex;
-import org.junit.Test;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.assertj.core.api.Assertions.*;
 import static sasquatch.biostatmatt.BiostatmattReader.readFrame;
-import static sasquatch.samples.SasResources.BIG_32;
-import static sasquatch.samples.SasResources.BIG_64;
-import static sasquatch.samples.SasResources.LITTLE_32;
-import static sasquatch.samples.SasResources.LITTLE_64;
+import static sasquatch.biostatmatt.RUtils.DataType.CHARACTER;
+import static sasquatch.biostatmatt.RUtils.DataType.NUMERIC;
+import static sasquatch.samples.SasResources.*;
 
 /**
- *
  * @author Philippe Charles
  */
 public class Sas7bdatTest {
@@ -82,9 +79,10 @@ public class Sas7bdatTest {
                 .contains(6423d, atIndex(49));
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void test_32_big() throws IOException {
-        readFrame(BIG_32);
+        assertThatIOException()
+                .isThrownBy(() -> readFrame(BIG_32));
     }
 
     @Test
@@ -121,9 +119,10 @@ public class Sas7bdatTest {
                 .contains(0.411, atIndex(7));
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void test_64_big() throws IOException {
-        readFrame(BIG_64);
+        assertThatIOException()
+                .isThrownBy(() -> readFrame(BIG_64));
     }
 
     static void debutAttributes(RFrame frame) {

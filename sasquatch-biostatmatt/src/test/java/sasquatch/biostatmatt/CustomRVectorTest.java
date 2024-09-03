@@ -1,29 +1,30 @@
 /*
  * Copyright 2013 National Bank of Belgium
- * 
- * Licensed under the EUPL, Version 1.1 or - as soon they will be approved 
+ *
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved
  * by the European Commission - subsequent versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the Licence.
  * You may obtain a copy of the Licence at:
- * 
+ *
  * http://ec.europa.eu/idabc/eupl
- * 
- * Unless required by applicable law or agreed to in writing, software 
+ *
+ * Unless required by applicable law or agreed to in writing, software
  * distributed under the Licence is distributed on an "AS IS" basis,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the Licence for the specific language governing permissions and 
+ * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
 package sasquatch.biostatmatt;
 
-import sasquatch.biostatmatt.RUtils;
+import org.junit.jupiter.api.Test;
 import sasquatch.biostatmatt.RUtils.CustomRVector;
+
 import java.util.Iterator;
-import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIndexOutOfBoundsException;
 
 /**
- *
  * @author Philippe Charles
  */
 public class CustomRVectorTest {
@@ -61,14 +62,16 @@ public class CustomRVectorTest {
         assertEquals2(D2, vector.get(2));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testGetWithLowerBounds() {
-        wrap(D1, D2).get(0);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(D1, D2).get(0));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testGetWithUpperBounds() {
-        wrap(D1, D2).get(3);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(D1, D2).get(3));
     }
 
     @Test
@@ -79,14 +82,16 @@ public class CustomRVectorTest {
         assertEquals2(D2, vector.get(2));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetWithLowerBounds() {
-        wrap(D1, D2).set(0, D3);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(D1, D2).set(0, D3));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
+    @Test
     public void testSetWithUpperBounds() {
-        wrap(D1, D2).set(3, D3);
+        assertThatIndexOutOfBoundsException()
+                .isThrownBy(() -> wrap(D1, D2).set(3, D3));
     }
 
     @Test

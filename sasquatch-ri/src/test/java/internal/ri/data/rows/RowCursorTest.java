@@ -27,7 +27,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import static java.nio.file.StandardOpenOption.READ;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import static sasquatch.samples.SasResources.LITTLE_32;
 import static sasquatch.samples.SasResources.LITTLE_64_CHAR;
 

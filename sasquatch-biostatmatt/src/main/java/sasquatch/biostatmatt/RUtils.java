@@ -26,14 +26,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  *
@@ -386,13 +379,13 @@ public final class RUtils {
 
     private static void checkArgument(boolean expression, String format, Object... args) {
         if (!expression) {
-            throw new IllegalArgumentException(String.format(format, args));
+            throw new IllegalArgumentException(String.format(Locale.ROOT, format, args));
         }
     }
 
     private static void checkRBounds(int rIndex, int min, int max) {
         if (rIndex < 1 || rIndex < min || rIndex >= max) {
-            throw new IndexOutOfBoundsException(String.format("index=%s min=%s max=%s", rIndex, min, max));
+            throw new IndexOutOfBoundsException(String.format(Locale.ROOT, "index=%s min=%s max=%s", rIndex, min, max));
         }
     }
 

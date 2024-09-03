@@ -16,18 +16,17 @@
  */
 package sasquatch.cli;
 
-import internal.cli.SasReaderCommand;
-import internal.cli.SasRowFormat;
-import internal.picocli.sql.SqlOutputOptions;
-import internal.picocli.sql.SqlWriter;
+import internal.cli.SasBasicSqlFormat;
+import internal.cli.SasquatchCommand;
 import nbbrd.console.picocli.MultiFileInputOptions;
+import nbbrd.console.picocli.text.TextOutputOptions;
+import nbbrd.io.text.TextFormatter;
 import picocli.CommandLine;
-import sasquatch.*;
 import sasquatch.util.SasFilenameFilter;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -39,90 +38,39 @@ import java.util.logging.Level;
 )
 @SuppressWarnings("FieldMayBeFinal")
 @lombok.extern.java.Log
-public final class SqlCommand extends SasReaderCommand {
+public final class SqlCommand extends SasquatchCommand {
 
     @CommandLine.Mixin
     private MultiFileInputOptions input = new MultiFileInputOptions();
 
     @CommandLine.ArgGroup(validate = false, heading = "%nSQL options:%n")
-    private SqlOutputOptions output = new SqlOutputOptions();
+    private TextOutputOptions output = new TextOutputOptions();
 
     @Override
     public Void call() throws Exception {
-        try (SqlWriter sql = output.newSqlWriter()) {
-            Sasquatch sas = getSasquatch();
+        TextFormatter<Path> formatter = getSqlFormatter();
+
+        try (Writer charWriter = output.newCharWriter()) {
             if (input.isSingleFile()) {
-                dump(sas, input.getSingleFile(), sql, getRowFormat());
+                formatter.formatWriter(input.getSingleFile(), charWriter);
             } else {
                 input.getAllFiles(new SasFilenameFilter()::accept)
-                        .forEach(input.asConsumer(file -> dump(sas, file, sql, getRowFormat()), this::log));
+                        .forEach(input.asConsumer(file -> formatter.formatWriter(file, charWriter), this::log));
             }
         }
+
         return null;
     }
 
-    private SasRowFormat getRowFormat() {
-        return SasRowFormat.DEFAULT.toBuilder().ignoreNumberGrouping(true).build();
+    private TextFormatter<Path> getSqlFormatter() throws IOException {
+        return SasBasicSqlFormat
+                .builder()
+                .sasquatch(getSasquatch())
+                .build()
+                .getFormatter();
     }
 
     private void log(Exception ex, Path file) {
         log.log(Level.INFO, "While reading '" + file + "'", ex);
-    }
-
-    private static void dump(Sasquatch reader, Path input, SqlWriter output, SasRowFormat formats) throws IOException {
-        try (SasForwardCursor cursor = reader.readForward(input)) {
-            SasMetaData meta = cursor.getMetaData();
-
-            // 1. Get table name and structure
-            SqlWriter.Table table = getSqlTable(getTableName(meta.getName(), input), meta.getColumns());
-
-            // 2. Create functions to get the values in a proper format
-            SasRow.Mapper<String[]> rowMapper = getDumpRowMapper(formats.asMappers(meta.getColumns()));
-
-            // 3. Retrieve data and write output
-            output.dropTableIfExist(table).createTable(table);
-            while (cursor.next()) {
-                output.insertInto(table, rowMapper.apply(cursor));
-            }
-        }
-    }
-
-    private static SasRow.Mapper<String[]> getDumpRowMapper(List<SasRow.Mapper<String>> mappers) {
-        String[] values = new String[mappers.size()];
-        return row -> {
-            for (int i = 0; i < values.length; i++) {
-                values[i] = mappers.get(i).apply(row);
-            }
-            return values;
-        };
-    }
-
-    private static SqlWriter.Table getSqlTable(String name, List<SasColumn> columns) {
-        SqlWriter.Table.Builder result = SqlWriter.Table.builder().name(name);
-        SqlWriter.Column.Builder column = SqlWriter.Column.builder();
-        columns.stream()
-                .map(o -> column.name(o.getName()).type(toSqlColumnType(o)).build())
-                .forEach(result::column);
-        return result.build();
-    }
-
-    private static String toSqlColumnType(SasColumn column) {
-        switch (column.getType()) {
-            case CHARACTER:
-                return "VARCHAR(" + column.getLength() + ")";
-            case NUMERIC:
-                return "DOUBLE";
-            case DATE:
-                return "DATE";
-            case DATETIME:
-                return "DATETIME";
-            case TIME:
-                return "TIME";
-        }
-        throw new RuntimeException();
-    }
-
-    private static String getTableName(String name, Path inputFile) {
-        return name.isEmpty() ? inputFile.getFileName().toString() : name;
     }
 }

@@ -29,7 +29,7 @@ import java.util.List;
  * @author Philippe Charles
  */
 @lombok.Value
-@lombok.Builder(toBuilder = true, builderClassName = "Builder")
+@lombok.Builder(toBuilder = true)
 public class SasMetaData {
 
     /**
