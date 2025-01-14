@@ -26,6 +26,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -337,7 +338,7 @@ public final class RUtils {
     }
 
     public static RCon file(String file, String options) throws IOException {
-        return new FileRCon(new File(file));
+        return new FileRCon(Paths.get(file).toFile());
     }
 
     public static void attr(RFrame data, String name, Object value) {
