@@ -19,9 +19,9 @@ package sasquatch.cli;
 import internal.cli.BaseCommand;
 import nbbrd.console.picocli.ConfigHelper;
 import nbbrd.console.picocli.LoggerHelper;
-import nbbrd.console.picocli.ManifestHelper;
 import picocli.CommandLine;
 import picocli.jansi.graalvm.AnsiConsole;
+import sasquatch.About;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * @author Philippe Charles
  */
 @CommandLine.Command(
-        name = MainCommand.NAME,
+        name = About.NAME,
         description = "Reader of SAS datasets.",
         versionProvider = MainCommand.ManifestVersionProvider.class,
         subcommands = {
@@ -43,10 +43,8 @@ import java.util.logging.Logger;
 )
 public final class MainCommand extends BaseCommand {
 
-    public static final String NAME = "sasquatch";
-
     public static void main(String[] args) {
-        ConfigHelper.of(MainCommand.NAME).loadAll(System.getProperties());
+        ConfigHelper.of(About.NAME).loadAll(System.getProperties());
         LoggerHelper.disableDefaultConsoleLogger();
 
         int exitCode = 0;
@@ -74,9 +72,11 @@ public final class MainCommand extends BaseCommand {
 
         @Override
         public String[] getVersion() throws Exception {
-            return ManifestHelper.getByTitle("sasquatch-cli")
-                    .map(ManifestHelper::getVersion)
-                    .orElseGet(() -> new String[0]);
+            return new String[]{
+                    "@|bold " + About.NAME + " " + About.VERSION + "|@",
+                    "JVM: ${java.version} (${java.vendor} ${java.vm.name} ${java.vm.version})",
+                    "OS: ${os.name} ${os.version} ${os.arch}"
+            };
         }
     }
 }
