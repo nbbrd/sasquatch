@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -56,7 +57,7 @@ public final class SasTableViewer {
     }
 
     private static File getFile(String[] args) {
-        return args.length > 0 ? new File(args[0]) : null;
+        return args.length > 0 ? Paths.get(args[0]).toFile() : null;
     }
 
     private static Component content(File file) {
