@@ -18,7 +18,7 @@ package internal.ri.base;
 
 import internal.bytes.BytesReader;
 import java.nio.file.FileVisitResult;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

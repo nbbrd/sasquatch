@@ -30,8 +30,8 @@ import static java.nio.file.StandardOpenOption.READ;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 import sasquatch.util.SasFileTypeDetector;
 
 /**

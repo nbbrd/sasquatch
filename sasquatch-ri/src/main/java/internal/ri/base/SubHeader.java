@@ -19,7 +19,7 @@ package internal.ri.base;
 import internal.bytes.BytesReader;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

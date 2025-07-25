@@ -19,8 +19,8 @@ package sasquatch;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  * A generic SAS dataset cursor that provides metadata. Rows are browsed in

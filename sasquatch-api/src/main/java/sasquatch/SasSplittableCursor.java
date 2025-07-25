@@ -18,7 +18,7 @@ package sasquatch;
 
 import java.io.IOException;
 import java.util.Spliterator;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * A SAS dataset cursor that browses rows by using a {@link Spliterator} and

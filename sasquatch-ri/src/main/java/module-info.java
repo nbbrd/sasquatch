@@ -17,8 +17,9 @@
 
 module sasquatch.ri {
 
+    requires static nbbrd.design;
     requires static nbbrd.service;
-    requires static org.checkerframework.checker.qual;
+    requires static org.jspecify;
     requires static lombok;
 
     requires sasquatch.api;

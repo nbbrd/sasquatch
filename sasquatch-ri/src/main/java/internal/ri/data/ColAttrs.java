@@ -24,7 +24,7 @@ import internal.ri.base.SubHeaderPointer;
 import internal.ri.base.XRef;
 import java.util.Arrays;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  * Column Attribute

@@ -50,9 +50,9 @@
         <dependencies>
             <!-- annotations & processors -->
             <dependency>
-                <groupId>org.checkerframework</groupId>
-                <artifactId>checker-qual</artifactId>
-                <version>3.49.5</version>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>1.0.0</version>
             </dependency>
 
             <!-- dependencies  -->
@@ -297,6 +297,7 @@
             <properties>
                 <lombok.version>1.18.38</lombok.version>
                 <java-service.version>1.9.0</java-service.version>
+                <java-design.version>1.8.0</java-design.version>
             </properties>
             <dependencyManagement>
                 <dependencies>
@@ -314,6 +315,16 @@
                         <groupId>com.github.nbbrd.java-service-util</groupId>
                         <artifactId>java-service-processor</artifactId>
                         <version>${java-service.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.github.nbbrd.java-design-util</groupId>
+                        <artifactId>java-design-annotation</artifactId>
+                        <version>${java-design.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.github.nbbrd.java-design-util</groupId>
+                        <artifactId>java-design-processor</artifactId>
+                        <version>${java-design.version}</version>
                     </dependency>
                 </dependencies>
             </dependencyManagement>
@@ -333,6 +344,11 @@
                                     <groupId>com.github.nbbrd.java-service-util</groupId>
                                     <artifactId>java-service-processor</artifactId>
                                     <version>${java-service.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>com.github.nbbrd.java-design-util</groupId>
+                                    <artifactId>java-design-processor</artifactId>
+                                    <version>${java-design.version}</version>
                                 </path>
                             </annotationProcessorPaths>
                         </configuration>

@@ -20,7 +20,7 @@ import internal.bytes.BytesCursor;
 import internal.ri.data.Document;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

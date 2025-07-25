@@ -16,7 +16,7 @@
  */
 package sasquatch;
 
-import org.checkerframework.checker.index.qual.NonNegative;
+import nbbrd.design.NonNegative;
 
 /**
  * A column in a SAS dataset.
