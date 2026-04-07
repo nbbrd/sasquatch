@@ -45,7 +45,7 @@ public final class SasReaderAssert {
         s.assertThatThrownBy(() -> reader.readScrollable(null)).isInstanceOf(NullPointerException.class);
         s.assertThatThrownBy(() -> reader.readMetaData(null)).isInstanceOf(NullPointerException.class);
 
-        for (SasFeatureAssertion x : SasFeatureAssertionLoader.get()) {
+        for (SasFeatureAssertion x : SasFeatureAssertionLoader.load()) {
             x.assertFeature(s, reader, features);
         }
     }

@@ -27,7 +27,7 @@ import sasquatch.spi.SasReader;
  *
  * @author Philippe Charles
  */
-@ServiceDefinition(singleton = true, quantifier = Quantifier.MULTIPLE)
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 public interface SasContent {
 
     @ServiceId
