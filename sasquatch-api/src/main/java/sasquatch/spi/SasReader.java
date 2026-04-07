@@ -35,8 +35,7 @@ import lombok.NonNull;
  */
 //@ThreadSafe
 @ServiceDefinition(
-        quantifier = Quantifier.MULTIPLE,
-        wrapper = FailsafeReader.class
+        quantifier = Quantifier.MULTIPLE
 )
 public interface SasReader {
 

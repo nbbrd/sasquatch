@@ -35,6 +35,6 @@ public class ParsoReaderTest {
 
     public static void main(String[] args) throws IOException {
         SasReader reader = new ParsoReader();
-        SasContentLoader.get().forEach(o -> o.printErrors(reader));
+        SasContentLoader.load().forEach(o -> o.printErrors(reader));
     }
 }

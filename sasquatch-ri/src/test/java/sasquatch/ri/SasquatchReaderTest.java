@@ -58,7 +58,7 @@ public class SasquatchReaderTest {
         );
 
         SasReader reader = new SasquatchReader();
-        SasContentLoader.get().forEach(content
+        SasContentLoader.load().forEach(content
                 -> assertThat(content.parse(reader))
                         .extracting(KnownError::of)
                         .isSubsetOf(knownErrors));

@@ -39,14 +39,14 @@ public interface SasFileAssumption {
 
     String test(SeekableByteChannel file, SasFileStructure structure) throws IOException;
 
-    @ServiceDefinition(quantifier = Quantifier.MULTIPLE, singleton = true)
+    @ServiceDefinition(quantifier = Quantifier.MULTIPLE)
     interface Provider {
 
         Collection<? extends SasFileAssumption> getAssumptions();
     }
 
     static Stream<SasFileAssumption> getAll() {
-        return SasFileAssumptionLoader.Provider.get().stream().flatMap(provider -> provider.getAssumptions().stream());
+        return SasFileAssumptionLoader.Provider.load().stream().flatMap(provider -> provider.getAssumptions().stream());
     }
 
     static void testAll(Path file, Consumer<SasFileError> onError) throws IOException {
