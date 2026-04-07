@@ -206,10 +206,6 @@
                         <inherited>false</inherited>
                     </execution>
                 </executions>
-                <configuration>
-                    <versioning>semver</versioning>
-                    <tagging>prefix:v</tagging>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
