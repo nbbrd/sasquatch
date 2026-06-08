@@ -11,6 +11,10 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Migrate OSSRH to Central Portal
 
+### Fixed
+
+- Fix warnings when running CLI with Java25+ [#601](https://github.com/nbbrd/sasquatch/issues/601)
+
 ## [1.1.1] - 2025-03-06
 
 ### Fixed
