@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.nbbrd.sasquatch</groupId>
         <artifactId>sasquatch-parent</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
     </parent>
 
     <artifactId>sasquatch-cli</artifactId>
@@ -24,8 +24,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>info.picocli</groupId>
             <artifactId>picocli</artifactId>
-            <version>4.7.6</version>
+            <version>4.7.7</version>
         </dependency>
         <dependency>
             <groupId>info.picocli</groupId>
@@ -53,12 +53,12 @@
         <dependency>
             <groupId>com.github.nbbrd.picocsv</groupId>
             <artifactId>picocsv</artifactId>
-            <version>2.5.1</version>
+            <version>2.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
-            <version>2.4</version>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>com.github.nbbrd.java-io-util</groupId>
@@ -139,6 +139,9 @@
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>sasquatch.cli.MainCommand</mainClass>
+                            <manifestEntries>
+                                <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+                            </manifestEntries>
                         </transformer>
                     </transformers>
                     <shadedArtifactAttached>true</shadedArtifactAttached>

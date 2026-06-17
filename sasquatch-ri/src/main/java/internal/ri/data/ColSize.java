@@ -22,8 +22,8 @@ import internal.ri.base.SubHeader;
 import internal.ri.base.SubHeaderLocation;
 import internal.ri.base.SubHeaderPointer;
 import internal.ri.base.XRef;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  * Column Size

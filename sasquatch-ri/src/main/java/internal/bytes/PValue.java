@@ -19,7 +19,7 @@ package internal.bytes;
 import java.util.Objects;
 import java.util.function.Function;
 import lombok.AccessLevel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

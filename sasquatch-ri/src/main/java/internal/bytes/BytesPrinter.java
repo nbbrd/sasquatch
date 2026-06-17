@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 
 import static java.nio.file.StandardOpenOption.READ;
-import org.checkerframework.checker.index.qual.NonNegative;
+import nbbrd.design.NonNegative;
 
 /**
  *

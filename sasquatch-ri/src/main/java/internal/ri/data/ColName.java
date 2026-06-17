@@ -18,8 +18,8 @@ package internal.ri.data;
 
 import internal.bytes.Seq;
 import internal.ri.base.SubHeaderLocation;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  * Column Name

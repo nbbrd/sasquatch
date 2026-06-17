@@ -22,8 +22,8 @@ import internal.bytes.Record.BiIntFunction;
 import internal.bytes.Seq;
 import java.nio.ByteOrder;
 import java.util.List;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  *

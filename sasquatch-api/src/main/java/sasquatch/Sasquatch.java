@@ -16,6 +16,13 @@
  */
 package sasquatch;
 
+import internal.sasquatch.spi.FailsafeReader;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import sasquatch.spi.SasReader;
+import sasquatch.spi.SasReaderLoader;
+import sasquatch.util.SasCursors;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -27,11 +34,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import lombok.AccessLevel;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import sasquatch.spi.SasReader;
-import sasquatch.spi.SasReaderLoader;
-import sasquatch.util.SasCursors;
 
 /**
  * A simple facade to read SAS dataset (*.sas7bdat).
@@ -51,7 +53,7 @@ public final class Sasquatch {
      */
     @NonNull
     public static Sasquatch ofServiceLoader() {
-        return new Sasquatch(SasReaderLoader.load().stream().findFirst());
+        return new Sasquatch(SasReaderLoader.load().stream().map(delegate -> (SasReader)FailsafeReader.wrap(delegate)).findFirst());
     }
 
     /**

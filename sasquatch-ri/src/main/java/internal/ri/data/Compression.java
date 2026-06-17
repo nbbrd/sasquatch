@@ -17,7 +17,7 @@
 package internal.ri.data;
 
 import internal.bytes.PValue;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

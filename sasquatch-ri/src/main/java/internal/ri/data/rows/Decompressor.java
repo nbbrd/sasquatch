@@ -18,8 +18,8 @@ package internal.ri.data.rows;
 
 import internal.bytes.Bytes;
 import internal.bytes.BytesReader;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  *

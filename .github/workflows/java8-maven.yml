@@ -11,40 +11,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8, 21 ]
-        os: [ ubuntu-latest, macos-13, windows-latest ]
+        java: [ 17, 21 ]
+        os: [ ubuntu-latest, macos-15-intel, windows-latest ]
 
     name: JDK${{ matrix.java }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+      - name: Checkout and Setup Maven
+        uses: s4u/setup-maven-action@v1.20.0
         with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
+          checkout-submodules: true
+          checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
-          cache: 'maven'
 
       - name: Pre-download dependencies with Maven
-        uses: nick-fields/retry@v3
-        with:
-          command: mvn -U dependency:go-offline
-          max_attempts: 3
-          timeout_minutes: 5
+        run: mvn -U dependency:go-offline
 
-      - name: Build and (headless) test with Maven (Linux)
-        if: ${{ runner.os == 'Linux' }}
-        run: xvfb-run mvn -U verify
-
-      - name: Build and (headless) test with Maven (Windows and macOS)
-        if: ${{ runner.os != 'Linux' }}
-        run: mvn -U verify
+      - name: Build and (headless) test with Maven
+        run: ${{ runner.os == 'Linux' && 'xvfb-run' || '' }} mvn install
 
   auto-merge-job:
     needs: build-and-test-job
@@ -58,7 +43,7 @@ jobs:
 
     steps:
       - name: Merge PR
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           command: gh pr merge --auto --rebase "$PR_URL"
           max_attempts: 3
@@ -79,24 +64,18 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+      - name: Checkout and Setup Maven
+        uses: s4u/setup-maven-action@v1.20.0
         with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
+          checkout-submodules: true
+          checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
-          cache: 'maven'
 
       - name: Deploy snapshot with Maven if settings defined
         run: test ! -f ci.settings.xml || mvn deploy -DskipTests -s ci.settings.xml -P base-deploy,snapshot-deploy,!non-deployable-modules
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          CENTRAL_PORTAL_TOKEN: ${{ secrets.CENTRAL_PORTAL_TOKEN }}
           SIGN_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           SIGN_KEY_PASS: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
@@ -110,7 +89,7 @@ jobs:
 
       - name: Upload JReleaser output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: assets-snapshot-log
           path: |
@@ -129,24 +108,18 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
+      - name: Checkout and Setup Maven
+        uses: s4u/setup-maven-action@v1.20.0
         with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
+          checkout-submodules: true
+          checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
-          cache: 'maven'
 
       - name: Deploy with Maven if settings defined
         run: test ! -f ci.settings.xml || mvn deploy -DskipTests -s ci.settings.xml -P base-deploy,release-deploy,!non-deployable-modules
         env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          CENTRAL_PORTAL_USERNAME: ${{ secrets.CENTRAL_PORTAL_USERNAME }}
+          CENTRAL_PORTAL_TOKEN: ${{ secrets.CENTRAL_PORTAL_TOKEN }}
           SIGN_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           SIGN_KEY_PASS: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           # Fix https://issues.sonatype.org/browse/OSSRH-66257
@@ -162,7 +135,7 @@ jobs:
 
       - name: Upload JReleaser output
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: assets-release-log
           path: |

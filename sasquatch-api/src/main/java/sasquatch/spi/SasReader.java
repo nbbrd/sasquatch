@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Set;
 
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  * A reader of SAS dataset. This class is part of SPI, do not use it directly.
@@ -35,8 +35,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 //@ThreadSafe
 @ServiceDefinition(
-        quantifier = Quantifier.MULTIPLE,
-        wrapper = FailsafeReader.class
+        quantifier = Quantifier.MULTIPLE
 )
 public interface SasReader {
 

@@ -29,7 +29,7 @@ import internal.ri.data.RowSize;
 import java.io.IOException;
 import java.nio.channels.SeekableByteChannel;
 import lombok.AccessLevel;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 
 /**
  *

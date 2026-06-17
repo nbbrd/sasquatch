@@ -38,7 +38,7 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.READ;
 import java.util.ArrayList;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import lombok.NonNull;
 import static internal.ri.data.DescriptorType.COL_ATTRS;
 import static internal.ri.data.DescriptorType.COL_NAMES;
 import java.nio.charset.Charset;

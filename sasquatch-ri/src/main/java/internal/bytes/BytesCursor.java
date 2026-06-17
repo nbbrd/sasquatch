@@ -17,8 +17,8 @@
 package internal.bytes;
 
 import java.io.IOException;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  *

@@ -21,8 +21,8 @@ import internal.bytes.PValue;
 import internal.bytes.Record;
 import internal.bytes.Seq;
 import java.util.List;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
 
 /**
  * Subheader

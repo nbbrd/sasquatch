@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.nbbrd.sasquatch</groupId>
         <artifactId>sasquatch-parent</artifactId>
-        <version>1.1.1</version>
+        <version>1.1.2</version>
     </parent>
 
     <artifactId>sasquatch-desktop</artifactId>
@@ -17,7 +17,7 @@
     <url>https://github.com/nbbrd/sasquatch</url>
 
     <properties>
-        <java-desktop-util.version>2.4.0</java-desktop-util.version>
+        <java-desktop-util.version>2.7.0</java-desktop-util.version>
     </properties>
 
     <dependencies>
@@ -28,8 +28,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf</artifactId>
-            <version>3.5.4</version>
+            <version>3.7.1</version>
         </dependency>
     </dependencies>
 
@@ -102,6 +102,9 @@
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                             <mainClass>sasquatch.desktop.SasTableViewer</mainClass>
+                            <manifestEntries>
+                                <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
+                            </manifestEntries>
                         </transformer>
                     </transformers>
                     <shadedArtifactAttached>true</shadedArtifactAttached>

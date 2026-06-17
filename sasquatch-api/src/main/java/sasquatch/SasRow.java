@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.checkerframework.checker.index.qual.NonNegative;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import nbbrd.design.NonNegative;
+import lombok.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A SAS dataset row that retrieves data from fields.

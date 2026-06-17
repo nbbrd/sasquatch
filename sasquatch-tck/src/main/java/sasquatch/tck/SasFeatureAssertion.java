@@ -28,7 +28,7 @@ import sasquatch.spi.SasReader;
  *
  * @author Philippe Charles
  */
-@ServiceDefinition(singleton = true, quantifier = Quantifier.MULTIPLE)
+@ServiceDefinition(quantifier = Quantifier.MULTIPLE)
 public interface SasFeatureAssertion {
 
     void assertFeature(SoftAssertions s, SasReader reader, Set<SasFeature> features) throws IOException;
