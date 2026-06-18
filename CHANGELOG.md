@@ -19,13 +19,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.1.1] - 2025-03-06
 
-### Fixed
-
-- Fix missing information in version command
-
 ### Changed
 
 - Modernize use of NIO API
+
+### Fixed
+
+- Fix missing information in version command
 
 ## [1.1.0] - 2024-09-03
 
