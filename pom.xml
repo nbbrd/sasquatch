@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.nbbrd.sasquatch</groupId>
@@ -11,7 +11,6 @@
     <description>A java reader of SAS datasets</description>
     <url>https://github.com/${x.github.user}/${x.github.repo}</url>
     <inceptionYear>2020</inceptionYear>
-
     <licenses>
         <license>
             <name>European Union Public Licence (EUPL)</name>
@@ -27,6 +26,18 @@
             <organizationUrl>https://www.nbb.be</organizationUrl>
         </developer>
     </developers>
+
+    <modules>
+        <module>sasquatch-api</module>
+        <module>sasquatch-sassy</module>
+        <module>sasquatch-parso</module>
+        <module>sasquatch-ri</module>
+        <module>sasquatch-tck</module>
+        <module>sasquatch-biostatmatt</module>
+        <module>sasquatch-desktop</module>
+        <module>sasquatch-cli</module>
+        <module>sasquatch-bom</module>
+    </modules>
 
     <scm>
         <connection>scm:git:git://github.com/${x.github.user}/${x.github.repo}.git</connection>
@@ -194,6 +205,11 @@
                     <version>0.8.15</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>tidy-maven-plugin</artifactId>
+                    <version>1.4.0</version>
+                </plugin>
+                <plugin>
                     <groupId>org.jreleaser</groupId>
                     <artifactId>jreleaser-maven-plugin</artifactId>
                     <version>1.25.0</version>
@@ -256,20 +272,20 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>tidy-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <modules>
-        <module>sasquatch-api</module>
-        <module>sasquatch-sassy</module>
-        <module>sasquatch-parso</module>
-        <module>sasquatch-ri</module>
-        <module>sasquatch-tck</module>
-        <module>sasquatch-biostatmatt</module>
-        <module>sasquatch-desktop</module>
-        <module>sasquatch-cli</module>
-        <module>sasquatch-bom</module>
-    </modules>
 
     <profiles>
         <!-- Base Java8 build -->
@@ -731,6 +747,7 @@
                 <forbiddenapis.skip>true</forbiddenapis.skip>
                 <jacoco.skip>true</jacoco.skip>
                 <heylogs.skip>true</heylogs.skip>
+                <tidy.skip>true</tidy.skip>
             </properties>
         </profile>
     </profiles>
