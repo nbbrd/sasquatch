@@ -177,7 +177,7 @@
                         <dependency>
                             <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
                             <artifactId>nbbrd-enforcer-rules</artifactId>
-                            <version>1.5.0</version>
+                            <version>1.6.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -230,6 +230,11 @@
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>tidy-maven-plugin</artifactId>
                     <version>1.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
+                    <artifactId>actionlint-maven-plugin</artifactId>
+                    <version>1.6.0</version>
                 </plugin>
                 <plugin>
                     <groupId>com.diffplug.spotless</groupId>
@@ -307,6 +312,18 @@
                         <phase>validate</phase>
                         <goals>
                             <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.nbbrd.nbbrd-maven-tools</groupId>
+                <artifactId>actionlint-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>lint</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -801,6 +818,7 @@
                 <heylogs.skip>true</heylogs.skip>
                 <tidy.skip>true</tidy.skip>
                 <spotless.skip>true</spotless.skip>
+                <actionlint.skip>true</actionlint.skip>
             </properties>
         </profile>
     </profiles>
